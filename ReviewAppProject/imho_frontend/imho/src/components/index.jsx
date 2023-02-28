@@ -4,6 +4,10 @@ import Statistics from "./Statistics";
 import Description from "./Description";
 import Team from "./Team";
 import Footer from "./Footer";
+import Account from "./Account";
+import Myreviews from "./Myreviews";
+import Savedreviews from "./Savedreviews";
+import Settings from "./Settings";
 
 export {
   Header,
@@ -12,4 +16,8 @@ export {
   Description,
   Team,
   Footer,
+  Account,
+  Myreviews,
+  Savedreviews,
+  Settings,
 };
