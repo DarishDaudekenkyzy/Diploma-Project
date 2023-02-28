@@ -5,7 +5,7 @@ import main_desc from '../assets/main_desc.png';
 
 const Statistics = () => {
   return (
-    <section className={`flex justify-center items-center pt-[80px]`}>
+    <section className={`flex h-[700px] justify-center items-center pt-[80px]`}>
       <div class="mr-[80px]">
         <img class="img-responsive w-[300px]" src={main_desc} alt="main_desc"/>
       </div>
