@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import { Header, Footer, Account, 
   Myreviews, Savedreviews, Settings } from '../components';
 
 import styles from '../style';
+import { UserContext } from '../App';
 
 
 const Myaccount = () => {
+  const {user, setUser} = useContext(UserContext);
 
-const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(1);
 
-const activeIndex = (index) => {
-  setActiveTab(index);
-}
+  const activeIndex = (index) => {
+    setActiveTab(index);
+  }
 
 console.log(activeTab);
   return (
@@ -37,7 +39,7 @@ console.log(activeTab);
           className={"text-[20px]" + (activeTab === 4 && "font-bold")}>Settings</button>
         </div>
         {activeTab === 1 && <Account/>}
-        {activeTab === 2 && <Myreviews/>}
+        {activeTab === 2 && <Myreviews />}
         {activeTab === 3 && <Savedreviews/>}
         {activeTab === 4 && <Settings/>}
       </div>

@@ -55,6 +55,33 @@ namespace ReviewAppProject.Controllers
             }
             catch (Exception ex)
             {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("signin")]
+        public async Task<IActionResult> SignInUserAsync(UserSignInModel signInModel)
+        {
+            try
+            {
+                if (signInModel == null)
+                {
+                    return BadRequest("UserObject is null");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid model object");
+                }
+                
+                var user = await _userRepository.GetUserByEmailAndPassword(signInModel.Email, signInModel.Password);
+                if (user.Value == null)
+                {
+                    return BadRequest($"User not found, {signInModel.Email} {signInModel.Password}");
+                }
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, "Internal server error");
             }
         }

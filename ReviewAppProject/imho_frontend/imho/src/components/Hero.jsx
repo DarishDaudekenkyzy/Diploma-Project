@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../style';
 import '../index.css';
 
 import main_people from '../assets/main_people.png';
 import search from '../assets/search.svg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('Search...');
+
   return (
     <section className={`flex flex-col items-center pt-[80px]  mt-[80px]`}>
         <p className={`text-EC7467 text-[48px] font-[KumarOne] mb-[50px]`}>WELCOME TO IMHO</p>
         <form className="flex">
           <input className="w-[600px] border-[2px] border-primary 
-          py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" type="search" placeholder="Search..." />
-          <button className="ml-[-40px] mt-[-30px]" type="submit">
+          py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" 
+          type="search" placeholder="Search..."
+          onChange={(e) => setSearchInput(e.target.value)} />
+          <button className="ml-[-40px] mt-[-30px]" type="button" onClick={() => {navigate(`/search/${searchInput}`)}}>
             <img className="w-[30px]" src={search} alt=""/>
           </button>
         </form>
