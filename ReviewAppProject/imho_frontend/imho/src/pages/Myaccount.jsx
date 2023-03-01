@@ -29,14 +29,22 @@ console.log(activeTab);
       <div className="form h-[800px] m-auto w-[600px]">
         <p className={`text-EC7467 text-[48px] font-[KumarOne] text-start mt-[40px]`}>*Name of the student*</p>
         <div className="m-auto w-[600px] h-[50px] border-b-2 mt-[50px] pb-[70px] flex justify-between">
-          <button onClick={() => activeIndex(1)} 
-          className={"text-[20px]" + (activeTab === 1 && "font-bold")}>Account</button>
-          <button onClick={() => activeIndex(2)} 
-          className={"text-[20px]" + (activeTab === 2 && "font-bold")}>My reviews</button>
-          <button onClick={() => activeIndex(3)} 
-          className={"text-[20px]" + (activeTab === 3 && "font-bold")}>Saved reviews</button>
-          <button onClick={() => activeIndex(4)} 
-          className={"text-[20px]" + (activeTab === 4 && "font-bold")}>Settings</button>
+          <button onClick={() => activeIndex(1)}>
+            <p className={`text-[20px] ${((activeTab === 1) &&
+             `font-bold border-black border-b-2 pb-[38px]`)}`}>Account</p>
+          </button>
+          <button onClick={() => activeIndex(2)}>
+            <p className={`text-[20px] ${((activeTab === 2) &&
+             `font-bold border-black border-b-2 pb-[38px]`)}`}>My reviews</p>
+          </button>
+          <button onClick={() => activeIndex(3)}>
+            <p className={`text-[20px] ${((activeTab === 3) &&
+             `font-bold border-black border-b-2 pb-[38px]`)}`}>Saved reviews</p>
+          </button>
+          <button onClick={() => activeIndex(4)}>
+            <p className={`text-[20px] ${((activeTab === 4) &&
+             `font-bold border-black border-b-2 pb-[38px]`)}`}>Settings</p>
+          </button>
         </div>
         {activeTab === 1 && <Account/>}
         {activeTab === 2 && <Myreviews />}

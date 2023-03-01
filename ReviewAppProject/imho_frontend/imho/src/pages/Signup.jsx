@@ -58,8 +58,8 @@ const Signup = () => {
       <section>
       <div className="form h-[700px] m-auto w-[600px]">
           <img src="./src/assets/loginBackground.jpg" />
-          <form className="mt-[-470px] mr-[-180px] flex flex-col items-center">
-            <p className="text-primary text-[30px] font-[KumarOne] mb-[20px]">Welcome!</p>
+          <form className="mt-[-480px] mr-[-180px] flex flex-col items-center">
+            <p className="text-primary text-[30px] font-[KumarOne] mb-[10px]">Welcome!</p>
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="name" placeholder="First Name"
             onChange={(e) => setInputFirstName(e.target.value)}/>
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="name" placeholder="Last Name"
@@ -68,7 +68,7 @@ const Signup = () => {
             onChange={(e) => setInputEmail(e.target.value)}/>
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="password" placeholder="Password"
             onChange={(e) => setInputPassword(e.target.value)}/>
-            <button className="bg-primary text-white mt-[10px] w-[150px] py-[5px]" type="button"
+            <button className="bg-primary text-white mt-[5px] w-[150px] py-[5px]" type="button"
             onClick={handleRegister}>Sign up</button>
           </form>
         </div>

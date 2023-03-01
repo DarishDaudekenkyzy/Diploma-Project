@@ -45,8 +45,8 @@ import styles from '../style'
       <section>
         <div className="form h-[700px] m-auto w-[600px]">
           <img src="./src/assets/loginBackground.jpg" />
-          <form className="mt-[-470px] mr-[-180px] flex flex-col items-center">
-            <p className="text-primary text-[30px] font-[KumarOne] mb-[20px]">Welcome Back</p>
+          <form className="mt-[-480px] mr-[-180px] flex flex-col items-center">
+            <p className="text-primary text-[30px] font-[KumarOne] mb-[10px]">Welcome Back</p>
 
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" 
             type="email" placeholder="Email" onChange={(e) => setInputEmail(e.target.value)}/>
