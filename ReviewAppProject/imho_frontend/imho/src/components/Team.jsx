@@ -23,7 +23,7 @@ const Team = () => {
         </div>
         <div className={`flex flex-col items-center w-[150px] mx-[20px]`}>
           <img src={empty_circle} />
-          <p className="w-[100px] font-medium text-center mt-[10px]">Rahat Shalbuidakov</p>
+          <p className="w-[100px] font-medium text-center mt-[10px]">Rakhat Shalbuidakov</p>
         </div>
         <div className={`flex flex-col items-center w-[150px] mx-[20px]`}>
           <img src={empty_circle} />
