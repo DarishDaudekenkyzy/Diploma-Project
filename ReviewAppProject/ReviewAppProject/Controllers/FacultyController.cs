@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 
 namespace ReviewAppProject.Controllers
@@ -31,27 +33,22 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateFacultyAsync(Faculty facultyModel)
+        public async Task<IActionResult> CreateFacultyAsync(string facultyName)
         {
             try
             {
-                if (facultyModel == null)
-                {
-                    return BadRequest("Faculty Object is null");
-                }
+                if (facultyName.IsNullOrEmpty())
+                    return BadRequest("Faculty name is null or empty");
                 if (!ModelState.IsValid)
-                {
                     return BadRequest("Invalid model object");
+                
+                try {
+                    await _repository.CreateFacultyAsync(facultyName);
+                } 
+                catch (CouldNotAddFacultyToDatabase e) {
+                    return StatusCode(500, "COuld not add faculty to database");
                 }
-                var faculty = new Faculty
-                {
-                    FacultyId = facultyModel.FacultyId,
-                    FacultyName = facultyModel.FacultyName
-                };
-                await _repository.CreateFaculty(faculty);
-                await _repository.SaveAsync();
-
-                return Ok(faculty);
+                return Ok();
             }
             catch (Exception ex)
             {
