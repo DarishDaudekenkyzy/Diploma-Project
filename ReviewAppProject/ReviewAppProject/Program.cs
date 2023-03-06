@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<FacultyRepository>();
 builder.Services.AddScoped<ProfessorRepository>();
 

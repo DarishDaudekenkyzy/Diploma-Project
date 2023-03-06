@@ -10,27 +10,22 @@ import styles from '../style'
 const Signup = () => {
   const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
-  const[inputEmail, setInputEmail] = useState();
-  const[inputFirstName, setInputFirstName] = useState();
-  const[inputLastName, setInputLastName] = useState();
-  const[inputPassword, setInputPassword] = useState();
+  const [userModel, setUserModel] = useState();
+
+  function handleChange(e) {
+    setUserModel({
+      ...userModel,
+      [e.target.name]: e.target.value
+    })
+  }
 
   function handleRegister() {
       
-    axios.post('https://localhost:7040/User/register', 
-    { firstName: inputFirstName, 
-      lastName: inputLastName,
-      email: inputEmail,
-      password: inputPassword})
+    axios.post('https://localhost:7040/User/Create', userModel)
     .then((response) => {
       console.log(response.data);
       localStorage.setItem('user', response.data);
-      setUser({
-        firstName: response.data.firstName,
-        lastName: response.data.lastName,
-        email: response.data.email,
-        password: response.data.password
-      });
+      setUser(response.data);
       navigate("/");
     })
     .catch(function (error) {
@@ -60,14 +55,15 @@ const Signup = () => {
           <img src="./src/assets/loginBackground.jpg" />
           <form className="mt-[-480px] mr-[-180px] flex flex-col items-center">
             <p className="text-primary text-[30px] font-[KumarOne] mb-[10px]">Welcome!</p>
-            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="name" placeholder="First Name"
-            onChange={(e) => setInputFirstName(e.target.value)}/>
-            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="name" placeholder="Last Name"
-            onChange={(e) => setInputLastName(e.target.value)}/>
-            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="email" placeholder="Email"
-            onChange={(e) => setInputEmail(e.target.value)}/>
-            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" type="password" placeholder="Password"
-            onChange={(e) => setInputPassword(e.target.value)}/>
+            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" name="firstName" type="name" placeholder="First Name"
+            onChange={handleChange}/>
+            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" name="lastName" type="name" placeholder="Last Name"
+            onChange={handleChange}/>
+            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" name="email" type="email" placeholder="Email"
+            onChange={handleChange}/>
+            <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" name="password" type="password" placeholder="Password"
+            onChange={handleChange}/>
+
             <button className="bg-primary text-white mt-[5px] w-[150px] py-[5px]" type="button"
             onClick={handleRegister}>Sign up</button>
           </form>

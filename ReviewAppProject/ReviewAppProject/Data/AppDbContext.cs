@@ -7,7 +7,6 @@ namespace ReviewAppProject.Data
     public class AppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<ReviewPost> Reviews { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
         public DbSet<Professor> Professors { get; set; }
 
@@ -16,11 +15,6 @@ namespace ReviewAppProject.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Reviews)
-                .WithOne(r => r.User);
-            modelBuilder.Entity<Professor>()
-                .HasOne(p => p.Faculty);
 
             
         }

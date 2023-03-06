@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, {useEffect, useState, useContext, useRef} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { UserContext } from '../App';
@@ -11,27 +11,51 @@ import styles from '../style'
   const Login = () => {
     const navigate = useNavigate();
     const {user, setUser} = useContext(UserContext);
-    const[inputEmail, setInputEmail] = useState();
-    const[inputPassword, setInputPassword] = useState();
+    const [userModel, setUserModel] = useState({email: '', password: ''});
+    const [emailErrorMessage, setEmailErrorMessage] = useState();
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState();
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
+    function handleChange(e) {
+      if(e.target.name === 'email') setEmailErrorMessage('');
+      if(e.target.name === 'password') setPasswordErrorMessage('');
+      setUserModel({
+        ...userModel,
+        [e.target.name]: e.target.value
+      });
+
+    }
 
     function handleLogin() {
-      
-      axios.post('https://localhost:7040/User/signin', {email: inputEmail, password: inputPassword})
-      .then((response) => {
-        console.log(response.data.value);
-        localStorage.setItem('user', response.data.value);
-        setUser({
-          firstName: response.data.value.firstName,
-          lastName: response.data.value.lastName,
-          email: response.data.value.email,
-          password: response.data.value.password
+      if(emailRef.current.value === '') setEmailErrorMessage('This field is required');
+      if(passwordRef.current.value === '') setPasswordErrorMessage('This field is required');
+
+      if(userModel.email !== '' && userModel.password !== '') {
+        axios.post('https://localhost:7040/User/SignIn', userModel)
+        .then((response) => {
+          console.log(response.data.value);
+          localStorage.setItem('user', response.data);
+          setUser(response.data);
+          navigate("/");
+        })
+        .catch(function (error) {
+          if (error.response) {
+            if(error.response.data === 'User with provided email not found.')
+              setEmailErrorMessage(error.response.data);
+              if(error.response.data === 'Wrong password.')
+              setPasswordErrorMessage(error.response.data);
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log('Error', error.message);
+          }
+          console.log(error.config);
         });
-        console.log(user);
-        navigate("/");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      }
     }
   
   return (
@@ -49,13 +73,15 @@ import styles from '../style'
             <p className="text-primary text-[30px] font-[KumarOne] mb-[10px]">Welcome Back</p>
 
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" 
-            type="email" placeholder="Email" onChange={(e) => setInputEmail(e.target.value)}/>
+            name="email" type="email" placeholder="Email" onChange={handleChange} ref={emailRef}/>
+            {emailErrorMessage ? (<div>{emailErrorMessage}</div>) : (<></>)}
 
             <input className="w-100 border-[1px] border-primary border-solid mb-[10px] px-[5px] py-[7px]" 
-            type="password" placeholder="Password" onChange={(e) => setInputPassword(e.target.value)}/>
+            name="password" type="password" placeholder="Password" onChange={handleChange} ref={passwordRef}/>
+            {passwordErrorMessage ? (<div>{passwordErrorMessage}</div>) : (<></>)}
 
             <p className="text-EC7467 mb-[15px] right-0 text-[13px] pl-[95px]">forgot password?</p>
-            <button className="bg-primary text-white w-[150px] py-[5px]" type="button"
+            <button className="bg-primary text-white w-[150px] py-[5px]" type="button" 
                onClick={handleLogin}>Log in</button>
             <Link to="/signup">
               <p className="text-EC7467  mt-[10px] text-[13px]">are you new here?</p>

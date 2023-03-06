@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
+using ReviewAppProject.Services;
 
 namespace ReviewAppProject.Controllers
 {
@@ -9,81 +11,61 @@ namespace ReviewAppProject.Controllers
     [Route("User")]
     public class UserController : Controller
     {
-        private readonly UserRepository _userRepository;
+        private readonly UserService _service;
 
-        public UserController(UserRepository userRepository) {
-            _userRepository = userRepository;
+        public UserController(UserService service) {
+            _service = service;
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> GetAllUsersAsync()
+        public async IAsyncEnumerable<User> GetAllUsersAsync()
         {
-            try
+            var users = _service.GetAllUsersAsync();
+
+            await foreach (var user in users)
             {
-                var users = await _userRepository.GetAllUsersAsync();
-                return Ok(users);
+                yield return user;
             }
-            catch (Exception ex) {
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateUserAsync(UserCreateModel postModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model object");
+            }
+            (User? user, Exception? exception) = await _service.CreateUserAsync(postModel);
+
+            if (user != null && exception is null) return Ok(user);
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is UserWithEmailExistsException)
+                return BadRequest("User with provided email exists.");
+            else
                 return StatusCode(500, "Internal server error");
-            }
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> CreateUserAsync(UserPostModel postModel)
-        {
-            try
-            {
-                if (postModel == null)
-                {
-                    return BadRequest("UserObject is null");
-                }
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Invalid model object");
-                }
-                var user = new User
-                {
-                    FirstName = postModel.FirstName,
-                    LastName = postModel.LastName,
-                    Email = postModel.Email,
-                    Password = postModel.Password
-                };
-                await _userRepository.CreateUser(user);
-                await _userRepository.SaveAsync();
-
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPost("signin")]
+        [HttpPost("SignIn")]
         public async Task<IActionResult> SignInUserAsync(UserSignInModel signInModel)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (signInModel == null)
-                {
-                    return BadRequest("UserObject is null");
-                }
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Invalid model object");
-                }
-                
-                var user = await _userRepository.GetUserByEmailAndPassword(signInModel.Email, signInModel.Password);
-                if (user.Value == null)
-                {
-                    return BadRequest($"User not found, {signInModel.Email} {signInModel.Password}");
-                }
-                return Ok(user);
+                return BadRequest("Invalid model object");
             }
-            catch (Exception ex)
-            {
+            (User? user, Exception? exception) = await _service.SignInUserAsync(signInModel);
+
+            if (user != null && exception is null) return Ok(user);
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is UserNotFoundException)
+                return BadRequest("User with provided email not found.");
+            else if (exception is WrongPasswordException)
+                return BadRequest("Wrong password.");
+            else
                 return StatusCode(500, "Internal server error");
-            }
         }
     }
 }
