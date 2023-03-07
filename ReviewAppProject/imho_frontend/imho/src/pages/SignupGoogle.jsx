@@ -9,7 +9,7 @@ import google_reg from '../assets/google_reg.png';
 
 import styles from '../style'
 
-const Signup = () => {
+const SignupGoogle = () => {
   const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
   const[inputEmail, setInputEmail] = useState();
@@ -56,37 +56,33 @@ const Signup = () => {
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
         <p className="text-black text-[30px] font-bold mb-[10px]">Sign Up</p>
           <form className="flex flex-col mt-[20px]">
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="name" placeholder="First name" onChange={(e) => setInputFirstName(e.target.value)}/>
-
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="name" placeholder="Last name" onChange={(e) => setInputLastName(e.target.value)}/>
-
-            <select className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]">
-              <option value="none">Class of</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
-
-            <select className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]">
-              <option value="none">Faculty</option>
-              <option value="business">Business School</option>
-              <option value="engineering">Engineering & Natural Sciences</option>
-              <option value="education">Education & Humanities</option>
-              <option value="law">Law & Social Sciences</option>
-            </select>
-
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="email" placeholder="Email" onChange={(e) => setInputEmail(e.target.value)}/>
-
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="password" placeholder="Password"
-            onChange={(e) => setInputPassword(e.target.value)}/>
-
+            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="email" placeholder="Email" onClick={handleRegister}/>
             <button  className="w-[200px] my-[10px] text-white mx-auto bg-black 
-            px-[30px] py-[7px]" type="button" onClick={handleRegister}>Register</button>
+            px-[30px] py-[7px]" type="button" onClick={handleRegister}>Continue</button>
+            <div className="flex items-center gap-x-2">
+              <hr className="w-[50px]"/>
+              <p className="text-gray text-center my-[10px] text-[15px]">Sign up with email</p>
+              <hr className="w-[50px]"/>
+            </div>
+            <button  className="w-[250px] my-[10px] text-white mx-auto bg-black 
+            px-[20px] py-[5px]" type="button" onClick={handleRegister}> 
+              <span class="flex items-center gap-x-3">
+                <img className="h-[25px] my-[10px]" src={google_reg} />   
+                Sign up with Google
+              </span>
+            </button>
+            <p className="text-gray text-center text-[15px]">Already have an account? Login</p>
+          </form>
+        </div>
+        <div className="form h-[700px] m-auto w-[600px] hidden">
+          <form className="mt-[480px] mr-[180px] flex flex-col items-center">
+            <Link to="/signup">
+              <p className="text-EC7467  mt-[10px] text-[13px]">are you new here?</p>
+            </Link>
           </form>
         </div>
     </div>
   )
 }
 
-export default Signup;
+export default SignupGoogle;

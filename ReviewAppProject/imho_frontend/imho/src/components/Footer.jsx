@@ -1,23 +1,36 @@
 import React from 'react';
 
-import logo from '../assets/logo.png';
+import imho_logo from '../assets/imho_logo.png';
+import twitter_icon from '../assets/twitter_icon.svg';
+import instagram_icon from '../assets/instagram_icon.svg';
+import facebook_icon from '../assets/facebook_icon.svg';
+import linkedin_icon from '../assets/linkedin_icon.svg';
 
 const Footer = () => {
   return (
-    <footer className="pb-[50px]">
-      <img className="mx-auto mt-[20px] mb-[50px]" src={logo} />
-      <div className="flex justify-center">
-        <div className="mx-[30px]">
-          <p  className="text-white w-[200px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean gravida consequat tortor. </p>
+    <footer className="pb-[50px] px-20">
+      <div className="flex border-black border-b-[1px]">
+        <div className="flex items-end mb-[50px]">
+          <p className="text-[15px] font-semibold mx-[30px]">Mobile app</p>
+          <p className="text-[15px] font-semibold mx-[30px]">Community</p>
+          <p className="text-[15px] font-semibold mx-[30px]">Company</p>
         </div>
-        <div className="mx-[30px]">
-          <p  className="text-white w-[200px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean gravida consequat tortor. </p>
+        <img className="mx-auto mt-[20px] mb-[20px]" src={imho_logo} />
+        <div className="flex items-end mb-[50px]">
+          <p className="text-[15px] font-semibold mx-[30px]">Help desk</p>
+          <p className="text-[15px] font-semibold mx-[30px]">Blog</p>
+          <p className="text-[15px] font-semibold mx-[30px]">Resources</p>
         </div>
-        <div className="mx-[30px]">
-          <p  className="text-white w-[200px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean gravida consequat tortor. </p>
+      </div>
+      <div className="flex flex-col items-center ml-[70px]">
+        <div className="flex justify-center mt-[30px]">
+          <img className="h-[30px] mr-6" src={twitter_icon} alt="twitter_icon"/>
+          <img className="h-[30px] mr-6" src={instagram_icon} alt="instagram_icon"/>
+          <img className="h-[30px] mr-6" src={facebook_icon} alt="facebook_icon"/>
+          <img className="h-[30px] mr-6" src={linkedin_icon} alt="linkedin_icon"/>
         </div>
-        <div className="mx-[30px]">
-          <p  className="text-white w-[200px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean gravida consequat tortor. </p>
+        <div className="mt-[30px]">
+          <p className="text-[15px]">© SDU. We love our users!</p>
         </div>
       </div>
     </footer>

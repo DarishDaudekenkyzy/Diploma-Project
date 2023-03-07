@@ -19,6 +19,10 @@ module.exports = {
       height: {
         '75': '75px',
       },
+      backgroundImage: {
+        'main': "url('.\src\assets\back_main.jpg')",
+        'account': "url('.\src\assets\back_account.jpg')",
+      }
     },
     screens: {
       xs: "480px",

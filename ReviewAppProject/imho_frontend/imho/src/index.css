@@ -149,3 +149,21 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance:none;
 }
+input[type="input"]::-webkit-input-decoration,
+input[type="input"]::-webkit-input-cancel-button,
+input[type="input"]::-webkit-input-results-button,
+input[type="input"]::-webkit-input-results-decoration {
+  -webkit-appearance:none;
+}
+
+#hero {
+  background-image: url("./assets/back_main.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center
+}
+
+#myaccount {
+  background-image: url("./assets/back_account.jpg");
+  background-size: cover;
+}

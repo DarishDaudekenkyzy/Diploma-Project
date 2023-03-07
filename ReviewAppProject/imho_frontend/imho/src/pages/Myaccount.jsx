@@ -18,32 +18,29 @@ const Myaccount = () => {
 
 console.log(activeTab);
   return (
-    <div className='w-full overflow-hidden'>
-      <div className={`bg-primary ${styles.paddingX} ${styles.flexCenter}`}>
-        <div className={`${styles.boxWidth}`}>
-          <Header/>
-        </div>
-      </div>
-
-      <section>
-      <div className="form h-[800px] m-auto w-[600px]">
-        <p className={`text-EC7467 text-[48px] font-[KumarOne] text-start mt-[40px]`}>*Name of the student*</p>
-        <div className="m-auto w-[600px] h-[50px] border-b-2 mt-[50px] pb-[70px] flex justify-between">
+    <>
+      <Header/>
+      <section id="myaccount" className={`border-black pt-[50px] h-[750px]
+      border-b-2`}>
+      <p className={`text-[48px] text-center mb-[50px]`}>*Name of the student*</p>
+      <div className="form m-auto w-[700px] h-[500px] 
+      bg-white px-[50px] py-[20px]">
+        <div className="m-auto w-[600px] h-[50px] border-b-2 pb-[53px] flex justify-between">
           <button onClick={() => activeIndex(1)}>
             <p className={`text-[20px] ${((activeTab === 1) &&
-             `font-bold border-black border-b-2 pb-[38px]`)}`}>Account</p>
+             `font-bold border-black border-b-2 pb-[20px]`)}`}>Account</p>
           </button>
           <button onClick={() => activeIndex(2)}>
             <p className={`text-[20px] ${((activeTab === 2) &&
-             `font-bold border-black border-b-2 pb-[38px]`)}`}>My reviews</p>
+             `font-bold border-black border-b-2 pb-[20px]`)}`}>My reviews</p>
           </button>
           <button onClick={() => activeIndex(3)}>
             <p className={`text-[20px] ${((activeTab === 3) &&
-             `font-bold border-black border-b-2 pb-[38px]`)}`}>Saved reviews</p>
+             `font-bold border-black border-b-2 pb-[20px]`)}`}>Saved reviews</p>
           </button>
           <button onClick={() => activeIndex(4)}>
             <p className={`text-[20px] ${((activeTab === 4) &&
-             `font-bold border-black border-b-2 pb-[38px]`)}`}>Settings</p>
+             `font-bold border-black border-b-2 pb-[20px]`)}`}>Settings</p>
           </button>
         </div>
         {activeTab === 1 && <Account/>}
@@ -52,13 +49,8 @@ console.log(activeTab);
         {activeTab === 4 && <Settings/>}
       </div>
       </section>
-
-      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
-        <div className={`${styles.boxWidth}`}>
-          <Footer />
-        </div>
-      </div>
-    </div>
+      <Footer />
+    </>
   )
 }
 

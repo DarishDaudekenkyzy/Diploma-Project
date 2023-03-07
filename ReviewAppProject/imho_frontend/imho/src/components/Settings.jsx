@@ -7,42 +7,42 @@ const Settings = () => {
   const {user, setUser} = useContext(UserContext);
 
   return (
-      <section className="w-full overflow-hidden mt-[10px] m-auto w-[600px]">
-          <form className="flex flex-col">
+      <div className="mt-[10px] m-auto w-[600px]">
+          <form className="flex flex-col relative">
 
-            <label className="mb-[10px]">Email</label>
-            <input className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]" type="email" defaultValue={user.email}/>
+            <label className="mb-[2px]">Email</label>
+            <input className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]" type="email" defaultValue={user.email}/>
 
-            <label className="mb-[10px]">First Name</label>
-            <input className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]" type="name" defaultValue={user.firstName}/>
+            <label className="mb-[2px]">First Name</label>
+            <input className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]" type="name" defaultValue={user.firstName}/>
 
-            <label className="mb-[10px]">Last Name</label>
-            <input className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]" type="name" defaultValue={user.lastName}/>
+            <label className="mb-[2px]">Last Name</label>
+            <input className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]" type="name" defaultValue={user.lastName}/>
             
-            <label className="mb-[10px]">Course</label>
-            <select className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]">
-              <option value="volvo">1</option>
-              <option value="saab">2</option>
-              <option value="opel">3</option>
-              <option value="audi">4</option>
+            <label className="mb-[2px]">Course</label>
+            <select className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
             </select>
 
-            <label className="mb-[10px]">Faculty</label>
-            <select className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]">
-              <option value="volvo">Business School</option>
-              <option value="saab">Engineering & Natural Sciences</option>
-              <option value="opel">Education & Humanities</option>
-              <option value="audi">Law & Social Sciences</option>
+            <label className="mb-[2px]">Faculty</label>
+            <select className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]">
+              <option value="business">Business School</option>
+              <option value="engineering">Engineering & Natural Sciences</option>
+              <option value="education">Education & Humanities</option>
+              <option value="law">Law & Social Sciences</option>
             </select>
 
-            <label className="mb-[10px]">Password</label>
-            <input className="w-full border-[1px] border-primary border-solid mb-[10px] px-[20px] py-[7px]" type="password" placeholder="*******"/>
+            <label className="mb-[2px]">Password</label>
+            <input className="w-[60%] border-[1px] border-primary border-solid mb-[5px] px-[15px] py-[5px]" type="password" placeholder="*******"/>
 
-            <button className="w-[200px] mt-[30px] text-white mx-1 bg-EC7467 
-          px-[30px] py-[10px] rounded-xl">Save changes</button>
+            <button className="w-[200px] mt-[30px] text-white absolute
+            top-[-5px] right-0 bg-black px-[20px] py-[7px]">Save changes</button>
 
           </form>
-      </section>
+      </div>
   )
 }
 
