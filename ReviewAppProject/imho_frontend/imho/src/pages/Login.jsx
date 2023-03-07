@@ -5,12 +5,8 @@ import { UserContext } from '../App';
 import logo from '../assets/imho_logo.png';
 import google_reg from '../assets/google_reg.png';
 
-import { Header, Footer } from '../components';
 
-import styles from '../style'
-
-
-  const Login = () => {
+  const Login = ({openLogin}) => {
     const navigate = useNavigate();
     const {user, setUser} = useContext(UserContext);
     const [userModel, setUserModel] = useState({email: '', password: ''});
@@ -30,6 +26,7 @@ import styles from '../style'
     }
 
     function handleLogin() {
+      openLogin(false);
       if(emailRef.current.value === '') setEmailErrorMessage('This field is required');
       if(passwordRef.current.value === '') setPasswordErrorMessage('This field is required');
 
@@ -61,9 +58,9 @@ import styles from '../style'
     }
   
   return (
-    <div className='w-full h-screen absolute overflow-hidden bg-[rgb(60,60,60,0.3)]'>
+    <div className='w-full h-screen absolute bg-[rgb(60,60,60,0.4)]'>
         <div className="flex flex-col items-center mt-[10px]
-        border-black border-2 m-auto w-[500px] bg-white">
+        m-auto w-[500px] bg-white">
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
         <p className="text-black text-[30px] font-bold mb-[10px]">Login to your account</p>
           <form className="flex flex-col mt-[20px]">
@@ -78,7 +75,7 @@ import styles from '../style'
               <hr className="w-[50px]"/>
             </div>
             <button  className="w-[250px] my-[10px] text-white mx-auto bg-black 
-            px-[20px] py-[5px]" type="button" onClick={handleLogin}> 
+            px-[20px] py-[5px]" type="button"> 
               <span class="flex items-center gap-x-3">
                 <img className="h-[25px] my-[10px]" src={google_reg} />   
                 Sign up with Google

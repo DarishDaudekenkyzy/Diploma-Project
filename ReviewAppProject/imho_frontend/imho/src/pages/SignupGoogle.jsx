@@ -50,9 +50,9 @@ const SignupGoogle = () => {
   }
 
   return (
-    <div className='w-full h-screen absolute overflow-hidden bg-[rgb(60,60,60,0.3)]'>
+    <div className='w-full h-screen absolute overflow-hidden bg-[rgb(60,60,60,0.4)]'>
         <div className="flex flex-col items-center mt-[10px]
-        border-black border-2 m-auto w-[500px] bg-white">
+         m-auto w-[500px] bg-white">
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
         <p className="text-black text-[30px] font-bold mb-[10px]">Sign Up</p>
           <form className="flex flex-col mt-[20px]">
