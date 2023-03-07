@@ -1,26 +1,25 @@
 import { useState, useContext } from 'react';
-import { useNavigate, Link }  from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import logo from '../assets/imho_logo.png';
 import { UserContext } from '../App';
 import { Login, Signup, SignupGoogle } from '../pages';
 
 function AuthSection({openLogin , openSignup}) {
-  const navigate = useNavigate();
   const userItem = localStorage.getItem('user');
   const {user, setUser} = useContext(UserContext);
   
   const handleLogout = () => {
     localStorage.removeItem('user');
-    // navigate("/login");
+    setUser(null);
   }
   
-  if(userItem) {
+  if(user !== null) {
     return (
       <>
       <Link to="/account">
-            <button className="text-white mx-1 px-[30px] py-[5px] ">Hello! {user.firstName}</button>
+            <button className="mx-1 px-[30px] py-[5px] ">Hello! {user.firstName}</button>
       </Link>
-      <button onClick={handleLogout} className="text-white mx-1 px-[30px] py-[5px] ">Log Out</button>
+      <button onClick={handleLogout} className=" mx-1 px-[30px] py-[5px] ">Log Out</button>
     </>);
   }
   else {

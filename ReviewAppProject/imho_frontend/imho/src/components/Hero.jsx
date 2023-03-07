@@ -23,7 +23,7 @@ const Hero = () => {
           </button>
         </form>
         <p className="text-[22px]" type="submit">Go ahead and write your first review</p>
-        <Link to="/account">
+        <Link to="/new-review">
           <button className="text-white mx-1 bg-black 
           px-[40px] py-[10px] mt-[20px]">Write a review</button>
         </Link>

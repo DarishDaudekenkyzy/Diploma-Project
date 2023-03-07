@@ -22,21 +22,19 @@ import google_reg from '../assets/google_reg.png';
         ...userModel,
         [e.target.name]: e.target.value
       });
-
     }
 
     function handleLogin() {
-      openLogin(false);
       if(emailRef.current.value === '') setEmailErrorMessage('This field is required');
       if(passwordRef.current.value === '') setPasswordErrorMessage('This field is required');
 
       if(userModel.email !== '' && userModel.password !== '') {
         axios.post('https://localhost:7040/User/SignIn', userModel)
         .then((response) => {
-          console.log(response.data.value);
+          console.log(response.data);
           localStorage.setItem('user', response.data);
           setUser(response.data);
-          navigate("/");
+          openLogin(false);
         })
         .catch(function (error) {
           if (error.response) {
@@ -64,8 +62,13 @@ import google_reg from '../assets/google_reg.png';
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
         <p className="text-black text-[30px] font-bold mb-[10px]">Login to your account</p>
           <form className="flex flex-col mt-[20px]">
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="email" placeholder="Email" onChange={(e) => setInputEmail(e.target.value)}/>
-            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="password" placeholder="Password" onChange={(e) => setInputPassword(e.target.value)}/>
+            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="email" placeholder="Email" name="email"
+            ref={emailRef} onChange={handleChange}/>
+            {emailErrorMessage ? (<p>{emailErrorMessage}</p>) : <></>}
+
+            <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="password" placeholder="Password" name="password"
+            ref={passwordRef} onChange={handleChange}/>
+            {passwordErrorMessage ? (<p>{passwordErrorMessage}</p>) : <></>}
             <p className="text-gray text-center my-[15px] text-[15px]">forgot password?</p>
             <button  className="w-[200px] my-[10px] text-white mx-auto bg-black 
             px-[30px] py-[7px]" type="button" onClick={handleLogin}>Continue</button>
@@ -76,7 +79,7 @@ import google_reg from '../assets/google_reg.png';
             </div>
             <button  className="w-[250px] my-[10px] text-white mx-auto bg-black 
             px-[20px] py-[5px]" type="button"> 
-              <span class="flex items-center gap-x-3">
+              <span className="flex items-center gap-x-3">
                 <img className="h-[25px] my-[10px]" src={google_reg} />   
                 Sign up with Google
               </span>
