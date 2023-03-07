@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, {useEffect, useState, useContext, useRef} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { UserContext } from '../App';
@@ -13,27 +13,51 @@ import styles from '../style'
   const Login = () => {
     const navigate = useNavigate();
     const {user, setUser} = useContext(UserContext);
-    const[inputEmail, setInputEmail] = useState();
-    const[inputPassword, setInputPassword] = useState();
+    const [userModel, setUserModel] = useState({email: '', password: ''});
+    const [emailErrorMessage, setEmailErrorMessage] = useState();
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState();
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
+    function handleChange(e) {
+      if(e.target.name === 'email') setEmailErrorMessage('');
+      if(e.target.name === 'password') setPasswordErrorMessage('');
+      setUserModel({
+        ...userModel,
+        [e.target.name]: e.target.value
+      });
+
+    }
 
     function handleLogin() {
-      
-      axios.post('https://localhost:7040/User/signin', {email: inputEmail, password: inputPassword})
-      .then((response) => {
-        console.log(response.data.value);
-        localStorage.setItem('user', response.data.value);
-        setUser({
-          firstName: response.data.value.firstName,
-          lastName: response.data.value.lastName,
-          email: response.data.value.email,
-          password: response.data.value.password
+      if(emailRef.current.value === '') setEmailErrorMessage('This field is required');
+      if(passwordRef.current.value === '') setPasswordErrorMessage('This field is required');
+
+      if(userModel.email !== '' && userModel.password !== '') {
+        axios.post('https://localhost:7040/User/SignIn', userModel)
+        .then((response) => {
+          console.log(response.data.value);
+          localStorage.setItem('user', response.data);
+          setUser(response.data);
+          navigate("/");
+        })
+        .catch(function (error) {
+          if (error.response) {
+            if(error.response.data === 'User with provided email not found.')
+              setEmailErrorMessage(error.response.data);
+              if(error.response.data === 'Wrong password.')
+              setPasswordErrorMessage(error.response.data);
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log('Error', error.message);
+          }
+          console.log(error.config);
         });
-        console.log(user);
-        navigate("/");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      }
     }
   
   return (

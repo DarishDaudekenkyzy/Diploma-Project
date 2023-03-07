@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data.Models;
+using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using System.Collections;
 using System.ComponentModel;
 
 namespace ReviewAppProject.Data.Repository
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
@@ -16,29 +17,60 @@ namespace ReviewAppProject.Data.Repository
             _context = context;    
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async IAsyncEnumerable<User> GetAllUsersAsync()
         {
-            return await _context.Users.OrderBy(user => user.UserId)
-                .ToListAsync();
+            var users = _context.Users.OrderBy(user => user.UserId).AsAsyncEnumerable();
+
+            await foreach (var user in users) {
+                yield return user;
+            }
         }
 
-        public async Task<ActionResult<User>> GetUserByEmailAndPassword(string email, string password)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            var users = await _context.Users.AsQueryable()
-                .Where(u => u.Email.Equals(email))
-                .Where(u => u.Password.Equals(password)).ToListAsync();
-            return users.FirstOrDefault();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email)) 
+                ?? throw new UserNotFoundException();
+                
+        }
+        
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserId.Equals(id)) 
+                ?? throw new UserNotFoundException();
+                
         }
 
-        public Task CreateUser(User user)
+        public async Task<bool> CreateUserAsync(UserCreateModel userModel)
         {
-            _context.Users.Add(user);
-            return Task.CompletedTask;
+            if (userModel == null) { throw new ArgumentException(); }
+            User user;
+            try
+            {
+                user = await GetUserByEmailAsync(userModel.Email);
+                if(user != null) throw new UserWithEmailExistsException();
+                return false;
+            }
+            catch (UserNotFoundException) {
+                user = new User
+                {
+                    FirstName = userModel.FirstName,
+                    LastName = userModel.LastName,
+                    Email = userModel.Email,
+                    Password = userModel.Password
+                };
+                
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            
         }
 
-        public async Task SaveAsync()
+        public async Task<bool> UpdateUserAsync(int id, UserCreateModel userModel)
         {
-            await _context.SaveChangesAsync();
+            return false;
+
         }
     }
 }

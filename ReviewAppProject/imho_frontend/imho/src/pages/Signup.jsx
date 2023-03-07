@@ -12,27 +12,22 @@ import styles from '../style'
 const Signup = () => {
   const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
-  const[inputEmail, setInputEmail] = useState();
-  const[inputFirstName, setInputFirstName] = useState();
-  const[inputLastName, setInputLastName] = useState();
-  const[inputPassword, setInputPassword] = useState();
+  const [userModel, setUserModel] = useState();
+
+  function handleChange(e) {
+    setUserModel({
+      ...userModel,
+      [e.target.name]: e.target.value
+    })
+  }
 
   function handleRegister() {
       
-    axios.post('https://localhost:7040/User/register', 
-    { firstName: inputFirstName, 
-      lastName: inputLastName,
-      email: inputEmail,
-      password: inputPassword})
+    axios.post('https://localhost:7040/User/Create', userModel)
     .then((response) => {
       console.log(response.data);
       localStorage.setItem('user', response.data);
-      setUser({
-        firstName: response.data.firstName,
-        lastName: response.data.lastName,
-        email: response.data.email,
-        password: response.data.password
-      });
+      setUser(response.data);
       navigate("/");
     })
     .catch(function (error) {
