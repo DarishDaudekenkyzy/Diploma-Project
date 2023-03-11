@@ -17,21 +17,21 @@ function AuthSection({openLogin , openSignup}) {
     return (
       <>
       <Link to="/account">
-            <button className="mx-1 px-[30px] py-[5px] ">Hello! {user.firstName}</button>
+            <button className="mx-1 px-[30px] py-[5px] text-[16px] sm:text-[20px]">Hello! {user.firstName}</button>
       </Link>
-      <button onClick={handleLogout} className=" mx-1 px-[30px] py-[5px] ">Log Out</button>
+      <button onClick={handleLogout} className=" mx-1 px-[30px] py-[5px] text-[16px] sm:text-[20px]">Log Out</button>
     </>);
   }
   else {
     return (
-      <div className="flex">
+      <div className="flex h-full">
         <div className="flex items-center justify-center 
-        border-black border-l-2 h-[100px] w-[200px]">
-          <button className="text-[20px]" onClick={() => openLogin(true)}>Log In</button>
+        border-black border-l-2 h-full px-[8px] md:px-[48px]">
+          <button className="text-[16px] sm:text-[20px]" onClick={() => openLogin(true)}>Log In</button>
         </div>
         <div className="flex items-center justify-center 
-        h-[100px] w-[200px] bg-black">
-          <button  className="text-white  text-[20px]" onClick={() => openSignup(true)}>
+        h-full px-[8px] md:px-[48px] bg-black">
+          <button  className="text-white text-[16px] sm:text-[20px]" onClick={() => openSignup(true)}>
             Sign Up
           </button>
         </div>
@@ -49,23 +49,23 @@ const Header = () => {
   return (
     <div className='relative'>
       <header className="w-full flex justify-between 
-      items-center border-black border-2 h-[100px] relative">
+      items-center border-black border-2 h-[48px] md:h-[100px] relative">
         <Link to="/">
-          <img className="h-[80px] my-[10px] ml-[150px]" src={logo} alt="logo"/>
+          <img className="h-[40px] md:h-[80px] my-[10px] ml-[32px] md:ml-[150px]" src={logo} alt="logo"/>
         </Link>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center gap-x-3 md:gap-x-10 h-full">
           <Link>
-            <p className="text-[20px] mr-[40px]">
+            <p className="text-[16px] sm:text-[20px]">
               Reviews
             </p>
           </Link>
           <Link>
-            <p className="text-[20px] mr-[40px]">
+            <p className="text-[16px] sm:text-[20px]">
               FAQ
             </p>
           </Link>
           <Link>
-            <p className="text-[20px] mr-[40px]">
+            <p className="text-[16px] sm:text-[20px]">
               About us
             </p>
           </Link>
