@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Main, Login, Signup, Myaccount } from './pages';
 import SearchPage from './pages/SearchPage';
-// import CreateReview from './pages/CreateReview';
+import CreateReview from './pages/CreateReview';
 import ReviewInfo from './pages/ReviewInfo';
 
 export const UserContext = React.createContext(null);
