@@ -7,7 +7,7 @@ import axios from 'axios';
 import logo from '../assets/imho_logo.png';
 import google_reg from '../assets/google_reg.png';
 
-import styles from '../style'
+import styles from '../style';
 
 const Signup = ({openSignup}) => {
   const navigate = useNavigate();

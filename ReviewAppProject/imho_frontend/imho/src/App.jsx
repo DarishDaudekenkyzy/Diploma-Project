@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Main, Login, Signup, Myaccount } from './pages';
 import SearchPage from './pages/SearchPage';
 import CreateReview from './pages/CreateReview';
+import ReviewInfo from './pages/ReviewInfo';
 
 export const UserContext = React.createContext(null);
 
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/account" element={<Myaccount />}/>
             <Route path="/new-review" element={<CreateReview />}/>
+            <Route path="/review-info" element={<ReviewInfo />}/>
           </Routes>
         </UserContext.Provider>
       </BrowserRouter>
