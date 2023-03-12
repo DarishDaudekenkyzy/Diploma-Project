@@ -57,11 +57,10 @@ import google_reg from '../assets/google_reg.png';
   
   return (
     <div className='w-full h-screen absolute bg-[rgb(60,60,60,0.4)]'>
-        <div className="flex flex-col items-center mt-[10px]
-        m-auto w-[500px] bg-white">
+        <div className="flex flex-col items-center mt-[10px] m-auto p-[10px] max-w-[500px] bg-white">
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
-        <p className="text-black text-[30px] font-bold mb-[10px]">Login to your account</p>
-          <form className="flex flex-col mt-[20px]">
+        <p className="text-black text-[20px] sm:text-[30px] font-bold mb-[10px]">Login to your account</p>
+          <form className="flex flex-col py-[20px]">
             <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="email" placeholder="Email" name="email"
             ref={emailRef} onChange={handleChange}/>
             {emailErrorMessage ? (<p>{emailErrorMessage}</p>) : <></>}
@@ -71,14 +70,14 @@ import google_reg from '../assets/google_reg.png';
             {passwordErrorMessage ? (<p>{passwordErrorMessage}</p>) : <></>}
             <p className="text-gray text-center my-[15px] text-[15px]">forgot password?</p>
             <button  className="w-[200px] my-[10px] text-white mx-auto bg-black 
-            px-[30px] py-[7px]" type="button" onClick={handleLogin}>Continue</button>
+            px-[30px] py-[7px] rounded-[4px]" type="button" onClick={handleLogin}>Continue</button>
             <div className="flex items-center gap-x-2">
               <hr className="w-[50px]"/>
               <p className="text-gray text-center my-[10px] text-[15px]">Sign up with email</p>
               <hr className="w-[50px]"/>
             </div>
             <button  className="w-[250px] my-[10px] text-white mx-auto bg-black 
-            px-[20px] py-[5px]" type="button"> 
+            px-[20px] py-[5px] rounded-[4px]" type="button"> 
               <span className="flex items-center gap-x-3">
                 <img className="h-[25px] my-[10px]" src={google_reg} />   
                 Sign up with Google
