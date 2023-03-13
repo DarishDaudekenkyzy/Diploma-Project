@@ -1,8 +1,22 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/imho_logo.png';
 import { UserContext } from '../App';
 import { Login, Signup, SignupGoogle } from '../pages';
+
+export function onOutsideClick(ref, handleOutsideClick) {
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        handleOutsideClick();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
+}
 
 function AuthSection({openLogin , openSignup}) {
   const userItem = localStorage.getItem('user');
