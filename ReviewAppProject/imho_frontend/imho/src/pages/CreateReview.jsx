@@ -28,18 +28,19 @@ const CreateReview = () => {
 
   const [tags, setTags] = useState([]);
   const setTag = (tag) => {
-    if (tags.includes(tag)) {
-      tags.shift();
+    if (tags.includes(tag) ) {
+      let index = tags.indexOf(tag)
+      tags.splice(index, 1);
       console.log(tags);
-    } else {
-      setTags([...tags, tag]);
-      console.log(tags);
+      return;
+    } 
+    if (tags.length >= 3) {
+      console.log(tags); 
+      return;
     }
 
-    if (tags.length > 3) {
-      tags.shift();
-      console.log(tags);
-    }
+    setTags([...tags, tag]);
+    console.log(tags);
   }
 
 
@@ -167,41 +168,54 @@ const CreateReview = () => {
         <div className="flex flex-col justify-start my-5 w-[550px] gap-x-10">
           <p className="w-max text-[20px] font-semibold">Select up to 3 tags</p>
           <div className="flex flex-wrap justify-start my-5 gap-2 cursor-pointer">
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Tough grader</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px] 
+            bg-[${(tags.includes('Tough grader') && `#F5E049`)}]`} 
+            onClick={() => setTag('Tough grader')}>Tough grader</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Get Ready to Read') && `#F5E049`)}]`}
+            onClick={() => setTag('Get Ready to Read')}>
             Get Ready to Read</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Participation Matters</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Group Projects</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Amazing Lessons</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Clear Grading Criteria</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Inspirational</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>
-            Lots of Homework</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Funny</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Beware of Many Quizzes</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>
-            So Many Papers</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Respected</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>
-            Hard Tests</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Bonus Points</div>
-            <div className="border-[1px] border-black 
-            px-[10px] py-[5px] rounded-[20px]" onClick={() => setTag(event.target.innerHTML.toString())}>Great explanations</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Participation Matters') && `#F5E049`)}]`}
+            onClick={() => setTag('Participation Matters')}>Participation Matters</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Group Projects') && `#F5E049`)}]`}
+            onClick={() => setTag('Group Projects')}>Group Projects</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Amazing Lessons') && `#F5E049`)}]`}
+            onClick={() => setTag('Amazing Lessons')}>Amazing Lessons</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Clear Grading Criteria') && `#F5E049`)}]`}
+            onClick={() => setTag('Clear Grading Criteria')}>Clear Grading Criteria</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Inspirational') && `#F5E049`)}]`}
+            onClick={() => setTag('Inspirational')}>Inspirational</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Lots of Homework') && `#F5E049`)}]`}
+            onClick={() => setTag('Lots of Homework')}>Lots of Homework</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Funny') && `#F5E049`)}]`}
+            onClick={() => setTag('Funny')}>Funny</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Beware of Many Quizzes') && `#F5E049`)}]`}
+            onClick={() => setTag('Beware of Many Quizzes')}>Beware of Many Quizzes</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('So Many Papers') && `#F5E049`)}]`}
+            onClick={() => setTag('So Many Papers')}>So Many Papers</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Respected') && `#F5E049`)}]`}
+            onClick={() => setTag('Respected')}>Respected</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Hard Tests') && `#F5E049`)}]`}
+            onClick={() => setTag(('Hard Tests'))}>Hard Tests</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Bonus Points') && `#F5E049`)}]`}
+            onClick={() => setTag('Bonus Points')}>Bonus Points</div>
+            <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
+            bg-[${(tags.includes('Great explanations') && `#F5E049`)}]`}
+            onClick={() => setTag('Great explanations')}>Great explanations</div>
           </div>
+          <p>Array: {tags}</p>
         </div>
         <div className="flex flex-col justify-start my-5 w-[550px] gap-y-3">
           <p className="w-max text-[20px] font-semibold">Write a review</p>
