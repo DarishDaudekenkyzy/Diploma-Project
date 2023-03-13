@@ -215,7 +215,6 @@ const CreateReview = () => {
             bg-[${(tags.includes('Great explanations') && `#F5E049`)}]`}
             onClick={() => setTag('Great explanations')}>Great explanations</div>
           </div>
-          <p>Array: {tags}</p>
         </div>
         <div className="flex flex-col justify-start my-5 w-[550px] gap-y-3">
           <p className="w-max text-[20px] font-semibold">Write a review</p>
