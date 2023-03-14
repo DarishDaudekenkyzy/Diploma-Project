@@ -11,5 +11,10 @@
         public string Email { get; set; }
 
         public string Password { get; set; }
+
+        public int Course { get; set; }
+
+        public int FacultyId { get; set; }
+        public virtual ICollection<ReviewProfessor> ReviewProfessors{ get; set; }
     }
 }

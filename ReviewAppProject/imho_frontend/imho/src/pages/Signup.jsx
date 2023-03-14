@@ -13,7 +13,6 @@ import styles from '../style';
 import { onOutsideClick } from '../components/Header';
 
 const Signup = ({openSignup}) => {
-  const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
   const { register, setError, handleSubmit, formState: { errors } } = useForm();
   const [faculties, setFaculties] = useState([]);

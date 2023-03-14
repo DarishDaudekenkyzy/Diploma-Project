@@ -56,7 +56,9 @@ namespace ReviewAppProject.Data.Repository
                     FirstName = userModel.FirstName,
                     LastName = userModel.LastName,
                     Email = userModel.Email,
-                    Password = userModel.Password
+                    Password = userModel.Password,
+                    Course = userModel.Course,
+                    FacultyId = userModel.FacultyId
                 };
                 
                 _context.Users.Add(user);

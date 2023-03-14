@@ -12,5 +12,11 @@ namespace ReviewAppProject.Models
         public string Email {get; set;}
         [Required]
         public string Password {get; set;}
+
+        [Required]
+        public int Course {get; set;}
+
+        [Required]
+        public int FacultyId {get; set;}
     }
 }
