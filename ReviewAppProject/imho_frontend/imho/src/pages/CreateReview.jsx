@@ -7,10 +7,12 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import axios from 'axios';
 import { UserContext } from '../App';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const CreateReview = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [professor, setProfessor] = useState(null);
   const {user, setUser} = useContext(UserContext);
   const [searchResults, setSearchResults] = useState([]);
@@ -26,9 +28,12 @@ const CreateReview = () => {
   useEffect(() => {
     if(user === null) {
       navigate('/');
-      
     }
     setValue('userId', user.userId);
+    if(location.state !== null) {
+      setProfessor(location.state);
+      setValue('professorId', location.state.professorId);
+    }
   }, [user]);
 
   function handleSearch(e) {
@@ -69,7 +74,7 @@ const CreateReview = () => {
     .then((response) => {
       console.log(response.data);
       setProfessor(null);
-      searchInput.current.value = '';
+      navigate('/');
     })
     .catch(function (error) {
       if (error.response) {

@@ -46,7 +46,7 @@ namespace ReviewAppProject.Controllers
                 yield return review;
             }
         }
-        [HttpGet("Professor/{id}")]
+        [HttpGet("Professor/{professorId}")]
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId)
         {
             var reviews = _service.GetAllReviewsWithProfessorAsync(professorId);

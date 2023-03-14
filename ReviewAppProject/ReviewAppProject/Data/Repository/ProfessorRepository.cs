@@ -29,7 +29,9 @@ namespace ReviewAppProject.Data.Repository
         public async IAsyncEnumerable<Professor> GetProfessorsWithPatternAsync(string pattern)
         {
             var professors = _context.Professors.
-                Where(p => p.FirstName.StartsWith(pattern) || p.LastName.StartsWith(pattern)).Include(p => p.Courses).AsNoTracking()
+                Where(p => p.FirstName.StartsWith(pattern) || p.LastName.StartsWith(pattern))
+                .Include(p => p.Courses)
+                .Include(p => p.Faculty).AsNoTracking()
                 .AsAsyncEnumerable();
 
             await foreach (var professor in professors)
