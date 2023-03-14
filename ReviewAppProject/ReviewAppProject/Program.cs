@@ -19,8 +19,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<FacultyRepository>();
-builder.Services.AddScoped<ProfessorRepository>();
+builder.Services.AddScoped<IFacultyRepository, FacultyRepository>();
+builder.Services.AddScoped<FacultyService>();
+builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
+builder.Services.AddScoped<ProfessorService>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<IReviewProfessorRepository, ReviewProfessorRepository>();
+builder.Services.AddScoped<ReviewProfessorService>();
 
 builder.Services.AddCors(options =>
 {
@@ -31,7 +37,8 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
