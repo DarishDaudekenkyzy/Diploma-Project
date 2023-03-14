@@ -18,5 +18,6 @@ namespace ReviewAppProject.Data.Repository
 
         public Task<double> GetWouldTakeAgainPercentOfProfessor(int professorId);
         public Task<double> GetTotalRatingOfProfessor(int professorId);
+        public Task<double> GetTotalDifficultyOfProfessor(int professorId);
     }
 }

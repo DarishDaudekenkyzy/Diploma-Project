@@ -16,6 +16,8 @@ namespace ReviewAppProject.Data.Models
         
         [Required]
         public int Rating { get; set; }
+        [Required]
+        public int Difficulty { get; set; }
 
         [Required]
         public bool WasAttendanceMandatory { get; set; }

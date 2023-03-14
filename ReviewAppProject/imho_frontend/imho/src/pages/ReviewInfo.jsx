@@ -54,17 +54,17 @@ const ReviewInfo = () => {
               <img className="h-[100px] absolute top-0 right-10" src={yellow_pen} />
               <p  className="font-bold w-[300px]">Professor of {professor.faculty.facultyName} Faculty</p>
               <div className="flex justify-start items-start">
-                    <p className="text-[30px] font-bold">{Math.round(professor.rating * 100) / 100}</p>
+                    <p className="text-[30px] font-bold">{professor.rating}</p>
                     <p>\{professor.reviewsCount}</p>
                   </div>
               <p  className="font-bold">overall quality based on {professor.reviewsCount} ratings</p>
               <div className="flex justify-start gap-x-5">
                 <div className="border-black border-r-[1px] pr-[20px]">
-                  <p className="text-[30px] font-bold">{Math.round(professor.wouldTakeAgainPercentage * 100)/ 100}%</p>
+                  <p className="text-[30px] font-bold">{professor.wouldTakeAgainPercentage}%</p>
                   <p>would take again</p>
                 </div>
                 <div>
-                  <p className="text-[30px] font-bold">n</p>
+                  <p className="text-[30px] font-bold">{professor.difficultyPercentage}</p>
                   <p>level of difficulty</p>
                 </div>
               </div>
@@ -158,7 +158,7 @@ function ReviewListItem({review, index}) {
                       <p className="text-[15px] font-semibold">DIFFICULTY</p>
                       <div className="flex justify-center items-center
                       font-bold text-[23px] rounded-md h-[60px] w-[60px] bg-[#F5E049]">
-                          n
+                          {review.difficulty}
                       </div>
                   </div>
                   <div className="flex flex-col w-full min-h-max ml-[20px] gap-y-[5px]">

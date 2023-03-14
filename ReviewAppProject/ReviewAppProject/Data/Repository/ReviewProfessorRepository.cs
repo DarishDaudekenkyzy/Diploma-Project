@@ -79,6 +79,7 @@ namespace ReviewAppProject.Data.Repository
                     Title = rpModel.Title,
                     Content = rpModel.Content,
                     Rating = rpModel.Rating,
+                    Difficulty = rpModel.Difficulty,
                     ProfessorId = rpModel.ProfessorId,
                     UserId = rpModel.UserId,
                     WouldTakeAgain= rpModel.WouldTakeAgain,
@@ -102,7 +103,12 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task<double> GetTotalRatingOfProfessor(int professorId)
         {
-            return _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Rating).Average();
+            return await _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Rating).AverageAsync();
+        }
+
+        public async Task<double> GetTotalDifficultyOfProfessor(int professorId)
+        {
+            return await _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Difficulty).AverageAsync();
         }
     }
 }

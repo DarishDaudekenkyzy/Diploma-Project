@@ -71,12 +71,14 @@ namespace ReviewAppProject.Services
 
                 var review = await _repository.GetReviewByUserAndProfessorAndCourseAsync(rpModel.UserId, rpModel.ProfessorId, rpModel.CourseId);
 
-                double wouldTakeAgainPercent = await _repository.GetWouldTakeAgainPercentOfProfessor(rpModel.ProfessorId);
-                double professorRating = await _repository.GetTotalRatingOfProfessor(rpModel.ProfessorId);
+                double prof_total_wouldTakeAgainPercent     = await _repository.GetWouldTakeAgainPercentOfProfessor(rpModel.ProfessorId);
+                double prof_total_Rating                    = await _repository.GetTotalRatingOfProfessor(rpModel.ProfessorId);
+                double prof_total_difficulty               = await _repository.GetTotalDifficultyOfProfessor(rpModel.ProfessorId);
 
                 var professor = await _profRepository.GetProfessorByIdAsync(rpModel.ProfessorId);
-                professor.WouldTakeAgainPercentage = wouldTakeAgainPercent;
-                professor.Rating = professorRating;
+                professor.WouldTakeAgainPercentage          = Math.Round(prof_total_wouldTakeAgainPercent, 2);
+                professor.Rating                            = Math.Round(prof_total_Rating, 2);
+                professor.DifficultyPercentage             = Math.Round(prof_total_difficulty, 2);
                 professor.ReviewsCount += 1;
                 await _profRepository.Update(professor);
                 return (review, null);

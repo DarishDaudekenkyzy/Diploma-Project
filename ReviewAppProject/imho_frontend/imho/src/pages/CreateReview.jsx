@@ -17,10 +17,11 @@ const CreateReview = () => {
   const {user, setUser} = useContext(UserContext);
   const [searchResults, setSearchResults] = useState([]);
   const searchInput = useRef(null);
-  const { register, setError, getValues, setValue, watch, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {rating: 5, wouldTakeAgain: true, wasAttendanceMandatory: true}
+  const { register, setError, clearErrors, setValue, watch, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true}
   });
   const watchRating = watch('rating');
+  const watchDifficulty = watch('difficulty');
   const watchTakeAgain = watch('wouldTakeAgain');
   const watchAttendance = watch('wasAttendanceMandatory');
   const watchCourse = watch('courseId');
@@ -78,8 +79,8 @@ const CreateReview = () => {
     })
     .catch(function (error) {
       if (error.response) {
-        if(error.response.data === 'User with provided email exists.')
-          setError('email', {type: "manual", message: 'This email is taken'});
+        if(error.response.data === 'The review for this professor and this course by current user is already exists.')
+          setError('reviewExists', {type: "manual", message: 'You already have a review about this professor and this course, (Delete or Edit existent review)'});
         console.log(error.response.data);
         console.log(error.response.status);
         console.log(error.response.headers);
@@ -90,11 +91,6 @@ const CreateReview = () => {
       }
       console.log(error.config);
     });
-  }
-
-  const [difficult, setDifficult] = useState(1);
-  const currentDifficult = (index) => {
-    setDifficult(index);
   }
 
   const [tags, setTags] = useState([]);
@@ -142,7 +138,9 @@ const CreateReview = () => {
               <div className='flex justify-start w-full gap-x-10 items center'>
                 <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
                 <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer"
-                {...register('courseId', {required: 'This field is required'})}>
+                {...register('courseId', 
+                {required: 'This field is required',
+                onChange:()=> {clearErrors('reviewExists')}})}>
                   <option value={0}>Course code: </option>
                   {professor.courses.length > 0 && professor.courses.map((c) => { 
                       return (
@@ -161,22 +159,22 @@ const CreateReview = () => {
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${(getValues('rating') === 5 && `bg-[#97C1A9]`)}`} onClick={() => setValue('rating', 5)}></div>
+                    ${(watchRating === 5 && `bg-[#97C1A9]`)}`} onClick={() => setValue('rating', 5)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${(getValues('rating') === 4 && `bg-[#CCE2CB]`)}`} onClick={() => setValue('rating', 4)}></div>
+                    ${(watchRating === 4 && `bg-[#CCE2CB]`)}`} onClick={() => setValue('rating', 4)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${(getValues('rating') === 3 && `bg-[#FBEAC2]`)}`} onClick={() => setValue('rating', 3)}></div>
+                    ${(watchRating === 3 && `bg-[#FBEAC2]`)}`} onClick={() => setValue('rating', 3)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${(getValues('rating') === 2 && `bg-[#FFDAC1]`)}`} onClick={() => setValue('rating', 2)}></div>
+                    ${(watchRating === 2 && `bg-[#FFDAC1]`)}`} onClick={() => setValue('rating', 2)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${(getValues('rating') === 1 && `bg-[#FFB8B1]`)}`} onClick={() => setValue('rating', 1)}></div>
+                    ${(watchRating === 1 && `bg-[#FFB8B1]`)}`} onClick={() => setValue('rating', 1)}></div>
                   </div>
                   <p className="text-center">
-                    {watchRating === "5" && '5 - Awesome'}
-                    {watchRating === "4" && '4 - Good'}
-                    {watchRating === "3" && '3 - So so'}
-                    {watchRating === "2" && '2 - Bad'}
-                    {watchRating === "1" && '1 - Really Bad'}
+                    {watchRating === 5 && '5 - Awesome'}
+                    {watchRating === 4 && '4 - Good'}
+                    {watchRating === 3 && '3 - So so'}
+                    {watchRating === 2 && '2 - Bad'}
+                    {watchRating === 1 && '1 - Really Bad'}
                   </p>
                 </div>
             </div>
@@ -187,21 +185,21 @@ const CreateReview = () => {
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${((difficult === 1) && `bg-[#97C1A9]`)}`} onClick={() => currentDifficult(1)}></div>
+                    ${(watchDifficulty === 1 && `bg-[#97C1A9]`)}`} onClick={() => setValue('difficulty', 1)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${((difficult === 2) && `bg-[#CCE2CB]`)}`} onClick={() => currentDifficult(2)}></div>
+                    ${(watchDifficulty === 2 && `bg-[#CCE2CB]`)}`} onClick={() => setValue('difficulty', 2)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${((difficult === 3) && `bg-[#FBEAC2]`)}`} onClick={() => currentDifficult(3)}></div>
+                    ${(watchDifficulty === 3 && `bg-[#FBEAC2]`)}`} onClick={() => setValue('difficulty', 3)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${((difficult === 4) && `bg-[#FFDAC1]`)}`} onClick={() => currentDifficult(4)}></div>
+                    ${(watchDifficulty === 4 && `bg-[#FFDAC1]`)}`} onClick={() => setValue('difficulty', 4)}></div>
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
-                    ${((difficult === 5) && `bg-[#FFB8B1]`)}`} onClick={() => currentDifficult(5)}></div>
+                    ${(watchDifficulty === 5 && `bg-[#FFB8B1]`)}`} onClick={() => setValue('difficulty', 5)}></div>
                   </div>
-                  {difficult === 1 && <p className="text-center">1 - Very easy</p>}
-                  {difficult === 2 && <p className="text-center">2 - Easy</p>}
-                  {difficult === 3 && <p className="text-center">3 - Mid</p>}
-                  {difficult === 4 && <p className="text-center">4 - Difficult</p>}
-                  {difficult === 5 && <p className="text-center">5 - Very difficult</p>}
+                  {watchDifficulty === 1 && <p className="text-center">1 - Very easy</p>}
+                  {watchDifficulty === 2 && <p className="text-center">2 - Easy</p>}
+                  {watchDifficulty === 3 && <p className="text-center">3 - Mid</p>}
+                  {watchDifficulty === 4 && <p className="text-center">4 - Difficult</p>}
+                  {watchDifficulty === 5 && <p className="text-center">5 - Very difficult</p>}
                 </div>
             </div>
 
@@ -341,6 +339,8 @@ const CreateReview = () => {
                 </div>
                 <button className="w-[200px] text-white
                 bg-black px-[20px] py-[7px]" type="submit">Submit</button>
+                <ErrorMessage errors={errors} name='reviewExists'
+                  render={({ message }) => <p className="text-red-500">{message}</p>}/>
               </div>
             </div>
           </form>

@@ -18,6 +18,7 @@ namespace ReviewAppProject.Data.Models
         public Faculty Faculty { get; set; }
 
         public double WouldTakeAgainPercentage { get; set; }
+        public double DifficultyPercentage { get; set; }
 
         public double Rating {get; set; }
 
