@@ -2,7 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
+using ReviewAppProject.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ReviewAppProject.Controllers
 {
@@ -10,78 +14,72 @@ namespace ReviewAppProject.Controllers
     [Route("Professor")]
     public class ProfessorController : Controller
     {
-        private readonly ProfessorRepository _repository;
+        private readonly ProfessorService _service;
 
-        public ProfessorController(ProfessorRepository repository)
+        public ProfessorController(ProfessorService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> GetAllUsersAsync()
+        public async IAsyncEnumerable<Professor> GetAllProfessorsAsync()
         {
-            try
+            var professors = _service.GetAllProfessorsAsync();
+
+            await foreach (var professor in professors)
             {
-                var professors = await _repository.GetAllProfessorsAsync();
-                return Ok(professors);
+                yield return professor;
             }
-            catch (Exception ex)
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProfessorById(int id)
+        {
+            if (!ModelState.IsValid)
             {
+                return BadRequest("Invalid model object");
+            }
+            (Professor? professor, Exception? exception) = await _service.GetProfessorById(id);
+
+            if (professor != null && exception is null) return Ok(professor);
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is ProfessorNotFoundException)
+                return BadRequest("Professor with provided id doesn't exist.");
+            else
                 return StatusCode(500, "Internal server error");
-            }
         }
 
         [HttpGet("Search/{searchInput}")]
-        public async Task<ActionResult<IEnumerable<Professor>>> Search(string searchInput)
+        public async IAsyncEnumerable<Professor> GetProfessorsWithPatternAsync(string searchInput)
         {
-            try
-            {
-                if (searchInput.IsNullOrEmpty())
-                {
-                    return BadRequest("Input is empty");
-                }
-                var professors = await _repository.Search(searchInput);
+            
+            var professors = _service.GetProfessorsWithPatternAsync(searchInput);
 
-                if (professors.Any())
-                {
-                    return Ok(professors);
-                }
-                return NotFound();
-            }
-            catch (Exception ex) {
-                return StatusCode(500, "Internal server error");
+            await foreach (var professor in professors)
+            {
+                yield return professor;
             }
         }
 
-        [HttpPost("Register")]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateProfessorAsync(ProfessorCreateModel postModel)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (postModel == null)
-                {
-                    return BadRequest("Professor Object is null");
-                }
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Invalid model object");
-                }
-                var professor = new Professor
-                {
-                    FirstName = postModel.FirstName,
-                    LastName = postModel.LastName,
-                    Email = postModel.Email,
-                    FacultyId = postModel.FacultyId
-                };
-                await _repository.CreateProfessor(professor);
-                await _repository.SaveAsync();
+                return BadRequest("Invalid model object");
+            }
+            (Professor? professor, Exception? exception) = await _service.CreateProfessorAsync(postModel);
 
-                return Ok(professor);
-            }
-            catch (Exception ex)
-            {
+            if (professor != null && exception is null) return Ok(professor);
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is ProfessorWithEmailExistsException)
+                return BadRequest("Professor with provided email exists.");
+            else
                 return StatusCode(500, "Internal server error");
-            }
         }
     }
 }

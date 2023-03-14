@@ -4,6 +4,7 @@ using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
+using ReviewAppProject.Services;
 
 namespace ReviewAppProject.Controllers
 {
@@ -11,49 +12,43 @@ namespace ReviewAppProject.Controllers
     [Route("Faculty")]
     public class FacultyController : Controller
     {
-        private readonly FacultyRepository _repository;
+        private readonly FacultyService _service;
 
-        public FacultyController(FacultyRepository repository)
+        public FacultyController(FacultyService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> GetAllFacultiesAsync()
+        public async IAsyncEnumerable<Faculty> GetAllFacultiesAsync()
         {
-            try
+            var faculties = _service.GetAllFacultiesAsync();
+
+            await foreach (var faculty in faculties)
             {
-                var faculties = await _repository.GetAllFacultiesAsync();
-                return Ok(faculties);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
+                yield return faculty;
             }
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> CreateFacultyAsync(string facultyName)
         {
-            try
-            {
-                if (facultyName.IsNullOrEmpty())
-                    return BadRequest("Faculty name is null or empty");
-                if (!ModelState.IsValid)
-                    return BadRequest("Invalid model object");
-                
-                try {
-                    await _repository.CreateFacultyAsync(facultyName);
-                } 
-                catch (CouldNotAddFacultyToDatabase e) {
-                    return StatusCode(500, "COuld not add faculty to database");
-                }
-                return Ok();
-            }
-            catch (Exception ex)
-            {
+            if (facultyName.IsNullOrEmpty())
+                return BadRequest("Faculty name is null or empty");
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid model object");
+            
+
+            (Faculty? faculty, Exception? exception) = await _service.CreateFacultyAsync(facultyName);
+
+            if (faculty != null && exception is null) return Ok(faculty);
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is FacultyWithNameExistsException)
+                return BadRequest("Faculty with provided email exists.");
+            else
                 return StatusCode(500, "Internal server error");
-            }
         }
     }
 }
