@@ -27,7 +27,7 @@ const ReviewInfo = () => {
   }
 
   function getReviews() {
-    axios.get(`https://localhost:7040/ReviewProfessor/Professor/${professor.professorId}`)
+    axios.get(`https://localhost:7040/Professor/Reviews/${professor.professorId}`)
     .then((response) => {
       setReviews(response.data);
     })
@@ -55,7 +55,7 @@ const ReviewInfo = () => {
               <p  className="font-bold w-[300px]">Professor of {professor.faculty.facultyName} Faculty</p>
               <div className="flex justify-start items-start">
                     <p className="text-[30px] font-bold">{professor.rating}</p>
-                    <p>\{professor.reviewsCount}</p>
+                    <p>\5</p>
                   </div>
               <p  className="font-bold">overall quality based on {professor.reviewsCount} ratings</p>
               <div className="flex justify-start gap-x-5">
@@ -165,11 +165,11 @@ function ReviewListItem({review, index}) {
                     <div>
                       <div className="w-full flex justify-between">
                         <div className="flex justify-start gap-x-[20px]">
-                          <p className="text-[13px] font-semibold">CSS107</p>
+                          <p className="text-[13px] font-semibold">{review.courseCode}</p>
                           <div className="text-[13px] border-black 
                           border-[1px] bg-[#F5E049] rounded-[5px] px-[15px]">{review.title}</div>
                         </div>
-                        <p className="text-[13px]">28th September, 2022</p>
+                        <p className="text-[13px]">{review.createdDate}</p>
                       </div>
                       <div>
                         <div className="flex justify-start gap-x-[20px]">

@@ -5,6 +5,7 @@ using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
+using ReviewAppProject.Views;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -80,6 +81,17 @@ namespace ReviewAppProject.Controllers
                 return BadRequest("Professor with provided email exists.");
             else
                 return StatusCode(500, "Internal server error");
+        }
+
+        [HttpGet("Reviews/{professorId}")]
+        public async IAsyncEnumerable<ReviewProfessorView> GetAllReviewsWithProfessorAsync(int professorId)
+        {
+            var reviews = _service.GetAllReviewsWithProfessorAsync(professorId);
+
+            await foreach (var r in reviews)
+            {
+                yield return r;
+            }
         }
     }
 }

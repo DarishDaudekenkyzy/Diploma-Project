@@ -35,7 +35,10 @@ namespace ReviewAppProject.Data.Repository
 
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId)
         {
-            var reviews = _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).AsAsyncEnumerable();
+            var reviews = _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId)
+                .Include(rp => rp.Course)
+                .Include(rp => rp.User)
+                .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
             {
@@ -84,6 +87,7 @@ namespace ReviewAppProject.Data.Repository
                     UserId = rpModel.UserId,
                     WouldTakeAgain= rpModel.WouldTakeAgain,
                     WasAttendanceMandatory = rpModel.WasAttendanceMandatory,
+                    CreatedDate = rpModel.CreatedDate,
                     
                 };
 

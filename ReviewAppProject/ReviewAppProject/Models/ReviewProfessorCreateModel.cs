@@ -18,12 +18,15 @@ namespace ReviewAppProject.Models
         public int Rating { get; set; }
         [Required]
         public int Difficulty { get; set; }
+
         [Required]
         public bool WouldTakeAgain { get; set; }
         
         [Required]
         public bool WasAttendanceMandatory { get; set; }
-        
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
 
         [Required]
         public int UserId { get; set; }

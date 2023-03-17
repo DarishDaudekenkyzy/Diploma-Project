@@ -3,6 +3,7 @@ using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
+using ReviewAppProject.Views;
 
 namespace ReviewAppProject.Services
 {
@@ -25,16 +26,6 @@ namespace ReviewAppProject.Services
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync()
         {
             var reviews = _repository.GetAllReviewsAsync();
-
-            await foreach (var r in reviews)
-            {
-                yield return r;
-            }
-        }
-        
-        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId)
-        {
-            var reviews = _repository.GetAllReviewsWithProfessorAsync(professorId);
 
             await foreach (var r in reviews)
             {

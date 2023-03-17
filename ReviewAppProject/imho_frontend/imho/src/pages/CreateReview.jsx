@@ -69,6 +69,7 @@ const CreateReview = () => {
   }
 
   async function handleSubmitReview(data) {
+    data.createdDate = new Date();
     data.courseId = parseInt(watchCourse);
     console.log(data);
     await axios.post('https://localhost:7040/ReviewProfessor/Create', data)

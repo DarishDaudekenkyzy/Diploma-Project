@@ -8,8 +8,6 @@ namespace ReviewAppProject.Data.Models
         public int Id { get; set; }
 
         [Required]
-        public int CourseId { get; set; }
-        [Required]
         public string Title { get; set; }
         [Required]
         public string Content { get; set; }
@@ -25,6 +23,13 @@ namespace ReviewAppProject.Data.Models
 
         [Required]
         public bool WouldTakeAgain { get; set; }
+
+        [Required]
+        public DateTime CreatedDate{ get; set; }
+
+        [Required]
+        public int CourseId { get; set; }
+        public virtual Course Course { get; set; }
 
         [Required]
         public int UserId { get; set; }

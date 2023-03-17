@@ -20,8 +20,8 @@ namespace ReviewAppProject.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
             new ProfessorEntityTypeConfiguration().Configure(modelBuilder.Entity<Professor>());
-            new ReviewProfessorEntityTypeConfiguration().Configure(modelBuilder.Entity<ReviewProfessor>());
             new CourseEntityTypeConfiguration().Configure(modelBuilder.Entity<Course>());
+            new ReviewProfessorEntityTypeConfiguration().Configure(modelBuilder.Entity<ReviewProfessor>());
         }
     }
 }

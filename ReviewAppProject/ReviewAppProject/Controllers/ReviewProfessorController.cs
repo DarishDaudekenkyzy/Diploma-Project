@@ -3,6 +3,7 @@ using ReviewAppProject.Data.Models;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
+using ReviewAppProject.Views;
 
 namespace ReviewAppProject.Controllers
 {
@@ -44,16 +45,6 @@ namespace ReviewAppProject.Controllers
             await foreach (var review in reviews)
             {
                 yield return review;
-            }
-        }
-        [HttpGet("Professor/{professorId}")]
-        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId)
-        {
-            var reviews = _service.GetAllReviewsWithProfessorAsync(professorId);
-
-            await foreach (var r in reviews)
-            {
-                yield return r;
             }
         }
 

@@ -20,7 +20,7 @@ const SearchItem = ({professor, navigate}) => {
             <div className="flex flex-col items-center xs:ml-[50px]">
                 <p className="text-[12px] sm:text-[15px] font-semibold">QUALITY</p>
                 <div className="flex justify-center items-center font-bold text-[23px] rounded-md h-[60px] w-[60px] bg-[#FF90E8]">
-                    {Math.round(professor.rating * 100) / 100}
+                    {professor.rating}
                 </div>
                 <p className="text-[14px]">{professor.reviewsCount} ratings</p>
             </div>
@@ -30,8 +30,8 @@ const SearchItem = ({professor, navigate}) => {
                     {professor.courses.map((course, key)=>`${key!=0 ? ', ':''}${course.courseCode}`)}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-x-[40px]">
-                    <p className="text-[15px]">{Math.round(professor.wouldTakeAgainPercentage)}% Would Take Again</p>
-                    <p className="text-[15px]">% Level of Difficulty</p>
+                    <p className="text-[15px]">{professor.wouldTakeAgainPercentage}% Would Take Again</p>
+                    <p className="text-[15px]">{professor.difficultyPercentage}% Level of Difficulty</p>
                 </div>
             </div>
         </div>
