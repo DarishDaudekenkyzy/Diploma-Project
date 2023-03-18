@@ -79,6 +79,8 @@ namespace ReviewAppProject.Services
                     Difficulty = r.Difficulty,
                     WasAttendanceMandatory = r.WasAttendanceMandatory,
                     WouldTakeAgain = r.WouldTakeAgain,
+                    Likes = r.Likes,
+                    Dislikes = r.Dislikes,
                     CreatedOn = r.CreatedOn.ToString("MMMM dd, yyyy"),
                     CourseCode = r.Course.CourseCode,
                     CourseId = r.Course.CourseId,

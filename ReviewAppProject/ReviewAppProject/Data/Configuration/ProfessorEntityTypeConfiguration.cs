@@ -10,7 +10,8 @@ namespace ReviewAppProject.Data.Configuration
             builder.HasKey(p => p.ProfessorId);
             builder.Property(p => p.FirstName).IsRequired().HasMaxLength(128);
             builder.Property(p => p.LastName).IsRequired().HasMaxLength(128);
-            builder.HasMany(p => p.Courses)
+            builder
+                .HasMany(p => p.Courses)
                 .WithMany(c => c.Professors)
                 .UsingEntity<Dictionary<string, object>>(
                     "CourseProfessor",

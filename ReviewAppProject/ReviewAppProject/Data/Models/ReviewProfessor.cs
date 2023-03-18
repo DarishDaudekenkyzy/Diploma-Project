@@ -6,36 +6,23 @@ namespace ReviewAppProject.Data.Models
     public class ReviewProfessor
     {
         public int Id { get; set; }
-
-        [Required]
         public string Title { get; set; }
-        [Required]
         public string Content { get; set; }
-        
-        [Required]
         public int Rating { get; set; }
-        [Required]
         public int Difficulty { get; set; }
-
-        [Required]
         public bool WasAttendanceMandatory { get; set; }
-
-
-        [Required]
         public bool WouldTakeAgain { get; set; }
-
-        [Required]
         public DateTime CreatedOn{ get; set; }
-
-        [Required]
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
         public int CourseId { get; set; }
-        public virtual Course Course { get; set; }
-
-        [Required]
+        public Course Course { get; set; }
         public int UserId { get; set; }
         public User User{ get; set; }
-        [Required]
         public int ProfessorId { get; set; }
         public Professor Professor { get; set; }
+
+        public ICollection<LikedUserReview> LikedUsers { get; set; }
+        public ICollection<DislikedUserReview> DislikedUsers { get; set; }
     }
 }

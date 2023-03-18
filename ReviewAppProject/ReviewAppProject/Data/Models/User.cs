@@ -16,5 +16,7 @@
 
         public int FacultyId { get; set; }
         public virtual ICollection<ReviewProfessor> ReviewProfessors{ get; set; }
+        public virtual ICollection<LikedUserReview> LikedReviews { get; set; }
+        public virtual ICollection<DislikedUserReview> DislikedReviews { get; set; }
     }
 }

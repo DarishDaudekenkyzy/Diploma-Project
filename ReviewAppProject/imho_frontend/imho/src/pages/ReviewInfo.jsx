@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../App';
 
 import { Header, Footer } from '../components';
 
@@ -30,6 +31,7 @@ const ReviewInfo = () => {
     axios.get(`https://localhost:7040/Professor/Reviews/${professor.professorId}`)
     .then((response) => {
       setReviews(response.data);
+      console.log(response.data);
     })
     .catch(function (error) {
       if (error.response) {
@@ -146,6 +148,60 @@ const ReviewInfo = () => {
 export default ReviewInfo;
 
 function ReviewListItem({review, index}) {
+  const {user, setUser} = useContext(UserContext);
+  const [likes, setLikes] = useState(review.likes);
+  const [dislikes, setDislikes] = useState(review.dislikes);
+
+  async function handleDislike() {
+    await axios.post('https://localhost:7040/ReviewProfessor/like_dislike', {
+      userId: user.userId,
+      reviewId: review.id,
+      like: false
+    })
+    .then((response) => {
+      console.log('nay');
+      setLikes(response.data.item1);
+      setDislikes(response.data.item2);
+    })
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+      console.log(error.config);
+    });
+  }
+
+  async function handleLike() {
+    await axios.post('https://localhost:7040/ReviewProfessor/like_dislike', {
+      userId: user.userId,
+      reviewId: review.id,
+      like: true
+    })
+    .then((response) => {
+      console.log('yay');
+      setLikes(response.data.item1);
+      setDislikes(response.data.item2);
+    })
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log('Error', error.message);
+      }
+      console.log(error.config);
+    });
+  }
+
   return (
     <div className={`flex w-[700px] ${index%2===0 ? 'bg-[#F9F9F9]' : 'bg-[#23A094]'}
               border-black border-[1px] p-[20px]`}>
@@ -196,10 +252,14 @@ function ReviewListItem({review, index}) {
                         bg-black px-[20px] rounded-[20px] text-white">Great explanations</div>
                       </div>
                       <div className="flex justify-start">
-                        <p className="text-[13px]">0</p>
-                        <img className="h-[100px] mr-[5px] h-[20px]" src={thumb_up} />
-                        <p className="text-[13px]">0</p>
-                        <img className="h-[100px] mr-[5px] h-[20px]" src={thumb_down} />
+                        <div className='cursor-pointer flex items-center' onClick={handleLike}>
+                          <p className="text">{likes}</p>
+                          <img className="mr-[5px] h-[20px]" src={thumb_up} />
+                        </div>
+                        <div className='cursor-pointer flex items-center' onClick={handleDislike}>
+                          <p className="text">{dislikes}</p>
+                          <img className="mr-[5px] h-[20px]" src={thumb_down} />
+                        </div>
                       </div>
                     </div>
                   </div>

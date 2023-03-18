@@ -15,5 +15,11 @@ namespace ReviewAppProject.Data.Repository
         public Task<ReviewProfessor> GetReviewByUserAndProfessorAndCourseAsync(int userId, int professorId, int courseId);
 
         public Task<bool> CreateReviewProfessorAsync(ReviewProfessorCreateModel model);
+
+        public Task LikeReview(int reviewId, int userId);
+        public Task DislikeReview(int reviewId, int userId);
+
+        public Task<int> GetLikesAsync(int reviewId);
+        public Task<int> GetDislikesAsync(int reviewId);
     }
 }

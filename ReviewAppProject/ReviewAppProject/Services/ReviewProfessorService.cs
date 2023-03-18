@@ -4,6 +4,7 @@ using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Views;
+using Serilog;
 
 namespace ReviewAppProject.Services
 {
@@ -66,6 +67,34 @@ namespace ReviewAppProject.Services
             catch (ArgumentException e) { return (null, e); }
             catch (ReviewProfessorByUserExistsException e) { return (null, e); }
             catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(bool, Exception?)> LikeDislikeReview(ReviewProfessorLikeDislikeModel model) {
+            try
+            {
+                if (model.Like)
+                {
+                    await _repository.LikeReview(model.ReviewId, model.UserId);
+                }
+                else {
+                    await _repository.DislikeReview(model.ReviewId, model.UserId);
+                }
+                return (true, null);
+            }
+            catch (AlreadyDislikedException e) { return (false, e); }
+            catch (AlreadyLikedException e) { return (false, e); }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch (ReviewNotFoundException e) { return (false, e); }
+            catch (Exception e) {return (false, e); }
+        }
+
+        public async Task<int> GetLikes(int reviewId) { 
+            return await _repository.GetLikesAsync(reviewId);
+        }
+
+        public async Task<int> GetDislikes(int reviewId)
+        {
+            return await _repository.GetDislikesAsync(reviewId);
         }
     }
 }

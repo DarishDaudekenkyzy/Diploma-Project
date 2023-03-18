@@ -78,5 +78,25 @@ namespace ReviewAppProject.Controllers
             else
                 return StatusCode(500, exception.StackTrace);
         }
+
+        [HttpPost("like_dislike")]
+        public async Task<IActionResult> LikeReviewAsync(ReviewProfessorLikeDislikeModel model) {
+            if (ModelState.IsValid) {
+                (bool done, Exception? exception) = await _service.LikeDislikeReview(model);
+
+                if (done && exception is null)
+                {
+                    (int likes, int dislikes) result = (await _service.GetLikes(model.ReviewId), await _service.GetDislikes(model.ReviewId));
+                    return Ok(result);
+                }
+
+                if (exception is UserNotFoundException) return BadRequest("User not found");
+                else if (exception is ReviewNotFoundException) return BadRequest("Review not found");
+                else if (exception is AlreadyDislikedException) return BadRequest("Already disliked");
+                else if (exception is AlreadyLikedException) return BadRequest("Already liked");
+                else return StatusCode(500, exception.StackTrace);
+            }
+            return BadRequest("Model is not valid");
+        }
     }
 }

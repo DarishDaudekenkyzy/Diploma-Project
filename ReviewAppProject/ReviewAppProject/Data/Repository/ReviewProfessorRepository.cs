@@ -95,5 +95,72 @@ namespace ReviewAppProject.Data.Repository
                 return true;
             }
         }
+
+        public async Task LikeReview(int reviewId, int userId)
+        {
+            var review = GetReviewByIdAsync(reviewId).Result;
+            var lur = await _context.UserReviewLikes.FirstOrDefaultAsync(lur => lur.UserId == userId && lur.ReviewId == reviewId);
+            if (lur == null)
+            {
+                _context.UserReviewLikes.Add(new LikedUserReview { ReviewId = reviewId, UserId = userId });
+                review.Likes++;
+
+                var dlur = await _context.UserReviewDislikes.FirstOrDefaultAsync(lur => lur.UserId == userId && lur.ReviewId == reviewId);
+                if (dlur != null)
+                {
+                    _context.UserReviewDislikes.Remove(dlur);
+                    review.Dislikes--;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            else throw new AlreadyLikedException();
+            
+        }
+
+        public async Task DislikeReview(int reviewId, int userId)
+        {
+            var review = GetReviewByIdAsync(reviewId).Result;
+            var dlur = await _context.UserReviewDislikes.FirstOrDefaultAsync(lur => lur.UserId == userId && lur.ReviewId == reviewId);
+            if (dlur == null)
+            {
+                _context.UserReviewDislikes.Add(new DislikedUserReview { ReviewId = reviewId, UserId = userId });
+                review.Dislikes++;
+
+                var lur = await _context.UserReviewLikes.FirstOrDefaultAsync(lur => lur.UserId == userId && lur.ReviewId == reviewId);
+                if (lur != null)
+                {
+                    _context.UserReviewLikes.Remove(lur);
+                    review.Likes--;
+                }
+                await _context.SaveChangesAsync();
+            }
+            else throw new AlreadyDislikedException();
+        }
+
+        public async Task<int> GetLikesAsync(int reviewId) 
+        {
+            try
+            {
+                var review = await GetReviewByIdAsync(reviewId);
+                return review.Likes;
+            }
+            catch (ReviewNotFoundException) {
+                return 0;
+            }
+        }
+
+        public async Task<int> GetDislikesAsync(int reviewId)
+        {
+            try
+            {
+                var review = await GetReviewByIdAsync(reviewId);
+                return review.Dislikes;
+            }
+            catch (ReviewNotFoundException)
+            {
+                return 0;
+            }
+        }
     }
 }
