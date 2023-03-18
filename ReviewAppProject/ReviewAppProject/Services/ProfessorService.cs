@@ -79,7 +79,7 @@ namespace ReviewAppProject.Services
                     Difficulty = r.Difficulty,
                     WasAttendanceMandatory = r.WasAttendanceMandatory,
                     WouldTakeAgain = r.WouldTakeAgain,
-                    CreatedDate = r.CreatedDate.ToString("MMMM dd, yyyy"),
+                    CreatedOn = r.CreatedOn.ToString("MMMM dd, yyyy"),
                     CourseCode = r.Course.CourseCode,
                     CourseId = r.Course.CourseId,
                     ProfessorId = r.ProfessorId,

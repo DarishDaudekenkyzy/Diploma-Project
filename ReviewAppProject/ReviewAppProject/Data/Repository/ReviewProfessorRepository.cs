@@ -87,8 +87,6 @@ namespace ReviewAppProject.Data.Repository
                     UserId = rpModel.UserId,
                     WouldTakeAgain= rpModel.WouldTakeAgain,
                     WasAttendanceMandatory = rpModel.WasAttendanceMandatory,
-                    CreatedDate = rpModel.CreatedDate,
-                    
                 };
 
                 _context.ReviewProfessors.Add(rp);
@@ -96,23 +94,6 @@ namespace ReviewAppProject.Data.Repository
 
                 return true;
             }
-        }
-
-        public async Task<double> GetWouldTakeAgainPercentOfProfessor(int professorId)
-        {
-            var reviews = _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId);
-            var wouldTakeAgainCount = reviews.Where(rp => rp.WouldTakeAgain == true).Count();
-            return ((double)wouldTakeAgainCount / (double)reviews.Count()) * 100;
-        }
-
-        public async Task<double> GetTotalRatingOfProfessor(int professorId)
-        {
-            return await _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Rating).AverageAsync();
-        }
-
-        public async Task<double> GetTotalDifficultyOfProfessor(int professorId)
-        {
-            return await _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Difficulty).AverageAsync();
         }
     }
 }

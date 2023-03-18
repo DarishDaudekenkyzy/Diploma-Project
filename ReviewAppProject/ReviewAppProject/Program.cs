@@ -1,16 +1,30 @@
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Data.Triggers;
 using ReviewAppProject.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
 
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var connectionString = builder.Configuration.GetConnectionString("SqlServer") ??
     throw new InvalidOperationException("Connection string 'SqlServer' not found.");
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlServer(connectionString));
+    options =>
+    {
+        options.UseSqlServer(connectionString);
+        options.UseTriggers(triggerOptions => {
+            triggerOptions.AddTrigger<BeforeReviewProfessorSaveTrigger>();
+            triggerOptions.AddTrigger<AfterReviewProfessorSaveTrigger>();
+        });
+    });
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -25,7 +25,7 @@ namespace ReviewAppProject.Data.Models
         public bool WouldTakeAgain { get; set; }
 
         [Required]
-        public DateTime CreatedDate{ get; set; }
+        public DateTime CreatedOn{ get; set; }
 
         [Required]
         public int CourseId { get; set; }

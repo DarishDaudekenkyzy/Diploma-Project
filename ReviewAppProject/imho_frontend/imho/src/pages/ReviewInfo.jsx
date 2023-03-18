@@ -65,7 +65,7 @@ const ReviewInfo = () => {
                 </div>
                 <div>
                   <p className="text-[30px] font-bold">{professor.difficultyPercentage}</p>
-                  <p>level of difficulty</p>
+                  <p>% level of difficulty</p>
                 </div>
               </div>
               <button className="w-[200px] border-black border-[1px] rounded-[10px]
@@ -150,7 +150,7 @@ function ReviewListItem({review, index}) {
     <div className={`flex w-[700px] ${index%2===0 ? 'bg-[#F9F9F9]' : 'bg-[#23A094]'}
               border-black border-[1px] p-[20px]`}>
                   <div className="flex flex-col gap-y-2 items-center">
-                      <p className="text-[15px] font-semibold">QUALITY</p>
+                      <p className="text-[15px] font-semibold">RATING</p>
                       <div className="flex justify-center items-center
                       font-bold text-[23px] rounded-md h-[60px] w-[60px] bg-[#FF90E8]">
                           {review.rating}
@@ -169,7 +169,7 @@ function ReviewListItem({review, index}) {
                           <div className="text-[13px] border-black 
                           border-[1px] bg-[#F5E049] rounded-[5px] px-[15px]">{review.title}</div>
                         </div>
-                        <p className="text-[13px]">{review.createdDate}</p>
+                        <p className="text-[13px]">{review.createdOn}</p>
                       </div>
                       <div>
                         <div className="flex justify-start gap-x-[20px]">

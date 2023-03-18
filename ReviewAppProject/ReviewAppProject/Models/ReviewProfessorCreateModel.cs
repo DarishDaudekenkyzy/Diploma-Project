@@ -26,9 +26,6 @@ namespace ReviewAppProject.Models
         public bool WasAttendanceMandatory { get; set; }
 
         [Required]
-        public DateTime CreatedDate { get; set; }
-
-        [Required]
         public int UserId { get; set; }
         [Required]
         public int ProfessorId { get; set; }
