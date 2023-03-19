@@ -4,6 +4,7 @@ using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
+using ReviewAppProject.ViewModels;
 
 namespace ReviewAppProject.Controllers
 {
@@ -18,13 +19,13 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("All")]
-        public async IAsyncEnumerable<User> GetAllUsersAsync()
+        public async IAsyncEnumerable<UserViewModel> GetAllUsersAsync()
         {
             var users = _service.GetAllUsersAsync();
 
             await foreach (var user in users)
             {
-                yield return user;
+                yield return new UserViewModel(user);
             }
         }
 

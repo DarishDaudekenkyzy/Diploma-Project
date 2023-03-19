@@ -2,6 +2,7 @@
 using ReviewAppProject.Data.Models;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Services;
+using ReviewAppProject.ViewModels;
 
 namespace ReviewAppProject.Controllers
 {
@@ -17,17 +18,17 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("All")]
-        public async IAsyncEnumerable<Course> GetAllCoursesAsync()
+        public async IAsyncEnumerable<CourseViewModel> GetAllCoursesAsync()
         {
             var courses = _service.GetAllCoursesAsync();
 
             await foreach (var course in courses)
             {
-                yield return course;
+                yield return new CourseViewModel(course);
             }
         }
 
-        [HttpPut("Add-Professor/{courseId}/{professorId}")]
+        /*[HttpPut("Add-Professor/{courseId}/{professorId}")]
         public async Task<IActionResult> AddProfessorToCourse(int courseId, int professorId)
         {
             try
@@ -40,6 +41,6 @@ namespace ReviewAppProject.Controllers
             catch (ProfessorNotFoundException e) { return BadRequest("Professor is not found"); }
             catch (Exception ex) { return StatusCode(500, "Internal Server Error"); }
 
-        }
+        }*/
     }
 }

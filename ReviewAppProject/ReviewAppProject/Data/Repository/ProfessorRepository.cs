@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 
@@ -17,14 +18,17 @@ namespace ReviewAppProject.Data.Repository
 
         public async IAsyncEnumerable<Professor> GetAllProfessorsAsync()
         {
-            var professors = _context.Professors.OrderBy(prof => prof.ProfessorId).AsAsyncEnumerable();
+            var professors = _context.Professors
+                .OrderBy(prof => prof.ProfessorId)
+                .Include(prof => prof.Courses)
+                .Include(prof => prof.Faculty)
+                .AsAsyncEnumerable();
 
             await foreach (var professor in professors)
             {
                 yield return professor;
             }
         }
-
 
         public async IAsyncEnumerable<Professor> GetProfessorsWithPatternAsync(string pattern)
         {
@@ -42,15 +46,22 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task<Professor> GetProfessorByEmailAsync(string email)
         {
-            return await _context.Professors.FirstOrDefaultAsync(p => p.Email.Equals(email))
+            return await _context.Professors
+                .Where(p => p.Email.Equals(email))
+                .Include(p => p.Faculty)
+                .Include(p => p.Courses)
+                .FirstOrDefaultAsync()
                 ?? throw new ProfessorNotFoundException();
 
         }
 
         public async Task<Professor> GetProfessorByIdAsync(int id)
         {
-            return await _context.Professors.Where(p => p.ProfessorId == id)
-                .Include(p => p.Courses).FirstOrDefaultAsync()
+            return await _context.Professors
+                .Where(p => p.ProfessorId == id)
+                .Include(p => p.Faculty)
+                .Include(p => p.Courses)
+                .FirstOrDefaultAsync()
                 ?? throw new ProfessorNotFoundException();
 
         }
@@ -74,6 +85,7 @@ namespace ReviewAppProject.Data.Repository
                     Email = pModel.Email,
                     FacultyId = pModel.FacultyId,
                     WouldTakeAgainPercentage = 0.0,
+                    DifficultyPercentage = 0.0,
                     Rating = 0.0,
                     ReviewsCount = 0
                 };
@@ -91,6 +103,17 @@ namespace ReviewAppProject.Data.Repository
             _context.Professors.Attach(professor);
             _context.Entry(professor).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Professor> GetProfessorByIdWithReviews(int professorId)
+        {
+            return await _context.Professors
+                .Where(p => p.ProfessorId == professorId)
+                .Include(p => p.Courses)
+                .Include (p => p.Reviews)
+                .FirstOrDefaultAsync()
+               
+                ?? throw new ProfessorNotFoundException();
         }
     }
 }

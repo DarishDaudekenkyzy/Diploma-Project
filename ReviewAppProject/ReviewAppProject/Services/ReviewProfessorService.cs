@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Repository;
+using Microsoft.IdentityModel.Tokens;
+using ReviewAppProject.Data.Models.Review;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
-using ReviewAppProject.Views;
+using ReviewAppProject.ViewModels;
 using Serilog;
 
 namespace ReviewAppProject.Services
@@ -11,17 +12,13 @@ namespace ReviewAppProject.Services
     public class ReviewProfessorService
     {
         private readonly IReviewProfessorRepository _repository;
-        private readonly IUserRepository _userRepository;
-        private readonly IProfessorRepository _profRepository;
+        private readonly IReviewTagRepository _tagRepo;
 
         public ReviewProfessorService(
-            IReviewProfessorRepository repository,
-            IUserRepository userRepository,
-            IProfessorRepository profRepository)
+            IReviewProfessorRepository repository, IReviewTagRepository tagRepo)
         {
             _repository = repository;
-            _userRepository = userRepository;
-            _profRepository = profRepository;
+            _tagRepo = tagRepo;
         }
 
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync()
@@ -34,7 +31,26 @@ namespace ReviewAppProject.Services
             }
         }
 
-        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfUserAsync(int userId)
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetReviewsOfProfessorAsync(int professorId)
+        {
+            var reviews = await _repository.GetAllReviewsOfProfessorAsync(professorId).ToListAsync();
+
+            foreach (var r in reviews)
+            {
+                var rpView = new ReviewProfessorViewModel(r);
+                if (!r.Tags.IsNullOrEmpty())
+                {
+                    rpView.Tags = new List<ReviewTagViewModel>();
+                    foreach (var tag in r.Tags)
+                    {
+                        rpView.Tags.Add(new ReviewTagViewModel(await _tagRepo.GetTagByIdAsync(tag.TagId)));
+                    }
+                }
+                yield return rpView;
+            }
+        }
+
+        public async IAsyncEnumerable<ReviewProfessor> GetReviewsOfUserAsync(int userId)
         {
             var reviews = _repository.GetAllReviewsOfUserAsync(userId);
 

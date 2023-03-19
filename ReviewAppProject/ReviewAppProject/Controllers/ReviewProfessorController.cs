@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReviewAppProject.Data.Models;
+using Microsoft.IdentityModel.Tokens;
+using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
-using ReviewAppProject.Views;
+using ReviewAppProject.ViewModels;
+using Serilog;
 
 namespace ReviewAppProject.Controllers
 {
     [ApiController]
-    [Route("ReviewProfessor")]
+    [Route("Reviews")]
     public class ReviewProfessorController : Controller
     {
         private readonly ReviewProfessorService _service;
@@ -19,7 +21,7 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetReviewProfessorById(int id)
+        public async Task<IActionResult> GetReviewById(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -27,7 +29,12 @@ namespace ReviewAppProject.Controllers
             }
             (ReviewProfessor? rp, Exception? exception) = await _service.GetReviewByIdAsync(id);
 
-            if (rp != null && exception is null) return Ok(rp);
+
+            if (rp != null && exception is null)
+            {
+                var reviewViewModel = new ReviewProfessorViewModel(rp);
+                return Ok(reviewViewModel);
+            }
 
             if (exception is ArgumentException)
                 return BadRequest(exception.Message);
@@ -38,27 +45,26 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("All")]
-        public async IAsyncEnumerable<ReviewProfessor> GetAllProfessorsAsync()
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetAllReviewsAsync()
         {
             var reviews = _service.GetAllReviewsAsync();
+
+            await foreach (var review in reviews)
+            {
+                yield return new ReviewProfessorViewModel(review);
+            }
+        }
+
+        [HttpGet("Professor/{professorId}")]
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetReviewsOfProfessor(int professorId)
+        {
+            var reviews = _service.GetReviewsOfProfessorAsync(professorId);
 
             await foreach (var review in reviews)
             {
                 yield return review;
             }
         }
-
-        [HttpGet("User/{id}")]
-        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfUserAsync(int userId)
-        {
-            var reviews = _service.GetAllReviewsOfUserAsync(userId);
-
-            await foreach (var r in reviews)
-            {
-                yield return r;
-            }
-        }
-
 
         [HttpPost("Create")]
         public async Task<IActionResult> CreateReviewProfessorAsync(ReviewProfessorCreateModel rpModel)

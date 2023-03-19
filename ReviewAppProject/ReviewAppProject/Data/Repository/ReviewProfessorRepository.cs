@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Models.Review;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 
@@ -15,7 +17,12 @@ namespace ReviewAppProject.Data.Repository
         }
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync()
         {
-            var reviews = _context.ReviewProfessors.OrderBy(rp => rp.Id).AsAsyncEnumerable();
+            var reviews = _context.ReviewProfessors.OrderBy(rp => rp.Id)
+                .Include(rp => rp.Course)
+                .Include(rp => rp.Professor)
+                .Include(rp => rp.User)
+                .Include(rp => rp.Tags)
+                .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
             {
@@ -25,7 +32,11 @@ namespace ReviewAppProject.Data.Repository
 
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfUserAsync(int userId)
         {
-            var reviews = _context.ReviewProfessors.Where(rp => rp.UserId == userId).AsAsyncEnumerable();
+            var reviews = _context.ReviewProfessors.Where(rp => rp.UserId == userId)
+                .Include(rp => rp.Course)
+                .Include(rp => rp.User)
+                .Include(rp => rp.Tags)
+                .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
             {
@@ -33,11 +44,12 @@ namespace ReviewAppProject.Data.Repository
             }
         }
 
-        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId)
+        public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfProfessorAsync(int professorId)
         {
             var reviews = _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId)
                 .Include(rp => rp.Course)
                 .Include(rp => rp.User)
+                .Include(rp => rp.Tags)
                 .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
@@ -48,7 +60,13 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task<ReviewProfessor> GetReviewByIdAsync(int? id)
         {
-            return await _context.ReviewProfessors.FirstOrDefaultAsync(rp => rp.Id == id)
+            return await _context.ReviewProfessors
+                .Where(rp => rp.Id == id)
+                .Include(rp => rp.Course)
+                .Include(rp => rp.Professor)
+                .Include(rp => rp.User)
+                .Include(rp => rp.Tags)
+                .FirstOrDefaultAsync()
                 ?? throw new ReviewNotFoundException();
         }
 
@@ -60,7 +78,10 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task<ReviewProfessor> GetReviewByUserAndProfessorAndCourseAsync(int userId, int professorId, int courseId)
         {
-            return await _context.ReviewProfessors.Where(rp => rp.ProfessorId == professorId && rp.UserId == userId && rp.CourseId == courseId).FirstOrDefaultAsync()
+            return await _context.ReviewProfessors
+                .Where(rp => rp.ProfessorId == professorId 
+                && rp.UserId == userId 
+                && rp.CourseId == courseId).FirstOrDefaultAsync()
                 ?? throw new ReviewNotFoundException();
         }
 
@@ -87,9 +108,15 @@ namespace ReviewAppProject.Data.Repository
                     UserId = rpModel.UserId,
                     WouldTakeAgain= rpModel.WouldTakeAgain,
                     WasAttendanceMandatory = rpModel.WasAttendanceMandatory,
+
                 };
 
                 _context.ReviewProfessors.Add(rp);
+                await _context.SaveChangesAsync();
+                var review = await GetReviewByUserAndProfessorAndCourseAsync(rpModel.UserId, rpModel.ProfessorId, rpModel.CourseId);
+                foreach (var tag in rpModel.tags) {
+                    _context.ReviewsTags.Add(new ReviewProfessorReviewTag { ReviewId = review.Id, TagId = tag.TagId });
+                }
                 await _context.SaveChangesAsync();
 
                 return true;

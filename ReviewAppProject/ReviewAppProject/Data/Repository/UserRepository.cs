@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using System.Collections;
@@ -19,7 +20,8 @@ namespace ReviewAppProject.Data.Repository
 
         public async IAsyncEnumerable<User> GetAllUsersAsync()
         {
-            var users = _context.Users.OrderBy(user => user.UserId).AsAsyncEnumerable();
+            var users = _context.Users
+                .OrderBy(user => user.UserId).AsAsyncEnumerable();
 
             await foreach (var user in users) {
                 yield return user;
@@ -57,7 +59,7 @@ namespace ReviewAppProject.Data.Repository
                     LastName = userModel.LastName,
                     Email = userModel.Email,
                     Password = userModel.Password,
-                    Course = userModel.Course,
+                    Year = userModel.Year,
                     FacultyId = userModel.FacultyId
                 };
                 

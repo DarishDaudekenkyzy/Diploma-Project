@@ -1,5 +1,5 @@
 ﻿using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 

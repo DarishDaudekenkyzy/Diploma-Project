@@ -1,8 +1,8 @@
 ﻿using EntityFrameworkCore.Triggered;
 using EntityFrameworkCore.Triggered.Lifecycles;
 using Microsoft.EntityFrameworkCore;
-using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Data.Models.Review;
+using ReviewAppProject.Data.Repository.Interfaces;
 using Serilog;
 
 namespace ReviewAppProject.Data.Triggers

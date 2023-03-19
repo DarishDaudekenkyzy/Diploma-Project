@@ -14,7 +14,7 @@ namespace ReviewAppProject.Models
         public string Password {get; set;}
 
         [Required]
-        public int Course {get; set;}
+        public int Year {get; set;}
 
         [Required]
         public int FacultyId {get; set;}

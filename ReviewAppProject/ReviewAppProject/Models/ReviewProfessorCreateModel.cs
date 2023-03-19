@@ -1,6 +1,7 @@
 ﻿using ReviewAppProject.Data.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using ReviewAppProject.Data.Models.Review;
 
 namespace ReviewAppProject.Models
 {
@@ -29,6 +30,8 @@ namespace ReviewAppProject.Models
         public int UserId { get; set; }
         [Required]
         public int ProfessorId { get; set; }
+
+        public ICollection<ReviewTagModel> tags{ get; set; }
 
     }
 }

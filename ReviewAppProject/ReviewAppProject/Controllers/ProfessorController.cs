@@ -5,7 +5,7 @@ using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
-using ReviewAppProject.Views;
+using ReviewAppProject.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,44 +23,44 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("All")]
-        public async IAsyncEnumerable<Professor> GetAllProfessorsAsync()
+        public async IAsyncEnumerable<ProfessorViewModel> GetAllProfessorsAsync()
         {
             var professors = _service.GetAllProfessorsAsync();
 
             await foreach (var professor in professors)
             {
-                yield return professor;
+                yield return new ProfessorViewModel(professor);
             }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfessorById(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model object");
-            }
+            if (id < 0)
+                return BadRequest("id is less than zero");
+
             (Professor? professor, Exception? exception) = await _service.GetProfessorById(id);
 
-            if (professor != null && exception is null) return Ok(professor);
+            if (professor != null && exception is null)
+            {
+                var profViewModel = new ProfessorViewModel(professor);
+                return Ok(profViewModel);
+            }
 
-            if (exception is ArgumentException)
-                return BadRequest(exception.Message);
-            else if (exception is ProfessorNotFoundException)
-                return BadRequest("Professor with provided id doesn't exist.");
-            else
-                return StatusCode(500, "Internal server error");
+            if (exception is ArgumentException) return BadRequest(exception.Message);
+            else if (exception is ProfessorNotFoundException) return BadRequest("Professor with provided id doesn't exist.");
+            else return StatusCode(500, "Internal server error");
         }
 
         [HttpGet("Search/{searchInput}")]
-        public async IAsyncEnumerable<Professor> GetProfessorsWithPatternAsync(string searchInput)
+        public async IAsyncEnumerable<ProfessorViewModel> GetProfessorsWithPatternAsync(string searchInput)
         {
             
             var professors = _service.GetProfessorsWithPatternAsync(searchInput);
 
             await foreach (var professor in professors)
             {
-                yield return professor;
+                yield return new ProfessorViewModel(professor);
             }
         }
 
@@ -73,7 +73,7 @@ namespace ReviewAppProject.Controllers
             }
             (Professor? professor, Exception? exception) = await _service.CreateProfessorAsync(postModel);
 
-            if (professor != null && exception is null) return Ok(professor);
+            if (professor != null && exception is null) return Ok();
 
             if (exception is ArgumentException)
                 return BadRequest(exception.Message);
@@ -81,17 +81,6 @@ namespace ReviewAppProject.Controllers
                 return BadRequest("Professor with provided email exists.");
             else
                 return StatusCode(500, "Internal server error");
-        }
-
-        [HttpGet("Reviews/{professorId}")]
-        public async IAsyncEnumerable<ReviewProfessorView> GetAllReviewsWithProfessorAsync(int professorId)
-        {
-            var reviews = _service.GetAllReviewsWithProfessorAsync(professorId);
-
-            await foreach (var r in reviews)
-            {
-                yield return r;
-            }
         }
     }
 }

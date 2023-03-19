@@ -8,5 +8,6 @@
 
         public virtual ICollection<Professor> Professors { get; set; }
         public virtual ICollection<Course> Courses{ get; set; }
+        public virtual ICollection<User> Users{ get; set; }
     }
 }

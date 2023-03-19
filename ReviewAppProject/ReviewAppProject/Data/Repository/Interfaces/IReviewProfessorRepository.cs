@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
-using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Models;
 
-namespace ReviewAppProject.Data.Repository
+namespace ReviewAppProject.Data.Repository.Interfaces
 {
     public interface IReviewProfessorRepository
     {
         public IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync();
-        public IAsyncEnumerable<ReviewProfessor> GetAllReviewsWithProfessorAsync(int professorId);
+        public IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfProfessorAsync(int professorId);
         public IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfUserAsync(int userId);
 
         public Task<ReviewProfessor> GetReviewByIdAsync(int? id);

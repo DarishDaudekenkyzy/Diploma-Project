@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Models.Review;
 
 namespace ReviewAppProject.Data.Configuration
 {
@@ -8,16 +8,19 @@ namespace ReviewAppProject.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ReviewProfessor> builder) { 
             builder.HasKey(x => x.Id);
+            builder.HasOne(review => review.Professor)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(review => review.ProfessorId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(review => review.User)
                 .WithMany(user => user.ReviewProfessors)
                 .HasForeignKey(review => review.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             builder
                 .HasOne(review => review.Course)
                 .WithMany(c => c.ReviewProfessors)
-                .HasPrincipalKey(c => c.CourseId)
                 .HasForeignKey(review => review.CourseId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

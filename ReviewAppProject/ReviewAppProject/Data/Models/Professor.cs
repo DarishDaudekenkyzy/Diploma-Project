@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ReviewAppProject.Data.Models.Review;
 using System.ComponentModel.DataAnnotations;
 
 namespace ReviewAppProject.Data.Models

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data;
 using ReviewAppProject.Data.Repository;
+using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Data.Triggers;
 using ReviewAppProject.Services;
 using Serilog;
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<IReviewTagRepository, ReviewTagRepository>();
 builder.Services.AddScoped<IReviewProfessorRepository, ReviewProfessorRepository>();
 builder.Services.AddScoped<ReviewProfessorService>();
 

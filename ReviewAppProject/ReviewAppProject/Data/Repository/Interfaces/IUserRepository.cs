@@ -2,7 +2,7 @@
 using ReviewAppProject.Data.Models;
 using ReviewAppProject.Models;
 
-namespace ReviewAppProject.Data.Repository
+namespace ReviewAppProject.Data.Repository.Interfaces
 {
     public interface IUserRepository
     {

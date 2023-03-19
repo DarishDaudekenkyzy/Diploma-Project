@@ -1,5 +1,5 @@
 ﻿using EntityFrameworkCore.Triggered;
-using ReviewAppProject.Data.Models;
+using ReviewAppProject.Data.Models.Review;
 
 namespace ReviewAppProject.Data.Triggers
 {

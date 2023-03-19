@@ -1,4 +1,6 @@
-﻿namespace ReviewAppProject.Data.Models
+﻿using ReviewAppProject.Data.Models.Review;
+
+namespace ReviewAppProject.Data.Models
 {
     public class User
     {
@@ -12,11 +14,12 @@
 
         public string Password { get; set; }
 
-        public int Course { get; set; }
+        public int Year { get; set; }
 
         public int FacultyId { get; set; }
-        public virtual ICollection<ReviewProfessor> ReviewProfessors{ get; set; }
-        public virtual ICollection<LikedUserReview> LikedReviews { get; set; }
-        public virtual ICollection<DislikedUserReview> DislikedReviews { get; set; }
+        public Faculty Faculty { get; set; }
+        public virtual ICollection<ReviewProfessor>? ReviewProfessors{ get; set; }
+        public virtual ICollection<LikedUserReview>? LikedReviews { get; set; }
+        public virtual ICollection<DislikedUserReview>? DislikedReviews { get; set; }
     }
 }

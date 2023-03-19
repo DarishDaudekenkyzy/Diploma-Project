@@ -5,6 +5,7 @@ using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
+using ReviewAppProject.ViewModels;
 
 namespace ReviewAppProject.Controllers
 {
@@ -20,13 +21,16 @@ namespace ReviewAppProject.Controllers
         }
 
         [HttpGet("All")]
-        public async IAsyncEnumerable<Faculty> GetAllFacultiesAsync()
+        public async IAsyncEnumerable<FacultyViewModel> GetAllFacultiesAsync()
         {
             var faculties = _service.GetAllFacultiesAsync();
 
             await foreach (var faculty in faculties)
             {
-                yield return faculty;
+                yield return new FacultyViewModel { 
+                    FacultyId = faculty.FacultyId,
+                    FacultyName = faculty.FacultyName
+                };
             }
         }
 

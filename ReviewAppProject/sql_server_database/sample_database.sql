@@ -2,16 +2,16 @@ INSERT Faculties (FacultyName) VALUES ('Business School');
 INSERT Faculties (FacultyName) VALUES ('Engineering and Natural Sciences');
 
 
-INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage) VALUES 
-('Farukh', 'Mashurov', 'fm@gmail.com', 2, 0, 0.0, 0.0);
-INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage) VALUES 
-('Abylay', 'Omarov', 'alikhanOmarov@gmail.com', 2, 0, 0.0, 0.0);
-INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage) VALUES 
-('Larissa', 'Bazarbayeva', 'l_bazarbayeva@gmail.com', 2, 0, 0.0, 0.0);
-INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage) VALUES 
-('Shyngys', 'Adilkhan', 'sa@gmail.com', 2, 0, 0.0, 0.0);
-INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage) VALUES 
-('Zhasdauren', 'Duisebekov', 'zd@gmail.com', 2, 0, 0.0, 0.0);
+INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage, DifficultyPercentage) VALUES 
+('Alikhan', 'Nurlanuly', 'an@gmail.com', 2, 0, 0.0, 0.0, 0.0);
+INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage, DifficultyPercentage) VALUES 
+('Abylay', 'Omarov', 'alikhanOmarov@gmail.com', 2, 0, 0.0, 0.0, 0.0);
+INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage, DifficultyPercentage) VALUES 
+('Larissa', 'Bazarbayeva', 'l_bazarbayeva@gmail.com', 2, 0, 0.0, 0.0, 0.0);
+INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage, DifficultyPercentage) VALUES 
+('Shyngys', 'Adilkhan', 'sa@gmail.com', 2, 0, 0.0, 0.0, 0.0);
+INSERT Professors (FirstName, LastName, Email, FacultyId, ReviewsCount, Rating, WouldTakeAgainPercentage, DifficultyPercentage) VALUES 
+('Mariya', 'Li', 'zd@gmail.com', 2, 0, 0.0, 0.0, 0.0);
 
 DELETE FROM Professors;
 TRUNCATE TABLE Professors;
@@ -27,9 +27,23 @@ INSERT INTO Courses (CourseCode, CourseName, FacultyId) VALUES
 
 SELECT * FROM Courses;
 
-INSERT INTO CoursesProfessors(CourseId, ProfessorId) VALUES
-(1, 2), (2, 2), (3, 2),
-(4, 3), (5, 3), (6, 3);
+INSERT INTO CourseProfessor(CoursesCourseId, ProfessorsProfessorId) VALUES
+(1, 1), (2, 1), (3, 1),
+(4, 2), (5, 2), (5, 1);
 
-SELECT * FROM CoursesProfessors;
+SELECT * FROM CourseProfessor;
+
+INSERT INTO Tags (Tag) VALUES
+('Tough Grader'),('Get Ready to Read'),('Participation Matters'),('Group Projects'),
+('Amazing Lessons'),('Clear Grading Criteria'),('Inspirational'),('Lots of Homework'),
+('Funny'),('Beware of Many Quizzes'),('So Many Papers'),('Respected'),('Hard Tests'),
+('Bonus Points'),('Great Explanations');
+
+SELECT * FROM TAGS;
+DELETE FROM TAGS WHERE (Id = 1);
+
+SELECT * FROM ReviewsTags
+SELECT * FROM UserReviewLikes
+SELECT * FROM UserReviewDislikes
+DELETE FROM ReviewProfessors WHERE Id = 4
 
