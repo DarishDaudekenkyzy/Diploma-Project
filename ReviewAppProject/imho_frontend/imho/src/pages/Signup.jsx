@@ -17,8 +17,12 @@ const Signup = ({openSignup}) => {
   const { register, setError, handleSubmit, formState: { errors } } = useForm();
   const [faculties, setFaculties] = useState([]);
   const signupRef = useRef(null);
-  onOutsideClick(signupRef, () => {openSignup(false)});
+  onOutsideClick(signupRef, () => {
+    openSignup(false);
+    document.body.style.overflow = 'scroll';
+  });
 
+  document.body.style.overflow = 'hidden';
   useEffect(() => {
     console.log('useEffect in signup');
     loadFaculties();
@@ -69,7 +73,7 @@ const Signup = ({openSignup}) => {
   }
 
   return (
-    <div className='w-full h-screen absolute bg-[rgb(60,60,60,0.4)]'>
+    <div className='w-full top-0 h-screen absolute bg-[rgb(60,60,60,0.4)]'>
         <div className="flex flex-col items-center mt-[10px]
          m-auto max-w-[500px] bg-white p-[10px]" ref={signupRef}>
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
