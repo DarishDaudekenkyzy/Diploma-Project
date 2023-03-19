@@ -28,7 +28,7 @@ const ReviewInfo = () => {
   }
 
   function getReviews() {
-    axios.get(`https://localhost:7040/Professor/Reviews/${professor.professorId}`)
+    axios.get(`https://localhost:7040/Reviews/Professor/${professor.professorId}`)
     .then((response) => {
       setReviews(response.data);
       console.log(response.data);
@@ -66,8 +66,8 @@ const ReviewInfo = () => {
                   <p>would take again</p>
                 </div>
                 <div>
-                  <p className="text-[30px] font-bold">{professor.difficultyPercentage}</p>
-                  <p>% level of difficulty</p>
+                  <p className="text-[30px] font-bold">{professor.difficultyPercentage}%</p>
+                  <p>level of difficulty</p>
                 </div>
               </div>
               <button className="w-[200px] border-black border-[1px] rounded-[10px]
@@ -153,7 +153,7 @@ function ReviewListItem({review, index}) {
   const [dislikes, setDislikes] = useState(review.dislikes);
 
   async function handleDislike() {
-    await axios.post('https://localhost:7040/ReviewProfessor/like_dislike', {
+    await axios.post('https://localhost:7040/Reviews/like_dislike', {
       userId: user.userId,
       reviewId: review.id,
       like: false
@@ -178,7 +178,7 @@ function ReviewListItem({review, index}) {
   }
 
   async function handleLike() {
-    await axios.post('https://localhost:7040/ReviewProfessor/like_dislike', {
+    await axios.post('https://localhost:7040/Reviews/like_dislike', {
       userId: user.userId,
       reviewId: review.id,
       like: true
@@ -221,7 +221,7 @@ function ReviewListItem({review, index}) {
                     <div>
                       <div className="w-full flex justify-between">
                         <div className="flex justify-start gap-x-[20px]">
-                          <p className="text-[13px] font-semibold">{review.courseCode}</p>
+                          <p className="text-[13px] font-semibold">{review.course.courseCode}</p>
                           <div className="text-[13px] border-black 
                           border-[1px] bg-[#F5E049] rounded-[5px] px-[15px]">{review.title}</div>
                         </div>
@@ -244,12 +244,12 @@ function ReviewListItem({review, index}) {
 
                     <div className="flex justify-between w-full">
                       <div className="flex justify-start gap-x-[10px]">
-                        <div className="text-[13px]
-                        bg-black px-[20px] rounded-[20px] text-white">Tough grader</div>
-                        <div className="text-[13px]
-                        bg-black px-[20px] rounded-[20px] text-white">Funny</div>
-                        <div className="text-[13px]
-                        bg-black px-[20px] rounded-[20px] text-white">Great explanations</div>
+                        {review.tags !== null && review.tags.length > 0 && review.tags.map((tag) => {
+                          return (
+                            <div className="text-[13px]
+                            bg-black px-[20px] rounded-[20px] text-white">{tag.tag}</div>
+                          );
+                        })}
                       </div>
                       <div className="flex justify-start">
                         <div className='cursor-pointer flex items-center' onClick={handleLike}>

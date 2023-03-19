@@ -17,14 +17,17 @@ const CreateReview = () => {
   const {user, setUser} = useContext(UserContext);
   const [searchResults, setSearchResults] = useState([]);
   const searchInput = useRef(null);
-  const { register, setError, clearErrors, setValue, watch, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true}
+  const [tags, setTags] = useState([]);
+  
+  const { register, setError, clearErrors, getValues, setValue, watch, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true, tags: []}
   });
   const watchRating = watch('rating');
   const watchDifficulty = watch('difficulty');
   const watchTakeAgain = watch('wouldTakeAgain');
   const watchAttendance = watch('wasAttendanceMandatory');
   const watchCourse = watch('courseId');
+  const watchTags = watch('tags');
 
   useEffect(() => {
     if(user === null) {
@@ -35,7 +38,28 @@ const CreateReview = () => {
       setProfessor(location.state);
       setValue('professorId', location.state.professorId);
     }
+    loadTags();
   }, [user]);
+
+  function loadTags() {
+    axios.get('https://localhost:7040/Tag/All')
+    .then((response) => {
+        setTags(response.data);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
+    
+  }
 
   function handleSearch(e) {
     if(e.target.value === '') {
@@ -71,7 +95,7 @@ const CreateReview = () => {
   async function handleSubmitReview(data) {
     data.courseId = parseInt(watchCourse);
     console.log(data);
-    await axios.post('https://localhost:7040/ReviewProfessor/Create', data)
+    await axios.post('https://localhost:7040/Reviews/Create', data)
     .then((response) => {
       console.log(response.data);
       setProfessor(null);
@@ -93,25 +117,22 @@ const CreateReview = () => {
     });
   }
 
-  const [tags, setTags] = useState([]);
-  const setTag = (tag) => {
-    if (tags.includes(tag) ) {
-      let index = tags.indexOf(tag)
-      tags.splice(index, 1);
-      console.log(tags);
-      return;
-    } 
-    if (tags.length >= 3) {
-      console.log(tags); 
+  function selectTag(tag) {
+    if(watchTags.some(s => s.tagId === tag.tagId)) {
+      
+      let index = watchTags.findIndex(s => s.tagId === tag.tagId);
+      console.log(`includes ${index}`);
+      setValue('tags', watchTags.filter(r => r.tagId !== tag.tagId));
+      console.log(watchTags);
       return;
     }
-
-    setTags([...tags, tag]);
-    console.log(tags);
+    if(watchTags.length >= 3) {
+      console.log('more than 3');
+      return;
+    }
+    setValue('tags', [...watchTags, tag]);
+    console.log(watchTags);
   }
-
-
-
 
   return (
     <>
@@ -266,57 +287,27 @@ const CreateReview = () => {
             </div>
 
             {/* TAGS */}
-            <div className="flex flex-col justify-start my-5 w-full gap-x-10">
-              <p className="w-max text-[20px] font-semibold">Select up to 3 tags</p>
-              <div className="flex flex-wrap justify-start my-5 gap-2 cursor-pointer">
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px] 
-                bg-[${(tags.includes('Tough grader') && `#F5E049`)}]`} 
-                onClick={() => setTag('Tough grader')}>Tough grader</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Get Ready to Read') && `#F5E049`)}]`}
-                onClick={() => setTag('Get Ready to Read')}>
-                Get Ready to Read</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Participation Matters') && `#F5E049`)}]`}
-                onClick={() => setTag('Participation Matters')}>Participation Matters</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Group Projects') && `#F5E049`)}]`}
-                onClick={() => setTag('Group Projects')}>Group Projects</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Amazing Lessons') && `#F5E049`)}]`}
-                onClick={() => setTag('Amazing Lessons')}>Amazing Lessons</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Clear Grading Criteria') && `#F5E049`)}]`}
-                onClick={() => setTag('Clear Grading Criteria')}>Clear Grading Criteria</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Inspirational') && `#F5E049`)}]`}
-                onClick={() => setTag('Inspirational')}>Inspirational</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Lots of Homework') && `#F5E049`)}]`}
-                onClick={() => setTag('Lots of Homework')}>Lots of Homework</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Funny') && `#F5E049`)}]`}
-                onClick={() => setTag('Funny')}>Funny</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Beware of Many Quizzes') && `#F5E049`)}]`}
-                onClick={() => setTag('Beware of Many Quizzes')}>Beware of Many Quizzes</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('So Many Papers') && `#F5E049`)}]`}
-                onClick={() => setTag('So Many Papers')}>So Many Papers</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Respected') && `#F5E049`)}]`}
-                onClick={() => setTag('Respected')}>Respected</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Hard Tests') && `#F5E049`)}]`}
-                onClick={() => setTag(('Hard Tests'))}>Hard Tests</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Bonus Points') && `#F5E049`)}]`}
-                onClick={() => setTag('Bonus Points')}>Bonus Points</div>
-                <div className={`border-[1px] border-black px-[10px] py-[5px] rounded-[20px]
-                bg-[${(tags.includes('Great explanations') && `#F5E049`)}]`}
-                onClick={() => setTag('Great explanations')}>Great explanations</div>
+            {tags.length > 0 && (
+              <div className="flex flex-col justify-start my-5 w-full gap-x-10">
+                <p className="w-max text-[20px] font-semibold">Select up to 3 tags</p>
+                <div className="flex flex-wrap justify-start my-5 gap-2 cursor-pointer">
+                  {tags.map((t) => {
+                    return (
+                      <div key={t.tagId} onClick={() => selectTag(t)}
+                      className={`border-[1px] border-black px-[10px] py-[5px] 
+                      rounded-[20px] bg-[${watchTags.some(s => s.tagId === t.tagId) && '#F5E049'}]`}>
+                        {t.tag}
+                      </div>
+                    );
+                  })}
+                  
+                  
+                  
+                  {/* bg-[${(tags.includes('Great explanations') && `#F5E049`)}]`}
+                  onClick={() => setTag('Great explanations')}>Great explanations</div> */}
+                </div>
               </div>
-            </div>
+            )}
             
             {/* REVIEW */}
             <div className="flex flex-col justify-start my-5 w-full gap-y-3">
