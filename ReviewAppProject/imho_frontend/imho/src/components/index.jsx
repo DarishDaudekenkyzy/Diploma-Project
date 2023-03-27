@@ -8,6 +8,11 @@ import Account from "./Account";
 import Myreviews from "./Myreviews";
 import Savedreviews from "./Savedreviews";
 import Settings from "./Settings";
+import ReviewManagement from "./ReviewManagement";
+import UserManagement from "./UserManagement";
+import ProfessorManagement from "./ProfessorManagement";
+import CourseManagement from "./CourseManagement";
+import UniversityManagement from "./UniversityManagement";
 
 export {
   Header,
@@ -20,4 +25,9 @@ export {
   Myreviews,
   Savedreviews,
   Settings,
+  ReviewManagement,
+  UserManagement,
+  ProfessorManagement,
+  CourseManagement,
+  UniversityManagement,
 };
