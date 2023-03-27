@@ -14,7 +14,7 @@ const NavItem = ({text}) => {
 
 const Footer = () => {
   return (
-    <footer className="pb-[50px] px-[20px] sm:px-20">
+    <footer className="pb-[50px] px-[20px] sm:px-20 border-black border-t-[2px]">
       <img className="sm:hidden mx-auto mt-[20px] mb-[20px]" src={imho_logo} />
       <div className="flex justify-center items-center gap-x-[24px] border-black border-b-[1px] pb-[24px] sm:pb-0">
         <div className="flex flex-col sm:flex-row items-end gap-[20px] sm:gap-[30px]">
