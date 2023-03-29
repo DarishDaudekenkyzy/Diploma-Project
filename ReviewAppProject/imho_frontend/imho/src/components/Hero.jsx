@@ -12,7 +12,7 @@ const Hero = () => {
   return (
     <section id="hero" className={`flex flex-col items-center md:h-[500px] py-[80px]  md:mt-[80px] 
       bg-[url('../assets/back_main.jpg')] bg-cover border-black border-b-2`}>
-        <p className={`text-[24px] md:text-[48px] font-[KumarOne] mb-[30px] font-bold`}>RATE SDU PROFESSORS</p>
+        <p className={`text-[24px] md:text-[48px] font-[KumarOne] mb-[30px] font-bold`}>RATE YOUR PROFESSORS</p>
         <form className="flex">
           <input className="w-[312px] md:w-[600px] border-[2px] border-primary 
           py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" 
