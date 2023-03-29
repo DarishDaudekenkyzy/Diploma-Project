@@ -22,6 +22,7 @@ namespace ReviewAppProject.Data.Repository
                 .Include(rp => rp.Professor)
                 .Include(rp => rp.User)
                 .Include(rp => rp.Tags)
+                .ThenInclude(t => t.Tag)
                 .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
@@ -34,8 +35,11 @@ namespace ReviewAppProject.Data.Repository
         {
             var reviews = _context.ReviewProfessors.Where(rp => rp.UserId == userId)
                 .Include(rp => rp.Course)
+                .Include(rp => rp.Professor)
+                .ThenInclude(p => p.University)
                 .Include(rp => rp.User)
                 .Include(rp => rp.Tags)
+                .ThenInclude(t => t.Tag)
                 .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
@@ -50,6 +54,7 @@ namespace ReviewAppProject.Data.Repository
                 .Include(rp => rp.Course)
                 .Include(rp => rp.User)
                 .Include(rp => rp.Tags)
+                .ThenInclude(t => t.Tag)
                 .AsAsyncEnumerable();
 
             await foreach (var review in reviews)
@@ -66,6 +71,7 @@ namespace ReviewAppProject.Data.Repository
                 .Include(rp => rp.Professor)
                 .Include(rp => rp.User)
                 .Include(rp => rp.Tags)
+                .ThenInclude(t => t.Tag)
                 .FirstOrDefaultAsync()
                 ?? throw new ReviewNotFoundException();
         }
@@ -188,6 +194,18 @@ namespace ReviewAppProject.Data.Repository
             {
                 return 0;
             }
+        }
+
+        public async Task<bool> DeleteUserReviewByIdAsync(int userId, int reviewId)
+        {
+            var review = await _context.ReviewProfessors
+                .Where(r => r.UserId == userId)
+                .Where(r => r.Id == reviewId)
+                .FirstOrDefaultAsync() ?? throw new ReviewNotFoundException();
+            _context.ReviewProfessors.Remove(review);
+            await _context.SaveChangesAsync();
+
+            return (true);
         }
     }
 }

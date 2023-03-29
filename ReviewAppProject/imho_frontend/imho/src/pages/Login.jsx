@@ -9,23 +9,29 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 
 
-  const Login = ({openLogin}) => {
-    const navigate = useNavigate();
+  const Login = ({openLogin, setOpenLogin}) => {
+    
     const {user, setUser} = useContext(UserContext);
     const { register, setError, handleSubmit, formState: { errors } } = useForm();
     const loginRef = useRef(null);
+
     onOutsideClick(loginRef, () => {
-      openLogin(false)
       document.body.style.overflow = 'scroll';
+      setOpenLogin(false)
     });
-    document.body.style.overflow = 'hidden';
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, [openLogin])
+    
 
     function handleLogin(data) {
       axios.post('https://localhost:7040/User/SignIn', data)
       .then((response) => {
         console.log(response.data);
         setUser(response.data);
-        openLogin(false);
+        setOpenLogin(false);
+        document.body.style.overflow = 'scroll';
       })
       .catch(function (error) {
         if (error.response) {

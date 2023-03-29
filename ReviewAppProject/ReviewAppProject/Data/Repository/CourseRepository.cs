@@ -25,13 +25,13 @@ namespace ReviewAppProject.Data.Repository
         }
 
         public async Task AddProfessorToCourse(int courseId, Professor professor) {
-            var course = _context.Courses.FirstOrDefault(c => c.CourseId == courseId) ?? throw new CourseNotFoundException();
+            /*var course = _context.Courses.FirstOrDefault(c => c.CourseId == courseId) ?? throw new CourseNotFoundException();
             
             course.Professors.Add(professor);
 
             _context.Courses.Attach(course);
             _context.Entry(course).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
         }
 
         public async Task<Course> GetCourseByIdAsync(int courseId)

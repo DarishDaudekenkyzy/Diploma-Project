@@ -8,6 +8,10 @@ namespace ReviewAppProject.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Course> builder) { 
             builder.HasKey(e => e.CourseId);
+            builder.HasOne(c => c.Faculty)
+                .WithMany(f => f.Courses)
+                .HasForeignKey(c => c.FacultyId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

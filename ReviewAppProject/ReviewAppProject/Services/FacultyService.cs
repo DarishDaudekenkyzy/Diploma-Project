@@ -24,6 +24,16 @@ namespace ReviewAppProject.Services
             }
         }
 
+        public async IAsyncEnumerable<Faculty> GetUniversityFaculties(int universityId)
+        {
+            var faculties = _facultyRepository.GetUniversityFaculties(universityId);
+
+            await foreach (var faculty in faculties)
+            {
+                yield return faculty;
+            }
+        }
+
         public async Task<(Faculty?, Exception?)> CreateFacultyAsync(string facultyName)
         {
             try

@@ -12,24 +12,54 @@ import google_reg from '../assets/google_reg.png';
 import styles from '../style';
 import { onOutsideClick } from '../components/Header';
 
-const Signup = ({openSignup}) => {
+const Signup = ({openSignup, setOpenSignup}) => {
   const {user, setUser} = useContext(UserContext);
-  const { register, setError, handleSubmit, formState: { errors } } = useForm();
+  const { register, watch,setError, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      universityId: 0
+    }
+  });
+  const [uniiversities, setUniversities] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const signupRef = useRef(null);
+  const watchUniversity = watch('universityId');
   onOutsideClick(signupRef, () => {
-    openSignup(false);
+    setOpenSignup(false);
     document.body.style.overflow = 'scroll';
   });
 
-  document.body.style.overflow = 'hidden';
   useEffect(() => {
-    console.log('useEffect in signup');
-    loadFaculties();
-  }, []);
+      loadUniversities();
+      document.body.style.overflow = 'hidden';
+  }, [openSignup]);
 
-  async function loadFaculties() {
-    await axios.get('https://localhost:7040/Faculty/All')
+  useEffect(() => {
+    if(watchUniversity !== 0) {
+      loadFaculties(watchUniversity);
+    }
+  }, [watchUniversity])
+
+  async function loadUniversities() {
+    await axios.get('https://localhost:7040/University/All')
+      .then((response) => {
+        console.log(response.data);
+        setUniversities(response.data);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
+  }
+  async function loadFaculties(universityId) {
+    await axios.get(`https://localhost:7040/Faculty/${universityId}/All`)
       .then((response) => {
         console.log(response.data);
         setFaculties(response.data);
@@ -53,7 +83,7 @@ const Signup = ({openSignup}) => {
       .then((response) => {
         console.log(response.data);
         setUser(response.data);
-        openSignup(false);
+        setOpenSignup(false);
       })
       .catch(function (error) {
         if (error.response) {
@@ -105,14 +135,26 @@ const Signup = ({openSignup}) => {
             render={({ message }) => <p className="text-red-500">{message}</p>}/>
 
             <select className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]"
+            {...register('universityId', {required: 'This field is required'})}>
+              <option value="none">University</option>
+              {uniiversities.length > 0 && (
+                  uniiversities.map((u) => { 
+                    return (
+                    <option key={u.id} value={u.id}>{u.name}</option>
+                  );}
+              ))}
+            </select>
+
+            <select className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]"
+            disabled={watchUniversity === 0}
             {...register('facultyId', {required: 'This field is required'})}>
               <option value="none">Faculty</option>
-              {faculties.length > 0 ? (
+              {faculties.length > 0 && (
                   faculties.map((f) => { 
                     return (
                     <option key={f.facultyId} value={f.facultyId}>{f.facultyName}</option>
                   );}
-              )) : <option value='1'>No</option>}
+              ))}
             </select>
             <ErrorMessage errors={errors} name='facultyId'
             render={({ message }) => <p className="text-red-500">{message}</p>}/>

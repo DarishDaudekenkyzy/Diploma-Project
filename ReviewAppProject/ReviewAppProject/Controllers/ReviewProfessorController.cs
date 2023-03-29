@@ -62,7 +62,18 @@ namespace ReviewAppProject.Controllers
 
             await foreach (var review in reviews)
             {
-                yield return review;
+                yield return new ReviewProfessorViewModel(review);
+            }
+        }
+
+        [HttpGet("User/{userId}")]
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetReviewsOfUser(int userId)
+        {
+            var reviews = _service.GetReviewsOfUserAsync(userId);
+
+            await foreach (var review in reviews)
+            {
+                yield return new ReviewProfessorViewModel(review);
             }
         }
 
@@ -103,6 +114,19 @@ namespace ReviewAppProject.Controllers
                 else return StatusCode(500, exception.StackTrace);
             }
             return BadRequest("Model is not valid");
+        }
+
+        [HttpDelete("Delete/{userId}/{reviewId}")]
+        public async Task<IActionResult> DeleteReviewByIdAsync(int userId, int reviewId) {
+            (bool deleted, Exception? exception) = await _service.DeleteUserReviewByIdAsync(userId, reviewId);
+
+            if (deleted && exception == null) {
+                return Ok();
+            }
+
+            if (exception is ReviewNotFoundException) return BadRequest("Review not found");
+            if (exception is UserNotFoundException) return BadRequest("User not found");
+            else return StatusCode(500, exception.StackTrace);
         }
     }
 }

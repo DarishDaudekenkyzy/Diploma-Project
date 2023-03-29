@@ -10,7 +10,7 @@ namespace ReviewAppProject.Data.Models
         public string CourseName { get; set; }
         public int FacultyId { get; set; }
         public Faculty Faculty { get; set; }
-        public virtual ICollection<Professor> Professors { get; set; }
+        public virtual ICollection<CourseProfessor> Professors { get; set; }
         public virtual ICollection<ReviewProfessor> ReviewProfessors{ get; set; }
     }
 }

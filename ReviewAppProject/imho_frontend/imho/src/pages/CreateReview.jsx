@@ -139,15 +139,7 @@ const CreateReview = () => {
     <Header/>
     <section className="flex justify-center pt-8 pb-32">
       <div className="flex flex-col items-center relative w-[550px]">
-        <div className="w-full mb-8">
-            <input ref={searchInput} className="border-2 border-neutral-600 rounded-md p-1.5 mb-2.5 w-full" placeholder='Search Professors'  
-            onChange={handleSearch}/>
-
-            {searchResults.length > 0 ? (
-                <SearchResults searchResults={searchResults} handleClick={handleSelectItem}/>
-            ) : <></>}
-        </div>
-        {professor ? (
+        {(professor && professor.courses.length > 0) ? (
           <form onSubmit={handleSubmit(handleSubmitReview)}
             className='relative'>
             <div className="text-[30px] font-bold border-b-2 border-black pb-10">
@@ -335,7 +327,9 @@ const CreateReview = () => {
               </div>
             </div>
           </form>
-        ) : <></>}
+        ) : <>
+        <p>Professor currently have no courses</p>
+        </>}
       </div>
     </section>
     <Footer/>

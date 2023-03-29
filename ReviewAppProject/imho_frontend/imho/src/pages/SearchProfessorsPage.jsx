@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import { Header, Footer, Account, 
@@ -7,6 +7,7 @@ import { Header, Footer, Account,
 
 import styles from '../style';
 import search from '../assets/search.svg'
+import SearchInput from '../components/SearchInput';
 
 
 const SearchItem = ({professor, navigate}) => {
@@ -38,20 +39,47 @@ const SearchItem = ({professor, navigate}) => {
     );
 }
 
-const SearchPage = () => {
+const SearchProfessorsPage = () => {
     const navigate = useNavigate();
-    let params = useParams();
+    const location = useLocation();
 
-    const [searchInput, setSearchInput] = useState(params.searchInput);
     const [searchResults, setSearchResults] = useState([]);
+    
 
     useEffect(() => {
         console.log('useEffect');
-        getSearchResults();
-    }, [params]);
+        if(location.state.school === undefined) {
+            console.log('search professors')
+            searchProfessors(location.state.searchInput);
+        }
+        else {
+            console.log(location.state.school)
+            searchProfessorsInSchool(location.state.searchInput, location.state.school.id)
+        }
+    }, [location]);
     
-    function getSearchResults() {
-        axios.get(`https://localhost:7040/Professor/Search/${searchInput}`)
+    async function searchProfessors(searchInput) {
+        await axios.get(`https://localhost:7040/Professor/Search/${searchInput}`)
+        .then((response) => {
+            console.log(response.data);
+            setSearchResults(response.data);
+          })
+          .catch(function (error) {
+            if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              console.log(error.request);
+            } else {
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          });
+    }
+
+    async function searchProfessorsInSchool(searchInput, schoolId) {
+        await axios.get(`https://localhost:7040/Professor/Search/${schoolId}/${searchInput}`)
         .then((response) => {
             console.log(response.data);
             setSearchResults(response.data);
@@ -74,24 +102,19 @@ const SearchPage = () => {
         <>
             <Header/>
             <section className="min-h-[700px] flex flex-col items-center mb-6">
-                <form className="flex w-full sm:w-auto mt-[50px] px-[20px] sm:px-0">
-                    <input className="w-full sm:w-[600px] border-[2px] border-primary 
-                    py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" 
-                    type="search" value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)} />
-                    <button className="ml-[-40px] mt-[-30px]" type="button" onClick={() => {navigate(`/search/${searchInput}`)}}>
-                        <img className="w-[24px]" src={search} alt=""/>
-                    </button>
-                </form>
+                <SearchInput school={location.state.school}/>
 
                 {searchResults.length > 0 ? (
                     <>
-                        <p className="text-[16px] sm:text-[20px] md:text-[25px] px-[20px] text-center">{searchResults.length} professor with “{params.searchInput}” in their name</p>
+                        <p className="text-[16px] sm:text-[20px] md:text-[25px] px-[20px] text-center">
+                            {searchResults.length} professors 
+                            {location.state.school &&
+                            ` in ${location.state.school.name} `}
+                            with “{location.state.searchInput}” in their name</p>
                         <div className="mt-[30px] flex flex-col gap-y-[20px] px-[20px] w-full sm:w-auto">
                         {searchResults.map((p, index) => {
                             return (
-                                <SearchItem key={p.professorId} professor={p} navigate={navigate}
-                                handleClick={() => handleClick(p.firstName)}/>
+                                <SearchItem key={p.professorId} professor={p} navigate={navigate}/>
                             );
                         })}
                         </div>
@@ -107,4 +130,4 @@ const SearchPage = () => {
     )
 }
 
-export default SearchPage;
+export default SearchProfessorsPage;

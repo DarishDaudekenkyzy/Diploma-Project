@@ -11,11 +11,11 @@ namespace ReviewAppProject.Data.Configuration
             builder.HasOne(review => review.Professor)
                 .WithMany(p => p.Reviews)
                 .HasForeignKey(review => review.ProfessorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(review => review.User)
                 .WithMany(user => user.ReviewProfessors)
                 .HasForeignKey(review => review.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             builder
                 .HasOne(review => review.Course)
                 .WithMany(c => c.ReviewProfessors)

@@ -3,9 +3,9 @@ import styles from './style'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Main, Login, Signup, Myaccount, Admin, ReviewFormSubmission, FAQ } from './pages';
-import SearchPage from './pages/SearchPage';
 import CreateReview from './pages/CreateReview';
 import ReviewInfo from './pages/ReviewInfo';
+import SearchProfessorsPage from './pages/SearchProfessorsPage';
 
 export const UserContext = React.createContext(null);
 
@@ -17,7 +17,7 @@ const App = () => {
         <UserContext.Provider value={{ user: user, setUser: setUser }}>
           <Routes>  
             <Route path="/" element={<Main />} />
-            <Route path="/search/:searchInput" element={<SearchPage />} />
+            <Route path="/search-professors" element={<SearchProfessorsPage />} />
             <Route path="/login" element={<Login/>} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/account" element={<Myaccount />}/>

@@ -44,6 +44,13 @@ namespace ReviewAppProject.ViewModels
                 User = new UserViewModel(rp.User);
             if (rp.Course != null)
                 Course = new CourseViewModel(rp.Course);
+            if (!rp.Tags.IsNullOrEmpty()) {
+                Tags = new List<ReviewTagViewModel>();
+                foreach (var tag in rp.Tags)
+                {
+                    Tags.Add(new ReviewTagViewModel(tag.Tag));
+                }
+            }
         }
     }
 }

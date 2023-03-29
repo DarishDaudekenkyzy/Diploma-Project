@@ -34,8 +34,10 @@ namespace ReviewAppProject.Data.Repository
         {
             var professors = _context.Professors.
                 Where(p => p.FirstName.StartsWith(pattern) || p.LastName.StartsWith(pattern))
+                .Include(p => p.University)
+                .Include(p => p.Faculty)
                 .Include(p => p.Courses)
-                .Include(p => p.Faculty).AsNoTracking()
+                .ThenInclude(cp => cp.Course)
                 .AsAsyncEnumerable();
 
             await foreach (var professor in professors)
@@ -44,6 +46,22 @@ namespace ReviewAppProject.Data.Repository
             }
         }
 
+        public async IAsyncEnumerable<Professor> GetProfessorsInUniversityWithPatternAsync(int universityId, string pattern)
+        {
+            var professors = _context.Professors
+                .Where(p => p.UniversityId == universityId)
+                .Where(p => p.FirstName.StartsWith(pattern) || p.LastName.StartsWith(pattern))
+                .Include(p => p.University)
+                .Include(p => p.Faculty)
+                .Include(p => p.Courses)
+                .ThenInclude(cp => cp.Course)
+                .AsAsyncEnumerable();
+
+            await foreach (var professor in professors)
+            {
+                yield return professor;
+            }
+        }
         public async Task<Professor> GetProfessorByEmailAsync(string email)
         {
             return await _context.Professors

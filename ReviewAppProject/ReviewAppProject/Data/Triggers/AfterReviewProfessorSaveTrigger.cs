@@ -1,6 +1,6 @@
 ﻿using EntityFrameworkCore.Triggered;
-using EntityFrameworkCore.Triggered.Lifecycles;
 using Microsoft.EntityFrameworkCore;
+using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Data.Repository.Interfaces;
 using Serilog;
@@ -22,21 +22,48 @@ namespace ReviewAppProject.Data.Triggers
         {
             if (context.ChangeType == ChangeType.Added)
             {
-                await UpdateProfessor(context);
+                await UpdateProfessorReviewAdded(context);
+            }
+            else if (context.ChangeType == ChangeType.Deleted) { 
+                await UpdateProfessorReviewDeleted(context);
             }
         }
 
-        private async Task UpdateProfessor(ITriggerContext<ReviewProfessor> context)
+        private async Task UpdateProfessorReviewAdded(ITriggerContext<ReviewProfessor> context)
         {
             var professor = await _profRepo.GetProfessorByIdAsync(context.Entity.ProfessorId);
             professor.ReviewsCount++;
             professor.Rating = await GetAverageRatingOfProfessor(professor.ProfessorId);
-            professor.WouldTakeAgainPercentage = CalculateWouldTakeAgainPercentage(professor.ProfessorId);
+            professor.WouldTakeAgainPercentage = await CalculateWouldTakeAgainPercentage(professor.ProfessorId);
             professor.DifficultyPercentage = await CalculateDifficultyPercentage(professor.ProfessorId);
             await _profRepo.Update(professor);
         }
 
-        private double CalculateWouldTakeAgainPercentage(int professorId)
+        private async Task UpdateProfessorReviewDeleted(ITriggerContext<ReviewProfessor> context)
+        {
+            Log.Information($"UpdateProfessorReviewDeleted() - professorId: {context.Entity.ProfessorId}");
+            var isThereAnyReviews = await _dbContext.ReviewProfessors
+                .Where(rp => rp.ProfessorId == context.Entity.ProfessorId)
+                .AnyAsync();
+
+            var professor = await _profRepo.GetProfessorByIdAsync(context.Entity.ProfessorId);
+            if (isThereAnyReviews)
+            {
+                professor.ReviewsCount--;
+                professor.Rating = await GetAverageRatingOfProfessor(professor.ProfessorId);
+                professor.WouldTakeAgainPercentage = await CalculateWouldTakeAgainPercentage(professor.ProfessorId);
+                professor.DifficultyPercentage = await CalculateDifficultyPercentage(professor.ProfessorId);
+            }
+            else {
+                professor.ReviewsCount = 0;
+                professor.Rating = 0.0;
+                professor.WouldTakeAgainPercentage= 0.0;
+                professor.DifficultyPercentage= 0.0;
+            }
+            await _profRepo.Update(professor);
+        }
+
+        private async Task<double> CalculateWouldTakeAgainPercentage(int professorId)
         {
             var reviews = _dbContext.ReviewProfessors.Where(rp => rp.ProfessorId == professorId);
             var wouldTakeAgainCount = reviews.Where(rp => rp.WouldTakeAgain == true).Count();
@@ -51,9 +78,11 @@ namespace ReviewAppProject.Data.Triggers
 
         private async Task<double> GetAverageRatingOfProfessor(int professorId)
         {
-            var averageRating = await _dbContext.ReviewProfessors.Where(rp => rp.ProfessorId == professorId).Select(rp => rp.Rating).AverageAsync();
-            Log.Information($"averageRating: {averageRating}");
-            return averageRating;
+            var averageRating = await _dbContext.ReviewProfessors
+            .Where(rp => rp.ProfessorId == professorId)
+            .Select(rp => rp.Rating)
+            .AverageAsync();
+            return Math.Round(averageRating, 2);
         }
     }
 }

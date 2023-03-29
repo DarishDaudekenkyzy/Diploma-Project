@@ -64,6 +64,18 @@ namespace ReviewAppProject.Controllers
             }
         }
 
+        [HttpGet("Search/{universityId}/{searchInput}")]
+        public async IAsyncEnumerable<ProfessorViewModel> GetProfessorsInUniversityWithPatternAsync(int universityId, string searchInput)
+        {
+
+            var professors = _service.GetProfessorsInUniversityWithPatternAsync(universityId, searchInput);
+
+            await foreach (var professor in professors)
+            {
+                yield return new ProfessorViewModel(professor);
+            }
+        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateProfessorAsync(ProfessorCreateModel postModel)
         {

@@ -8,17 +8,12 @@ namespace ReviewAppProject.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Faculty> builder)
         {
+            builder.HasKey(f => f.FacultyId);
             builder.Property(p => p.FacultyName)
                 .IsRequired();
-            builder.HasMany(f => f.Professors)
-                .WithOne(p => p.Faculty)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(f => f.Users)
-                .WithOne(u => u.Faculty)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(f => f.Courses)
-                .WithOne(c => c.Faculty)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(f => f.University)
+                .WithMany(u => u.Faculties)
+                .HasForeignKey(f => f.UniversityId);
         }
     }
 }

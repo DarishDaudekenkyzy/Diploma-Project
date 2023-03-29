@@ -36,6 +36,16 @@ namespace ReviewAppProject.Services
             }
         }
 
+        public async IAsyncEnumerable<Professor> GetProfessorsInUniversityWithPatternAsync(int universityId, string pattern)
+        {
+            var professors = _profRepository.GetProfessorsInUniversityWithPatternAsync(universityId, pattern);
+
+            await foreach (var professor in professors)
+            {
+                yield return professor;
+            }
+        }
+
         public async Task<(Professor?, Exception?)> GetProfessorById(int id)
         {
             try

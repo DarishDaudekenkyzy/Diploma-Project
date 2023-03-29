@@ -18,5 +18,8 @@ namespace ReviewAppProject.Models
 
         [Required]
         public int FacultyId {get; set;}
+
+        [Required]
+        public int UniversityId {get; set;}
     }
 }

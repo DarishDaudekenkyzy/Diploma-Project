@@ -18,7 +18,7 @@ export function onOutsideClick(ref, handleOutsideClick) {
   }, [ref]);
 }
 
-function AuthSection({openLogin , openSignup}) {
+function AuthSection({setOpenLogin, setOpenSignup}) {
   const userItem = localStorage.getItem('user');
   const {user, setUser} = useContext(UserContext);
   
@@ -41,11 +41,11 @@ function AuthSection({openLogin , openSignup}) {
       <div className="flex h-full">
         <div className="flex items-center justify-center 
         border-black border-l-2 h-full px-[8px] md:px-[48px]">
-          <button className="text-[16px] sm:text-[20px]" onClick={() => openLogin(true)}>Log In</button>
+          <button className="text-[16px] sm:text-[20px]" onClick={() => setOpenLogin(true)}>Log In</button>
         </div>
         <div className="flex items-center justify-center 
         h-full px-[8px] md:px-[48px] bg-black">
-          <button  className="text-white text-[16px] sm:text-[20px]" onClick={() => openSignup(true)}>
+          <button  className="text-white text-[16px] sm:text-[20px]" onClick={() => setOpenSignup(true)}>
             Sign Up
           </button>
         </div>
@@ -73,7 +73,7 @@ const Header = () => {
               Reviews
             </p>
           </Link>
-          <Link>
+          <Link to="/faq">
             <p className="text-[16px] sm:text-[20px]">
               FAQ
             </p>
@@ -84,13 +84,13 @@ const Header = () => {
             </p>
           </Link>
           <AuthSection 
-            openLogin={setOpenLogin}
-            openSignup={setOpenSignup}
+            setOpenLogin={setOpenLogin}
+            setOpenSignup={setOpenSignup}
           />
         </div>
       </header>
-      {openLogin && <Login openLogin={setOpenLogin}/>}
-      {openSignup && <Signup openSignup={setOpenSignup}/>}
+      {openLogin && <Login openLogin={openLogin} setOpenLogin={setOpenLogin}/>}
+      {openSignup && <Signup openSignup={openSignup} setOpenSignup={setOpenSignup}/>}
       {openSignupGoogle && <SignupGoogle openSignupGoogle={setOpenSignupGoogle}/>}
     </div>
   )

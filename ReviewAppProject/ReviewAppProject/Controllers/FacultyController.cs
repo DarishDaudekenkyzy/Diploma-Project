@@ -34,6 +34,21 @@ namespace ReviewAppProject.Controllers
             }
         }
 
+        [HttpGet("{universityId}/All")]
+        public async IAsyncEnumerable<FacultyViewModel> GetUniversityFaculties(int universityId)
+        {
+            var faculties = _service.GetUniversityFaculties(universityId);
+
+            await foreach (var faculty in faculties)
+            {
+                yield return new FacultyViewModel
+                {
+                    FacultyId = faculty.FacultyId,
+                    FacultyName = faculty.FacultyName
+                };
+            }
+        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateFacultyAsync(string facultyName)
         {

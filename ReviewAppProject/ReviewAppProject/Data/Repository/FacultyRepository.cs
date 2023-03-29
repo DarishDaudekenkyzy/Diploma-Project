@@ -27,6 +27,18 @@ namespace ReviewAppProject.Data.Repository
             }
         }
 
+        public async IAsyncEnumerable<Faculty> GetUniversityFaculties(int universityId) {
+            var faculties = _context.Faculties
+                .Where(f => f.UniversityId == universityId)
+                .OrderBy(f => f.FacultyId)
+                .AsAsyncEnumerable();
+
+            await foreach (var faculty in faculties)
+            {
+                yield return faculty;
+            }
+        }
+
         public async Task<Faculty> GetFacultyByIdAsync(int facultyId)
         {
             return await _context.Faculties.FirstOrDefaultAsync(f => f.FacultyId.Equals(facultyId))

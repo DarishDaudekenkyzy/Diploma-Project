@@ -60,6 +60,7 @@ namespace ReviewAppProject.Data.Repository
                     Email = userModel.Email,
                     Password = userModel.Password,
                     Year = userModel.Year,
+                    UniversityId = userModel.UniversityId,
                     FacultyId = userModel.FacultyId
                 };
                 

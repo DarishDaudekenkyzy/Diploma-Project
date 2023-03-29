@@ -16,6 +16,8 @@ namespace ReviewAppProject.Data.Models
 
         public int Year { get; set; }
 
+        public int UniversityId { get; set; }
+        public University University { get; set; }
         public int FacultyId { get; set; }
         public Faculty Faculty { get; set; }
         public virtual ICollection<ReviewProfessor>? ReviewProfessors{ get; set; }

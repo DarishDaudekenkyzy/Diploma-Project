@@ -54,7 +54,8 @@ const ReviewInfo = () => {
             <div className="flex flex-col justify-start w-[450px] gap-y-2 relative ">
               <p className="text-[33px] font-bold w-[350px]">{professor.firstName} {professor.lastName}</p>
               <img className="h-[100px] absolute top-0 right-10" src={yellow_pen} />
-              <p  className="font-bold w-[300px]">Professor of {professor.faculty.facultyName} Faculty</p>
+              <p  className="font-bold w-[300px]">Professor of {professor.faculty.facultyName}</p>
+              <p>{professor.university.name}</p>
               <div className="flex justify-start items-start">
                     <p className="text-[30px] font-bold">{professor.rating}</p>
                     <p>\5</p>

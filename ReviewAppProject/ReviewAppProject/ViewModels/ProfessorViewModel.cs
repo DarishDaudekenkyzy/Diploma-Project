@@ -14,6 +14,7 @@ namespace ReviewAppProject.ViewModels
         public double Rating { get; set; }
         public int ReviewsCount { get; set; }
 
+        public UniversityViewModel? University { get; set; }
         public FacultyViewModel? Faculty { get; set; }
         public ICollection<CourseViewModel>? Courses { get; set; } = new List<CourseViewModel>();
 
@@ -30,11 +31,13 @@ namespace ReviewAppProject.ViewModels
             Rating = professor.Rating;
             ReviewsCount = professor.ReviewsCount;
 
+            if(professor.University != null)
+                University = new UniversityViewModel(professor.University);
             if (professor.Faculty != null)
                 Faculty = new FacultyViewModel { FacultyId = professor.FacultyId, FacultyName = professor.Faculty.FacultyName };
             if (!professor.Courses.IsNullOrEmpty()) {
                 foreach (var course in professor.Courses) {
-                    Courses.Add(new CourseViewModel(course));
+                    Courses.Add(new CourseViewModel(course.Course));
                 }
             }
         }

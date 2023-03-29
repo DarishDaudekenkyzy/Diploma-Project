@@ -15,6 +15,7 @@ namespace ReviewAppProject.Data.Repository.Interfaces
         public Task<ReviewProfessor> GetReviewByUserAndProfessorAndCourseAsync(int userId, int professorId, int courseId);
 
         public Task<bool> CreateReviewProfessorAsync(ReviewProfessorCreateModel model);
+        public Task<bool> DeleteUserReviewByIdAsync(int userId, int reviewId);
 
         public Task LikeReview(int reviewId, int userId);
         public Task DislikeReview(int reviewId, int userId);
