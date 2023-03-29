@@ -2,7 +2,7 @@ import React, {useState, useCallback}from 'react'
 import styles from './style'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Main, Login, Signup, Myaccount, Admin, ReviewFormSubmission } from './pages';
+import { Main, Login, Signup, Myaccount, Admin, ReviewFormSubmission, FAQ } from './pages';
 import SearchPage from './pages/SearchPage';
 import CreateReview from './pages/CreateReview';
 import ReviewInfo from './pages/ReviewInfo';
@@ -25,6 +25,7 @@ const App = () => {
             <Route path="/review-info" element={<ReviewInfo />}/>
             <Route path="/admin" element={<Admin />}/>
             <Route path="/submit-form" element={<ReviewFormSubmission />}/>
+            <Route path="/faq" element={<FAQ />}/>
           </Routes>
         </UserContext.Provider>
       </BrowserRouter>

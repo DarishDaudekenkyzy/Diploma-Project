@@ -163,6 +163,13 @@ input[type="input"]::-webkit-input-results-decoration {
   background-position: center
 }
 
+#faq {
+  background-image: url("./assets/back_main.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center
+}
+
 #review_info {
   background-image: url("./assets/review_info.png");
   background-size: contain;

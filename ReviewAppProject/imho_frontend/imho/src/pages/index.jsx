@@ -5,6 +5,7 @@ import SignupGoogle from "./SignupGoogle";
 import Myaccount from "./Myaccount";
 import Admin from "./Admin";
 import ReviewFormSubmission from "./ReviewFormSubmission";
+import FAQ from "./FAQ";
 
 export {
   Login,
@@ -14,4 +15,5 @@ export {
   Myaccount,
   Admin,
   ReviewFormSubmission,
+  FAQ,
 };
