@@ -31,8 +31,12 @@ namespace ReviewAppProject.ViewModels
             Rating = professor.Rating;
             ReviewsCount = professor.ReviewsCount;
 
-            if(professor.University != null)
-                University = new UniversityViewModel(professor.University);
+            if (professor.University != null)
+                University = new UniversityViewModel(new University { 
+                    Id = professor.University.Id,
+                    Name = professor.University.Name,
+                    Acronym = professor.University.Acronym
+                });
             if (professor.Faculty != null)
                 Faculty = new FacultyViewModel { FacultyId = professor.FacultyId, FacultyName = professor.Faculty.FacultyName };
             if (!professor.Courses.IsNullOrEmpty()) {

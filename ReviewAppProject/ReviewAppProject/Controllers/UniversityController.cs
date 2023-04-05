@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReviewAppProject.Data.Models;
+using ReviewAppProject.Exceptions;
+using ReviewAppProject.Models;
 using ReviewAppProject.Services;
 using ReviewAppProject.ViewModels;
 
@@ -33,6 +36,60 @@ namespace ReviewAppProject.Controllers
             {
                 yield return new UniversityViewModel(university);
             }
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateUniversityAsync(UniversityCreateModel model) {
+
+            if (!ModelState.IsValid) { 
+                return BadRequest(ModelState);
+            }
+
+            (bool created, Exception? e) = await _service.CreateUniversityAsync(model);
+
+            if (created && e is null) {
+                return Ok();
+            }
+
+            if (e is UniversityExistsException) return BadRequest("University already exists");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUniversityByIdAsync(int id) {
+            (University? uni, Exception? e) = await _service.GetUniversityByIdAsync(id);
+
+            if (uni != null && e == null) { 
+                return Ok( new UniversityViewModel(uni));
+            }
+
+            if (e is UniversityNotFoundException) return BadRequest("University Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUniversityAsync(int id, UniversityUpdateModel model) {
+            (bool updated, Exception? e) = await _service.UpdateUniversityAsync(id, model);
+
+            if (updated && e is null) {
+                return Ok();
+            }
+
+            if (e is UniversityNotFoundException) return BadRequest("University Not Found");
+            else return StatusCode(500, e.StackTrace);
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUniversityAsync(int id) {
+            (bool deleted, Exception? e) = await _service.DeleteUniversityAsync(id);
+
+            if (deleted && e is null) {
+                return Ok();
+            }
+
+            if (e is UniversityNotFoundException) return BadRequest("University Not Found");
+            else return StatusCode(500, e.StackTrace);
         }
     }
 }

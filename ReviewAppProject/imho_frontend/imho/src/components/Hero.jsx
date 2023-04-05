@@ -3,15 +3,21 @@ import styles from '../style';
 import '../index.css';
 
 import { Link, useNavigate } from 'react-router-dom';
-import SearchInput from './SearchInput';
+import SearchProfessorsInput from './SearchProfessorsInput';
+import SearchUniversitiesInput from './SearchUniversitiesInput';
 
 const Hero = () => {
-  const [searchBySchool, setSearchBySchool] = useState(false);
-  const [school, setSchool] = useState();
+  const navigate = useNavigate();
+  const [searchUniversity, setSearchUniversity] = useState(false);
+  const [university, setUniversity] = useState();
 
-  function handleSchoolChoose(choosedSchool) {
-    setSchool(choosedSchool);
-    setSearchBySchool(false);
+  function handleUniversitySelect(uni) {
+    setUniversity(uni);
+    setSearchUniversity(false);
+  }
+
+  function handleProfessorSearch(searchInput) {
+    navigate(`/search-professors`, {state: {searchInput: searchInput, uni: university}});
   }
 
   return (
@@ -19,28 +25,34 @@ const Hero = () => {
       bg-[url('../assets/back_main.jpg')] bg-cover border-black border-b-2`}>
         <p className={`text-[24px] md:text-[48px] font-[KumarOne] mb-[24px] font-bold`}>
           RATE YOUR PROFESSORS</p>
-        {searchBySchool ? 
+        {searchUniversity ? 
         <p className='text-[18px] mb-[24px]'>Enter your <span className='font-bold'>school</span> to get started</p>
         :
-          school ?
+          university ?
           <p className='text-[18px] mb-[24px]'>Find a <span className='font-bold'>professor</span>
-          at <span className='underline'>{school.name}</span></p>
+          at <span className='underline'>{university.name}</span></p>
           :
           <p className='text-[18px] mb-[24px]'>Find a <span className='font-bold'>professor</span></p>
         }
 
-        <SearchInput searchSchools={searchBySchool} onSchoolChoose={handleSchoolChoose} school={school}/>
+        <div className='w-[312px] md:w-[700px] my-[30px]'>
+          {searchUniversity ?
+          <SearchUniversitiesInput onSelect={handleUniversitySelect}/>
+          :
+          <SearchProfessorsInput onSearch={handleProfessorSearch}/>
+          }
+        </div>
 
-        {searchBySchool ?
-        <p onClick={() => setSearchBySchool(false)}
+        {searchUniversity ?
+        <p onClick={() => setSearchUniversity(false)}
         className='text-[16px] md:text-[20px] hover:underline cursor-pointer'>I'd like to look up a professor by name</p>
         :
-        school ?
-          <p onClick={() => setSearchBySchool(true)}
+        university ?
+          <p onClick={() => setSearchUniversity(true)}
           className='text-[16px] md:text-[20px] hover:underline cursor-pointer'>
             I want to find a professor at a different university</p>
           :
-          <p onClick={() => setSearchBySchool(true)}
+          <p onClick={() => setSearchUniversity(true)}
           className='text-[16px] md:text-[20px] hover:underline cursor-pointer'>I want to find a professor at a school</p>
         }
 

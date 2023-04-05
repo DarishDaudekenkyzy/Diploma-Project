@@ -6,6 +6,7 @@ using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
 using ReviewAppProject.ViewModels;
+using System;
 
 namespace ReviewAppProject.Controllers
 {
@@ -27,7 +28,7 @@ namespace ReviewAppProject.Controllers
 
             await foreach (var faculty in faculties)
             {
-                yield return new FacultyViewModel { 
+                yield return new FacultyViewModel {
                     FacultyId = faculty.FacultyId,
                     FacultyName = faculty.FacultyName
                 };
@@ -41,33 +42,76 @@ namespace ReviewAppProject.Controllers
 
             await foreach (var faculty in faculties)
             {
-                yield return new FacultyViewModel
-                {
-                    FacultyId = faculty.FacultyId,
-                    FacultyName = faculty.FacultyName
-                };
+                yield return new FacultyViewModel(faculty);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFacultyByIdAsync(int id) {
+            try
+            {
+                var faculty = await _service.GetFacultyByIdAsync(id);
+                var viewModel = new FacultyViewModel(faculty);
+                return Ok(viewModel);
+            }
+            catch (FacultyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex) {
+                return StatusCode(500, ex.StackTrace);
             }
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateFacultyAsync(string facultyName)
+        public async Task<IActionResult> CreateFacultyAsync(FacultyCreateModel model)
         {
-            if (facultyName.IsNullOrEmpty())
-                return BadRequest("Faculty name is null or empty");
             if (!ModelState.IsValid)
                 return BadRequest("Invalid model object");
-            
 
-            (Faculty? faculty, Exception? exception) = await _service.CreateFacultyAsync(facultyName);
 
-            if (faculty != null && exception is null) return Ok(faculty);
+            (bool created, Exception? exception) = await _service.CreateFacultyAsync(model);
+
+            if (created && exception is null) return Ok();
 
             if (exception is ArgumentException)
                 return BadRequest(exception.Message);
+            else if (exception is UniversityNotFoundException)
+                return BadRequest("University not found.");
             else if (exception is FacultyWithNameExistsException)
                 return BadRequest("Faculty with provided email exists.");
             else
                 return StatusCode(500, "Internal server error");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFacultyAsync(int id, FacultyCreateModel model) {
+            if (!ModelState.IsValid) {
+                return BadRequest("Model is not valid");
+            }
+
+            (bool updated, Exception? exception) = await _service.UpdateFacultyAsync(id, model);
+
+            if (updated && exception is null) return Ok();
+
+            if (exception is ArgumentException)
+                return BadRequest(exception.Message);
+            else if (exception is UniversityNotFoundException)
+                return BadRequest("University not found.");
+            else if (exception is FacultyNotFoundException)
+                return BadRequest("Faculty not found.");
+            else
+                return StatusCode(500, exception.StackTrace);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFacultyAsync(int id) {
+            (bool deleted, Exception? e) = await _service.DeleteFacultyAsync(id);
+
+            if (deleted && e is null) return Ok();
+
+            if (e is FacultyNotFoundException) return BadRequest("Faculty Not Found");
+            else return StatusCode(500, e.StackTrace);
         }
     }
 }

@@ -84,6 +84,7 @@ const Signup = ({openSignup, setOpenSignup}) => {
         console.log(response.data);
         setUser(response.data);
         setOpenSignup(false);
+        document.body.style.overflow = 'scroll';
       })
       .catch(function (error) {
         if (error.response) {

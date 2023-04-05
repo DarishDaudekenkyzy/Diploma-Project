@@ -21,7 +21,9 @@ namespace ReviewAppProject.Data.Repository
             var professors = _context.Professors
                 .OrderBy(prof => prof.ProfessorId)
                 .Include(prof => prof.Courses)
+                .ThenInclude(c => c.Course)
                 .Include(prof => prof.Faculty)
+                .Include(prof => prof.University)
                 .AsAsyncEnumerable();
 
             await foreach (var professor in professors)
@@ -38,6 +40,7 @@ namespace ReviewAppProject.Data.Repository
                 .Include(p => p.Faculty)
                 .Include(p => p.Courses)
                 .ThenInclude(cp => cp.Course)
+                .AsNoTracking()
                 .AsAsyncEnumerable();
 
             await foreach (var professor in professors)
@@ -79,6 +82,8 @@ namespace ReviewAppProject.Data.Repository
                 .Where(p => p.ProfessorId == id)
                 .Include(p => p.Faculty)
                 .Include(p => p.Courses)
+                .ThenInclude(c => c.Course)
+                .Include(p => p.University)
                 .FirstOrDefaultAsync()
                 ?? throw new ProfessorNotFoundException();
 

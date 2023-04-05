@@ -1,4 +1,6 @@
-﻿using ReviewAppProject.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using ReviewAppProject.Data.Models;
 using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
@@ -8,10 +10,12 @@ namespace ReviewAppProject.Services
     public class FacultyService
     {
         private readonly IFacultyRepository _facultyRepository;
+        private readonly IUniversityRepository _uniRepository;
 
-        public FacultyService(IFacultyRepository repository)
+        public FacultyService(IFacultyRepository repository, IUniversityRepository uniRepository)
         {
             _facultyRepository = repository;
+            _uniRepository = uniRepository;
         }
 
         public async IAsyncEnumerable<Faculty> GetAllFacultiesAsync()
@@ -34,18 +38,44 @@ namespace ReviewAppProject.Services
             }
         }
 
-        public async Task<(Faculty?, Exception?)> CreateFacultyAsync(string facultyName)
+        public async Task<Faculty> GetFacultyByIdAsync(int id) {
+            return await _facultyRepository.GetFacultyByIdAsync(id);
+        }
+
+        public async Task<(bool, Exception?)> CreateFacultyAsync(FacultyCreateModel model)
         {
             try
             {
-                bool result = await _facultyRepository.CreateFacultyAsync(facultyName);
+                //check if university exists
+                _ = await _uniRepository.GetUniversityByIdAsync(model.UniversityId);
 
-                var faculty = await _facultyRepository.GetFacultyByNameAsync(facultyName);
-                return (faculty, null);
+                bool result = await _facultyRepository.CreateFacultyAsync(model);
+
+                return (result, null);
             }
-            catch (ArgumentException e) { return (null, e); }
-            catch (FacultyWithNameExistsException e) { return (null, e); }
-            catch (Exception e) { return (null, e); }
+            catch (UniversityNotFoundException e) { return (false, e); }
+            catch (ArgumentException e) { return (false, e); }
+            catch (FacultyWithNameExistsException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> UpdateFacultyAsync(int id, FacultyCreateModel model) {
+            try
+            {
+                await _facultyRepository.UpdateFacultyAsync(id, model);
+                return (true, null);
+            }
+            catch (FacultyNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> DeleteFacultyAsync(int id) {
+            try {
+                await _facultyRepository.DeleteFacultyAsync(id);
+                return (true, null);
+            }
+            catch (FacultyNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
         }
     }
 }

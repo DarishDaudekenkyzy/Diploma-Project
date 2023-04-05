@@ -6,6 +6,8 @@
 
         public string FacultyName { get; set; }
 
+        public string? Description { get; set; }
+
         public int UniversityId { get; set; }
         public University University { get; set; }
         public virtual ICollection<Professor> Professors { get; set; }

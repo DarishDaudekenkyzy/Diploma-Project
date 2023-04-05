@@ -12,7 +12,7 @@ import ReviewManagement from "./ReviewManagement";
 import UserManagement from "./UserManagement";
 import ProfessorManagement from "./ProfessorManagement";
 import CourseManagement from "./CourseManagement";
-import UniversityManagement from "./UniversityManagement";
+import UniversityManagement from "./admin_components/university_management/UniversityManagement";
 
 export {
   Header,

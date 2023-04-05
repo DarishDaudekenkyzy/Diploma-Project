@@ -5,8 +5,9 @@ import { Header,
     ReviewManagement,
     UserManagement,
     ProfessorManagement,
-    CourseManagement,
-    UniversityManagement } from '../components';
+    CourseManagement } from '../components';
+  import UniversityManagement from '../components/admin_components/university_management/UniversityManagement';
+  import FacultyManagement from '../components/admin_components/faculty_management/FacultyManagement';
 
 import styles from '../style';
 import { UserContext } from '../App';
@@ -33,20 +34,22 @@ const Admin = () => {
   return (
     <>
       <Header/>
-      <section className={`flex border-black h-[750px] border-b-2 mt-[-2px]`}>
-        <div className="flex flex-col h-full w-[25%] pt-[100px] border-black border-2 gap-y-2">
+      <section className={`flex border-black  mt-[-2px] min-h-screen`}>
+        <div className="flex flex-col w-1/5 py-24 px-8 border-black border-t-2 border-r-2 gap-y-2 items-start">
             <TabItem text="Review Management" isActive={activeTab === 1} setActive={() => activeIndex(1)}/>
             <TabItem text="User Management" isActive={activeTab === 2} setActive={() => activeIndex(2)}/>
             <TabItem text="Professor Management" isActive={activeTab === 3} setActive={() => activeIndex(3)}/>
             <TabItem text="Course Management" isActive={activeTab === 4} setActive={() => activeIndex(4)}/>
             <TabItem text="University Management" isActive={activeTab === 5} setActive={() => activeIndex(5)}/>
+            <TabItem text="Faculty Management" isActive={activeTab === 6} setActive={() => activeIndex(6)}/>
         </div>
-        <div className="w-[75%] pt-[80px]">
+        <div className="w-[75%] py-[80px]">
             {activeTab === 1 && <ReviewManagement/>}
             {activeTab === 2 && <UserManagement />}
             {activeTab === 3 && <ProfessorManagement/>}
             {activeTab === 4 && <CourseManagement/>}
             {activeTab === 5 && <UniversityManagement/>}
+            {activeTab === 6 && <FacultyManagement/>}
         </div>
       </section>
       <Footer />

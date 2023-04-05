@@ -7,7 +7,8 @@ import { Header, Footer, Account,
 
 import styles from '../style';
 import search from '../assets/search.svg'
-import SearchInput from '../components/SearchInput';
+import SearchProfessorsInput from '../components/SearchProfessorsInput';
+import { api_searchProfessors, api_searchProfessorsInUniversity } from '../api/ProfessorsApi';
 
 
 const SearchItem = ({professor, navigate}) => {
@@ -16,7 +17,7 @@ const SearchItem = ({professor, navigate}) => {
         navigate('/review-info', {state: professor});
     }
     return (
-        <div className="flex items-center w-full sm:w-[700px] p-[10px] bg-[#F9F9F9] border-black border-[1px]"
+        <div className="flex items-center w-full p-[10px] bg-[#F9F9F9] border-black border-[1px]"
         onClick={handleClick}>
             <div className="flex flex-col items-center xs:ml-[50px]">
                 <p className="text-[12px] sm:text-[15px] font-semibold">QUALITY</p>
@@ -44,86 +45,62 @@ const SearchProfessorsPage = () => {
     const location = useLocation();
 
     const [searchResults, setSearchResults] = useState([]);
-    
 
     useEffect(() => {
-        console.log('useEffect');
-        if(location.state.school === undefined) {
-            console.log('search professors')
-            searchProfessors(location.state.searchInput);
-        }
-        else {
-            console.log(location.state.school)
-            searchProfessorsInSchool(location.state.searchInput, location.state.school.id)
-        }
-    }, [location]);
+        handleSearch(location.state.searchInput)
+    }, [])
     
-    async function searchProfessors(searchInput) {
-        await axios.get(`https://localhost:7040/Professor/Search/${searchInput}`)
-        .then((response) => {
-            console.log(response.data);
-            setSearchResults(response.data);
-          })
-          .catch(function (error) {
-            if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              console.log(error.request);
-            } else {
-              console.log('Error', error.message);
-            }
-            console.log(error.config);
-          });
-    }
-
-    async function searchProfessorsInSchool(searchInput, schoolId) {
-        await axios.get(`https://localhost:7040/Professor/Search/${schoolId}/${searchInput}`)
-        .then((response) => {
-            console.log(response.data);
-            setSearchResults(response.data);
-          })
-          .catch(function (error) {
-            if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              console.log(error.request);
-            } else {
-              console.log('Error', error.message);
-            }
-            console.log(error.config);
-          });
+    async function handleSearch(searchInput) {
+        if(location.state.uni === undefined) {
+            await api_searchProfessors(searchInput)
+            .then((data) => {
+                setSearchResults(data);
+            })
+            .catch(err => console.log(err));
+        } else {
+            await api_searchProfessorsInUniversity(location.state.uni.id, searchInput)
+            .then((data) => {
+                setSearchResults(data);
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     return (
         <>
             <Header/>
             <section className="min-h-[700px] flex flex-col items-center mb-6">
-                <SearchInput school={location.state.school}/>
-
-                {searchResults.length > 0 ? (
-                    <>
-                        <p className="text-[16px] sm:text-[20px] md:text-[25px] px-[20px] text-center">
-                            {searchResults.length} professors 
-                            {location.state.school &&
-                            ` in ${location.state.school.name} `}
-                            with “{location.state.searchInput}” in their name</p>
-                        <div className="mt-[30px] flex flex-col gap-y-[20px] px-[20px] w-full sm:w-auto">
-                        {searchResults.map((p, index) => {
-                            return (
-                                <SearchItem key={p.professorId} professor={p} navigate={navigate}/>
-                            );
-                        })}
-                        </div>
-                    </>
-                ) : (
-                    <div>
-                        <h1>Not Found</h1>
+                <div className='w-[312px] md:w-[700px]'>
+                    <p className='text-2xl mt-8 font-semibold text-center'> 
+                        {location.state.uni ? 
+                        `Search professors in ${location.state.uni.name}`
+                        : `Search professors`}
+                    </p>
+                    <div className='my-6'>
+                        <SearchProfessorsInput onSearch={handleSearch}/>
                     </div>
-                )}
+
+                    {searchResults.length > 0 ? (
+                        <>
+                            <p className="text-xl px-[20px] text-center">
+                                {searchResults.length} professors 
+                                {location.state.uni &&
+                                ` in ${location.state.uni.acronym} 
+                                with “${location.state.searchInput}” in their name`}</p>
+                            <div className="mt-[30px] flex flex-col gap-y-[20px] px-[20px] w-full sm:w-auto">
+                            {searchResults.map((p, index) => {
+                                return (
+                                    <SearchItem key={p.professorId} professor={p} navigate={navigate}/>
+                                );
+                            })}
+                            </div>
+                        </>
+                    ) : (
+                        <div>
+                            <h1>Not Found</h1>
+                        </div>
+                    )}
+                </div>
             </section>
             <Footer />
         </>
