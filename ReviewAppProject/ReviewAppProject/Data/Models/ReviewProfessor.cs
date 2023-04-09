@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace ReviewAppProject.Data.Models.Review
+﻿namespace ReviewAppProject.Data.Models
 {
     public class ReviewProfessor
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Content { get; set; }
+        public string? Content { get; set; }
         public int Rating { get; set; }
         public int Difficulty { get; set; }
         public bool WasAttendanceMandatory { get; set; }
@@ -16,14 +13,14 @@ namespace ReviewAppProject.Data.Models.Review
         public int Likes { get; set; }
         public int Dislikes { get; set; }
         public int CourseId { get; set; }
-        public Course Course { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
         public int ProfessorId { get; set; }
+        public int UserId { get; set; }
+        public Course Course { get; set; }
         public Professor Professor { get; set; }
-
-        public ICollection<LikedUserReview> LikedUsers { get; set; }
-        public ICollection<DislikedUserReview> DislikedUsers { get; set; }
+        public User User { get; set; }
+        
         public ICollection<ReviewProfessorReviewTag> Tags { get; set; }
+        public ICollection<UserReviewLike> LikedUsers { get; set; }
+        public ICollection<UserReviewDislike> DislikedUsers { get; set; }
     }
 }

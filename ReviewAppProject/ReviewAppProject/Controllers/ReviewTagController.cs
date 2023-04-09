@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.ViewModels;
 

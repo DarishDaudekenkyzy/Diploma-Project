@@ -67,7 +67,7 @@ export default function AdminUniversityAdd({setAddUniversity, loadUniversities})
   
         {/* SUBMIT */}
         <div>
-          <button type="submit" onClick={handleAddNewUniversity}
+          <button type="submit"
           className='py-2 px-4 mt-6 border-2 border-black 
           hover:bg-black hover:text-white hover:px-12 hover:py-4 transition-all ease-linear '>Add New University</button>
         </div>

@@ -10,48 +10,60 @@ import thumb_up from '../assets/thumb_up.svg'
 import thumb_down from '../assets/thumb_down.svg'
 import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { api_getProfessorById } from '../api/ProfessorsApi';
+import { api_DislikeReview, api_LikeReview, api_getReviewsOfProfessor } from '../api/ReviewApi';
+import BackArrow from '../components/admin_components/BackArrow';
 
 
 const ReviewInfo = () => {
+  const {user, setUser} = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const professor = location.state;
 
   const [reviews, setReviews] = useState([]);
+  const [professor, setProfessor] = useState(null);
 
   useEffect(() => {
-      getReviews();
+    if(location.state)
+      loadProfessor(location.state)
+  }, [])
+
+  useEffect(() => {
+    if(professor !== null) {
+      loadReviews();
+    }
   }, [professor])
 
-  function handleRateClick() {
-    navigate('/new-review', {state: professor});
+  async function loadProfessor(id) {
+    await api_getProfessorById(id)
+    .then((data) => {
+      console.log(data)
+      setProfessor(data);
+    })
   }
 
-  function getReviews() {
-    axios.get(`https://localhost:7040/Reviews/Professor/${professor.professorId}`)
-    .then((response) => {
-      setReviews(response.data);
-      console.log(response.data);
+  function handleRateClick() {
+    if(user !== null)
+      navigate('/new-review', {state: professor.professorId});
+  }
+
+  async function loadReviews() {
+    
+    await api_getReviewsOfProfessor(professor.professorId)
+    .then((data) => {
+      console.log(data);
+      setReviews(data);
     })
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+    .catch(err => console.log(err));
   }
   
     return (
         <>
           <Header/>
-          <section id="review_info" className="flex justify-center items-center py-[100px]">
+          {professor &&
+          <section id="review_info" className="flex justify-center items-center py-16">
             <div className="flex flex-col justify-start w-[450px] gap-y-2 relative ">
+              <BackArrow onBack={() => navigate(-1)} text={'Back'}/>
               <p className="text-[33px] font-bold w-[350px]">{professor.firstName} {professor.lastName}</p>
               <img className="h-[100px] absolute top-0 right-10" src={yellow_pen} />
               <p  className="font-bold w-[300px]">Professor of {professor.faculty.facultyName}</p>
@@ -116,6 +128,7 @@ const ReviewInfo = () => {
               </div>
             </div>
           </section>
+          }
 
           <section id="review_info2" className="flex flex-col items-center 
           gap-y-5 py-[50px] border-b-2 border-black">
@@ -135,7 +148,7 @@ const ReviewInfo = () => {
               {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                   return (
-                    <ReviewListItem key={review.id} review={review} index={index}/>
+                    <ReviewListItem key={review.id} review={review} index={index} loadReviews={loadReviews}/>
                   );
                 })
               ) : <></>}
@@ -148,59 +161,31 @@ const ReviewInfo = () => {
 
 export default ReviewInfo;
 
-function ReviewListItem({review, index}) {
+function ReviewListItem({review, index, loadReviews}) {
   const {user, setUser} = useContext(UserContext);
-  const [likes, setLikes] = useState(review.likes);
-  const [dislikes, setDislikes] = useState(review.dislikes);
 
   async function handleDislike() {
-    await axios.post('https://localhost:7040/Reviews/like_dislike', {
-      userId: user.userId,
-      reviewId: review.id,
-      like: false
-    })
-    .then((response) => {
-      console.log('nay');
-      setLikes(response.data.item1);
-      setDislikes(response.data.item2);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+    if(user !== null) {
+      await api_DislikeReview(review.id, user.id)
+      .then((data) => {
+        loadReviews();
+      })
+      .catch(err => console.log(err))
+    }
   }
 
   async function handleLike() {
-    await axios.post('https://localhost:7040/Reviews/like_dislike', {
-      userId: user.userId,
-      reviewId: review.id,
-      like: true
-    })
-    .then((response) => {
-      console.log('yay');
-      setLikes(response.data.item1);
-      setDislikes(response.data.item2);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+    if(user !== null) {
+      await api_LikeReview(review.id, user.id)
+      .then((data) => {
+        console.log(data);
+        loadReviews();
+      })
+      .catch(err => {
+        console.log(err)
+        return
+      })
+    }
   }
 
   return (
@@ -245,20 +230,21 @@ function ReviewListItem({review, index}) {
 
                     <div className="flex justify-between w-full">
                       <div className="flex justify-start gap-x-[10px]">
-                        {review.tags !== null && review.tags.length > 0 && review.tags.map((tag) => {
+                        {review.tags !== null && review.tags.length > 0 && 
+                        review.tags.map((tag, index) => {
                           return (
-                            <div className="text-[13px]
+                            <div key={index} className="text-[13px]
                             bg-black px-[20px] rounded-[20px] text-white">{tag.tag}</div>
                           );
                         })}
                       </div>
                       <div className="flex justify-start">
                         <div className='cursor-pointer flex items-center' onClick={handleLike}>
-                          <p className="text">{likes}</p>
+                          <p className="text">{review.likes}</p>
                           <img className="mr-[5px] h-[20px]" src={thumb_up} />
                         </div>
                         <div className='cursor-pointer flex items-center' onClick={handleDislike}>
-                          <p className="text">{dislikes}</p>
+                          <p className="text">{review.dislikes}</p>
                           <img className="mr-[5px] h-[20px]" src={thumb_down} />
                         </div>
                       </div>

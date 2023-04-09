@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data;
 using ReviewAppProject.Data.Repository;
 using ReviewAppProject.Data.Repository.Interfaces;
-using ReviewAppProject.Data.Triggers;
 using ReviewAppProject.Services;
 using Serilog;
 
@@ -21,10 +20,6 @@ builder.Services.AddDbContext<AppDbContext>(
     options =>
     {
         options.UseSqlServer(connectionString);
-        options.UseTriggers(triggerOptions => {
-            triggerOptions.AddTrigger<BeforeReviewProfessorSaveTrigger>();
-            triggerOptions.AddTrigger<AfterReviewProfessorSaveTrigger>();
-        });
     });
 
 // Add services to the container.
@@ -42,6 +37,7 @@ builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<ICoursesProfessorsRepository, CoursesProfessorsRepository>();
 builder.Services.AddScoped<IReviewTagRepository, ReviewTagRepository>();
 builder.Services.AddScoped<IReviewProfessorRepository, ReviewProfessorRepository>();
 builder.Services.AddScoped<ReviewProfessorService>();

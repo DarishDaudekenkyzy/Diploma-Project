@@ -1,28 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Identity.Client;
 using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
-using ReviewAppProject.ViewModels;
-using Serilog;
 
 namespace ReviewAppProject.Services
 {
     public class ReviewProfessorService
     {
         private readonly IReviewProfessorRepository _repository;
+        private readonly IProfessorRepository _professorRepository;
         private readonly IUserRepository _userRepository;
         private readonly IReviewTagRepository _tagRepo;
 
         public ReviewProfessorService(
-            IReviewProfessorRepository repository, IReviewTagRepository tagRepo, IUserRepository userRepository)
+            IReviewProfessorRepository repository, 
+            IReviewTagRepository tagRepo, 
+            IUserRepository userRepository,
+            IProfessorRepository professorRepository)
         {
             _repository = repository;
             _tagRepo = tagRepo;
             _userRepository = userRepository;
+            _professorRepository= professorRepository;
         }
 
         public async IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync()
@@ -37,9 +38,9 @@ namespace ReviewAppProject.Services
 
         public async IAsyncEnumerable<ReviewProfessor> GetReviewsOfProfessorAsync(int professorId)
         {
-            var reviews = await _repository.GetAllReviewsOfProfessorAsync(professorId).ToListAsync();
+            var reviews = _repository.GetAllReviewsOfProfessorAsync(professorId);
 
-            foreach (var r in reviews)
+            await foreach (var r in reviews)
             {
                 yield return r;
             }
@@ -48,6 +49,16 @@ namespace ReviewAppProject.Services
         public async IAsyncEnumerable<ReviewProfessor> GetReviewsOfUserAsync(int userId)
         {
             var reviews = _repository.GetAllReviewsOfUserAsync(userId);
+
+            await foreach (var r in reviews)
+            {
+                yield return r;
+            }
+        }
+
+        public async IAsyncEnumerable<ReviewProfessor> GetReviewsOfCourseAsync(int courseId)
+        {
+            var reviews = _repository.GetAllReviewsOfCourseAsync(courseId);
 
             await foreach (var r in reviews)
             {
@@ -66,56 +77,83 @@ namespace ReviewAppProject.Services
             catch (ReviewNotFoundException e) { return (null, e); }
         }
 
-        public async Task<(ReviewProfessor?, Exception?)> CreateReviewProfessorAsync(ReviewProfessorCreateModel rpModel)
-        {
+        public async Task<(bool, Exception?)> LikeReviewAsync(int reviewId, int userId) {
             try
             {
-                bool result = await _repository.CreateReviewProfessorAsync(rpModel);
+                var review = await _repository.GetReviewByIdAsync(reviewId);
+                var user = await _userRepository.GetUserByIdAsync(userId);
 
-                var review = await _repository.GetReviewByUserAndProfessorAndCourseAsync(rpModel.UserId, rpModel.ProfessorId, rpModel.CourseId);
-                return (review, null);
-            }
-            catch (ArgumentException e) { return (null, e); }
-            catch (ReviewProfessorByUserExistsException e) { return (null, e); }
-            catch (Exception e) { return (null, e); }
-        }
-
-        public async Task<(bool, Exception?)> LikeDislikeReview(ReviewProfessorLikeDislikeModel model) {
-            try
-            {
-                if (model.Like)
+                if (await _repository.DidUserLikedReview(reviewId, userId))
                 {
-                    await _repository.LikeReview(model.ReviewId, model.UserId);
+                    await _repository.RemoveLikeAsync(review, user);
                 }
                 else {
-                    await _repository.DislikeReview(model.ReviewId, model.UserId);
-                }
+                    await _repository.LikeReviewAsync(review, user);
+                    if (await _repository.DidUserDislikedReview(reviewId, userId))
+                        await _repository.RemoveDisikeAsync(review, user);
+                };
                 return (true, null);
             }
-            catch (AlreadyDislikedException e) { return (false, e); }
             catch (AlreadyLikedException e) { return (false, e); }
             catch (UserNotFoundException e) { return (false, e); }
             catch (ReviewNotFoundException e) { return (false, e); }
             catch (Exception e) {return (false, e); }
         }
 
-        public async Task<int> GetLikes(int reviewId) { 
-            return await _repository.GetLikesAsync(reviewId);
-        }
-
-        public async Task<int> GetDislikes(int reviewId)
+        public async Task<(bool, Exception?)> DislikeReviewAsync(int reviewId, int userId)
         {
-            return await _repository.GetDislikesAsync(reviewId);
-        }
-
-        public async Task<(bool, Exception?)> DeleteUserReviewByIdAsync(int userId, int reviewId) {
             try
             {
-                _ = await _userRepository.GetUserByIdAsync(userId);
-                var deleted = await _repository.DeleteUserReviewByIdAsync(userId, reviewId);
-                return (deleted, null);
+                var review = await _repository.GetReviewByIdAsync(reviewId);
+                var user = await _userRepository.GetUserByIdAsync(userId);
+
+                if (await _repository.DidUserDislikedReview(reviewId, userId))
+                {
+                    await _repository.RemoveDisikeAsync(review, user);
+
+                } else {
+                    await _repository.DislikeReviewAsync(review, user);
+                    if (await _repository.DidUserLikedReview(reviewId, userId))
+                        await _repository.RemoveLikeAsync(review, user);
+                }
+                return (true, null);
             }
             catch (UserNotFoundException e) { return (false, e); }
+            catch (ReviewNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> CreateReviewProfessorAsync(ReviewProfessorCreateModel rpModel)
+        {
+            try
+            {
+                if (!await _repository.IsReviewByUserExists(rpModel.UserId, rpModel.CourseId, rpModel.ProfessorId))
+                {
+                    await _repository.CreateReviewAsync(rpModel);
+
+                    var professor = await _professorRepository.GetProfessorByIdAsync(rpModel.ProfessorId);
+                    await _professorRepository.UpdateReviewAdded(professor);
+                    return (true, null);
+                }
+                else throw new ReviewProfessorByUserExistsException();
+
+            }
+            catch (ArgumentException e) { return (false, e); }
+            catch (ReviewProfessorByUserExistsException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> DeleteReviewAsync(int reviewId) {
+            try
+            {
+                var review = await _repository.GetReviewByIdAsync(reviewId);
+                
+                await _repository.DeleteReviewAsync(review);
+
+                var professor = await _professorRepository.GetProfessorByIdAsync(review.ProfessorId);
+                await _professorRepository.UpdateReviewDeleted(professor);
+                return (true, null);
+            }
             catch (ReviewNotFoundException e) { return (false, e); }
             catch (Exception e) { return (false, e); }
         }

@@ -28,9 +28,10 @@ const Myaccount = () => {
   return (
     <>
       <Header/>
+      {user &&
       <section id="myaccount" className={`border-black pt-[50px] h-[750px]
       border-b-2`}>
-      <p className={`text-[24px] md:text-[48px] text-center mb-[50px]`}>*Name of the student*</p>
+      <p className={`text-[24px] md:text-[48px] text-center mb-[50px]`}>{user.firstName} {user.lastName}</p>
       <div className="form mx-[20px] sm:m-auto max-w-[800px] min-h-[500px] bg-white px-[16px] sm:px-[50px] py-[20px]">
         <div className="m-auto max-w-[600px] h-[50px] border-b-2 pb-[20px] md:pb-[53px] flex justify-between">
           <TabItem text="Account" isActive={activeTab === 1} setActive={() => activeIndex(1)}/>
@@ -45,6 +46,7 @@ const Myaccount = () => {
         {activeTab === 4 && <Settings/>}
       </div>
       </section>
+      }
       <Footer />
     </>
   )

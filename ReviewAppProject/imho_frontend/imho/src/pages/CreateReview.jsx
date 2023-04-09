@@ -8,19 +8,23 @@ import { ErrorMessage } from '@hookform/error-message';
 import axios from 'axios';
 import { UserContext } from '../App';
 import { useNavigate, useLocation } from 'react-router-dom'
+import { api_getProfessorById } from '../api/ProfessorsApi'
+import { api_getCoursesOfProfessor } from '../api/CourseApi'
+import { api_getAllTags } from '../api/TagApi'
+import BackArrow from '../components/admin_components/BackArrow'
+import { api_CreateReview } from '../api/ReviewApi'
 
 const CreateReview = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [professor, setProfessor] = useState(null);
+  const [courses, setCourses] = useState([]);
   const {user, setUser} = useContext(UserContext);
-  const [searchResults, setSearchResults] = useState([]);
-  const searchInput = useRef(null);
   const [tags, setTags] = useState([]);
   
   const { register, setError, clearErrors, getValues, setValue, watch, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true, tags: []}
+    defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true, tags: [], courseId: -1}
   });
   const watchRating = watch('rating');
   const watchDifficulty = watch('difficulty');
@@ -32,89 +36,57 @@ const CreateReview = () => {
   useEffect(() => {
     if(user === null) {
       navigate('/');
+      return;
     }
-    setValue('userId', user.userId);
+    
+    setValue('userId', user.id);
+    
     if(location.state !== null) {
-      setProfessor(location.state);
-      setValue('professorId', location.state.professorId);
+      loadProfessor(location.state)
+      setValue('professorId', location.state);
     }
-    loadTags();
   }, [user]);
 
-  function loadTags() {
-    axios.get('https://localhost:7040/Tag/All')
-    .then((response) => {
-        setTags(response.data);
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
-        }
-        console.log(error.config);
-      });
-    
+  useEffect(() => {
+    if(professor !== null) {
+      loadCourses(professor.professorId);
+      loadTags();
+    }
+  }, [professor])
+
+  async function loadProfessor(professorId) {
+    await api_getProfessorById(professorId)
+    .then((data) => {
+      setProfessor(data);
+    })
+    .catch(err => console.log(err));
   }
 
-  function handleSearch(e) {
-    if(e.target.value === '') {
-        setSearchResults([]);
-    }
-    else {
-    axios.get(`https://localhost:7040/Professor/Search/${e.target.value}`)
-    .then((response) => {
-        setSearchResults(response.data);
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
-        }
-        console.log(error.config);
-      });
-    }
+  async function loadCourses(professorId) {
+    await api_getCoursesOfProfessor(professorId)
+    .then((data) => {
+      console.log(data)
+      setCourses(data)
+    })
+    .catch(err => console.log(err));
   }
-
-  function handleSelectItem(selected) {
-    setProfessor(selected);
-    setValue('professorId', selected.professorId);
-    setSearchResults([]);
-    searchInput.current.value = '';
+  async function loadTags() {
+    await api_getAllTags()
+    .then(setTags)
+    .catch(err => console.log(err));
   }
 
   async function handleSubmitReview(data) {
-    data.courseId = parseInt(watchCourse);
-    console.log(data);
-    await axios.post('https://localhost:7040/Reviews/Create', data)
-    .then((response) => {
-      console.log(response.data);
-      setProfessor(null);
-      navigate('/');
+    
+    if(watchCourse === -1) {
+      setError('courseId',  { type: 'custom', message: 'Course is required' })
+      return;
+    }
+    await api_CreateReview(data)
+    .then(() => {
+      navigate(-1);
     })
-    .catch(function (error) {
-      if (error.response) {
-        if(error.response.data === 'The review for this professor and this course by current user is already exists.')
-          setError('reviewExists', {type: "manual", message: 'You already have a review about this professor and this course, (Delete or Edit existent review)'});
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+    .catch(err => console.log(err));
   }
 
   function selectTag(tag) {
@@ -139,35 +111,39 @@ const CreateReview = () => {
     <Header/>
     <section className="flex justify-center pt-8 pb-32">
       <div className="flex flex-col items-center relative w-[550px]">
-        {(professor && professor.courses.length > 0) ? (
+        {professor &&
+        <>
+        <div className='self-start'>
+          <BackArrow onBack={() => navigate(-1)} text={'Back'}/>
+        </div>
+        <div className="w-full text-[30px] font-bold border-b-2 border-black pb-10">
+          Rate: {professor.firstName} {professor.lastName}
+        </div>
+        {courses.length ?
           <form onSubmit={handleSubmit(handleSubmitReview)}
-            className='relative'>
-            <div className="text-[30px] font-bold border-b-2 border-black pb-10">
-              Rate: {professor.firstName} {professor.lastName}
-            </div>
-            <img className="h-[150px] absolute top-20 right-0" src={yellow_pen} />
+            className='relative my-6' autoComplete='off'>
+            <img className="-z-50 h-[150px] absolute top-20 right-0" src={yellow_pen} />
+            
             {/* COURSE CODE */}
-            <div className="my-5">
-              <div className='flex justify-start w-full gap-x-10 items center'>
-                <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
-                <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer"
-                {...register('courseId', 
-                {required: 'This field is required',
-                onChange:()=> {clearErrors('reviewExists')}})}>
-                  <option value={0}>Course code: </option>
-                  {professor.courses.length > 0 && professor.courses.map((c) => { 
-                      return (
-                      <option key={c.courseId} value={c.courseId}>{c.courseName}</option>
-                      );
-                  })}
-                </select>
-              </div>
-              <ErrorMessage errors={errors} name='courseId'
-                  render={({ message }) => <p className="text-red-500">{message}</p>}/>
+            <div className='flex justify-between w-full gap-x-10 items center'>
+              <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
+              <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer"
+              value={watchCourse} onChange={(e) => {
+                setValue('courseId', parseInt(e.target.value))
+                clearErrors('courseId');
+                }}>
+                <option value={-1}>Course code: </option>
+
+                {courses.map((c) => { 
+                    return (<option key={c.courseId} value={c.courseId}>{c.courseName}</option>);
+                })}
+              </select>
             </div>
+            <ErrorMessage errors={errors} name='courseId'
+                render={({ message }) => <p className="text-red-500">{message}</p>}/>
 
             {/* RATE PROFESSOR */}
-            <div className="flex justify-start my-5 w-full gap-x-10 items-center">
+            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Rate Your Professor:</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
@@ -193,7 +169,7 @@ const CreateReview = () => {
             </div>
 
             {/* DIFFICULITY */}
-            <div className="flex justify-start my-5 w-full gap-x-10 items-center">
+            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">How difficult was the professor?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
@@ -217,7 +193,7 @@ const CreateReview = () => {
             </div>
 
             {/* WOULD YOU TAKE AGAIN */}
-            <div className="flex justify-start my-5 w-full gap-x-10 items-center">
+            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Would you take this professor again?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
@@ -236,7 +212,7 @@ const CreateReview = () => {
             </div>
 
             {/* MANDATORY ATTENDANCE */}
-            <div className="flex justify-start my-5 w-full gap-x-10 items-center">
+            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Was attendance mandatory?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
@@ -255,27 +231,28 @@ const CreateReview = () => {
             </div>
 
             {/* GRADE RECEIVED */}
-            <div className="flex justify-start my-5 w-full gap-x-10 items-center">
+            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Select grade recieved:</p>
-              <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer">
-                <option value="none">Select grade </option>
-                <option value="a">A</option>
-                <option value="a-">A-</option>
-                <option value="b+">B+</option>
-                <option value="b">B</option>
-                <option value="b-">B-</option>
-                <option value="c+">C+</option>
-                <option value="c+">C+</option>
-                <option value="c">C</option>
-                <option value="c-">C-</option>
-                <option value="d+">D+</option>
-                <option value="d">D</option>
-                <option value="d-">D-</option>
-                <option value="f">F</option>
-                <option value="d/w">Drop/Withdrawal</option>
-                <option value="nsy">Not sure yet </option>
-                <option value="rnts">Rather not to say</option>
-              </select>
+                <select className="max-h-[60px]
+                border-black border-[1px] px-[20px] py-[7px] cursor-pointer">
+                  <option value="none">Select grade </option>
+                  <option value="a">A</option>
+                  <option value="a-">A-</option>
+                  <option value="b+">B+</option>
+                  <option value="b">B</option>
+                  <option value="b-">B-</option>
+                  <option value="c+">C+</option>
+                  <option value="c+">C+</option>
+                  <option value="c">C</option>
+                  <option value="c-">C-</option>
+                  <option value="d+">D+</option>
+                  <option value="d">D</option>
+                  <option value="d-">D-</option>
+                  <option value="f">F</option>
+                  <option value="d/w">Drop/Withdrawal</option>
+                  <option value="nsy">Not sure yet </option>
+                  <option value="rnts">Rather not to say</option>
+                </select>
             </div>
 
             {/* TAGS */}
@@ -327,9 +304,11 @@ const CreateReview = () => {
               </div>
             </div>
           </form>
-        ) : <>
+        : <>
         <p>Professor currently have no courses</p>
         </>}
+        </>
+        }
       </div>
     </section>
     <Footer/>

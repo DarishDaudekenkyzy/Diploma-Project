@@ -45,9 +45,6 @@ namespace ReviewAppProject.Data.Repository
         {
             return await _context.Faculties
                 .Where(f => f.FacultyId.Equals(facultyId))
-                .Include(f => f.University)
-                .Include(f => f.Courses)
-                .Include(f => f.Professors)
                 .FirstOrDefaultAsync()
                 ?? throw new FacultyNotFoundException();
 
@@ -56,54 +53,51 @@ namespace ReviewAppProject.Data.Repository
         public async Task<Faculty> GetFacultyByUniversityIdAndNameAsync(int universityId, string facultyName)
         {
             return await _context.Faculties
-                .Where(f => f.UniversityId == universityId)
-                .Where(f => f.FacultyName.Equals(facultyName))
+                .Where(f => f.UniversityId == universityId 
+                && f.FacultyName.Equals(facultyName))
                 .FirstOrDefaultAsync()
                 ?? throw new FacultyNotFoundException();
 
         }
 
-        public async Task<bool> CreateFacultyAsync(FacultyCreateModel model)
+        public async Task CreateFacultyAsync(FacultyCreateModel model)
         {
-            Faculty faculty;
-            try
+            Faculty faculty = new()
             {
-                faculty = await GetFacultyByUniversityIdAndNameAsync(model.UniversityId, model.FacultyName);
-                if (faculty != null) throw new FacultyWithNameExistsException();
-                return false;
-            }
-            catch (FacultyNotFoundException)
-            {
-                faculty = new Faculty
-                {
-                    UniversityId= model.UniversityId,
-                    FacultyName= model.FacultyName,
-                    Description = model.Description
-                };
+                UniversityId= model.UniversityId,
+                FacultyName= model.FacultyName,
+                FacultyDescription = model.Description
+            };
 
-                await _context.Faculties.AddAsync(faculty);
-                await _context.SaveChangesAsync();
-
-                return true;
-            }
-
+            _context.Entry(faculty).State = EntityState.Added;
+            await _context.Faculties.AddAsync(faculty);
+            await _context.SaveChangesAsync();
         }
-        public async Task UpdateFacultyAsync(int id, FacultyCreateModel model)
+        public async Task UpdateFacultyAsync(Faculty faculty, FacultyCreateModel model)
         {
-            var faculty = await GetFacultyByIdAsync(id);
-
             faculty.FacultyName = model.FacultyName;
-            faculty.Description = model.Description;
+            faculty.FacultyDescription = model.Description;
 
-            _context.Faculties.Attach(faculty);
+            _context.Entry(faculty).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteFacultyAsync(Faculty faculty) {
+            _context.Entry(faculty).State = EntityState.Deleted;
+            _context.Faculties.Remove(faculty);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task IncrementCoursesCount(Faculty faculty) {
+            faculty.CoursesCount++;
             _context.Entry(faculty).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteFacultyAsync(int id) {
-            var faculty = await GetFacultyByIdAsync(id);
+        public async Task DecrementCoursesCount(Faculty faculty)
+        {
+            faculty.CoursesCount--;
 
-            _context.Faculties.Remove(faculty);
+            _context.Entry(faculty).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
     }

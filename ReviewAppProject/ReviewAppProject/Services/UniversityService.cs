@@ -20,7 +20,7 @@ namespace ReviewAppProject.Services
         public async Task<(bool, Exception?)> CreateUniversityAsync(UniversityCreateModel model) {
             try
             {
-                var university = await _repository.CreateUniversityAsync(model);
+                await _repository.CreateUniversityAsync(model);
                 return (true, null);
             }
             catch (UniversityExistsException e) { return (false, e); }
@@ -66,9 +66,11 @@ namespace ReviewAppProject.Services
         public async Task<(bool, Exception?)> UpdateUniversityAsync(int id, UniversityUpdateModel model) {
             try
             {
-                var updated = await _repository.UpdateUniversityAsync(id, model);
+                var university = await _repository.GetUniversityByIdAsync(id);
+                
+                await _repository.UpdateUniversityAsync(university, model);
 
-                return (updated, null);
+                return (true, null);
             }
             catch (UniversityNotFoundException e) { return (false, e); }
             catch (Exception e) { return (false, e); }
@@ -78,9 +80,10 @@ namespace ReviewAppProject.Services
         public async Task<(bool, Exception?)> DeleteUniversityAsync(int id) {
             try
             {
-                var deleted = await _repository.DeleteUniversityAsync(id);
+                var university = await _repository.GetUniversityByIdAsync(id);
+                await _repository.DeleteUniversityAsync(university);
 
-                return (deleted, null);
+                return (true, null);
             }
             catch (UniversityNotFoundException e) { return (false, e); }
             catch (Exception e) { return (false, e); }

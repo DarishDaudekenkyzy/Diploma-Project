@@ -7,9 +7,13 @@ namespace ReviewAppProject.Data.Repository.Interfaces
     public interface IUserRepository
     {
         public IAsyncEnumerable<User> GetAllUsersAsync();
+        public IAsyncEnumerable<User> GetUsersWithPatternAsync(string pattern);
         public Task<User> GetUserByIdAsync(int id);
         public Task<User> GetUserByEmailAsync(string email);
-        public Task<bool> CreateUserAsync(UserCreateModel user);
-        public Task<bool> UpdateUserAsync(int id, UserCreateModel user);
+        public Task<User> CreateUserAsync(UserCreateModel user);
+        public Task UpdateUserAsync(User user, UserCreateModel model);
+
+        public Task DeleteUserAsync(User user);
+        public Task<bool> IsUserWithEmailExists(string email);
     }
 }

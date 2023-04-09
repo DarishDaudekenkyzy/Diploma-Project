@@ -1,7 +1,6 @@
 ﻿using ReviewAppProject.Data.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using ReviewAppProject.Data.Models.Review;
 
 namespace ReviewAppProject.Models
 {

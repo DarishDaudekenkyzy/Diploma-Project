@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using ReviewAppProject.Data.Models.Review;
+using ReviewAppProject.Data.Models;
 using ReviewAppProject.Exceptions;
 using ReviewAppProject.Models;
 using ReviewAppProject.Services;
 using ReviewAppProject.ViewModels;
-using Serilog;
 
 namespace ReviewAppProject.Controllers
 {
@@ -23,10 +21,6 @@ namespace ReviewAppProject.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReviewById(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model object");
-            }
             (ReviewProfessor? rp, Exception? exception) = await _service.GetReviewByIdAsync(id);
 
 
@@ -39,7 +33,7 @@ namespace ReviewAppProject.Controllers
             if (exception is ArgumentException)
                 return BadRequest(exception.Message);
             else if (exception is ReviewNotFoundException)
-                return BadRequest("Review with provided id doesn't exist.");
+                return BadRequest("Review Not Found");
             else
                 return StatusCode(500, "Internal server error");
         }
@@ -77,55 +71,65 @@ namespace ReviewAppProject.Controllers
             }
         }
 
+        [HttpGet("Course/{courseId}")]
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetReviewsOfCourse(int courseId) {
+            var reviews = _service.GetReviewsOfCourseAsync(courseId);
+
+            await foreach (var review in reviews)
+            {
+                yield return new ReviewProfessorViewModel(review);
+            }
+        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateReviewProfessorAsync(ReviewProfessorCreateModel rpModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model object");
-            }
-            (ReviewProfessor? rp, Exception? exception) = await _service.CreateReviewProfessorAsync(rpModel);
+            if (!ModelState.IsValid) return BadRequest("Invalid model object");
 
-            if (rp != null && exception is null) return Ok(rp);
+            (bool created, Exception? e) = await _service.CreateReviewProfessorAsync(rpModel);
 
-            if (exception is ArgumentException)
-                return BadRequest(exception.Message);
-            else if (exception is ReviewProfessorByUserExistsException)
+            if (created && e is null) return Ok();
+
+            if (e is ArgumentException)
+                return BadRequest(e.Message);
+            else if (e is ReviewProfessorByUserExistsException)
                 return BadRequest("The review for this professor and this course by current user is already exists.");
             else
-                return StatusCode(500, exception.StackTrace);
+                return StatusCode(500, e.StackTrace);
         }
 
-        [HttpPost("like_dislike")]
-        public async Task<IActionResult> LikeReviewAsync(ReviewProfessorLikeDislikeModel model) {
-            if (ModelState.IsValid) {
-                (bool done, Exception? exception) = await _service.LikeDislikeReview(model);
+        [HttpPut("Like/{reviewId}/{userId}")]
+        public async Task<IActionResult> LikeReviewAsync(int reviewId, int userId) {
+            (bool liked, Exception? e) = await _service.LikeReviewAsync(reviewId, userId);
 
-                if (done && exception is null)
-                {
-                    (int likes, int dislikes) result = (await _service.GetLikes(model.ReviewId), await _service.GetDislikes(model.ReviewId));
-                    return Ok(result);
-                }
+            if (liked && e is null) return Ok();
 
-                if (exception is UserNotFoundException) return BadRequest("User not found");
-                else if (exception is ReviewNotFoundException) return BadRequest("Review not found");
-                else if (exception is AlreadyDislikedException) return BadRequest("Already disliked");
-                else if (exception is AlreadyLikedException) return BadRequest("Already liked");
-                else return StatusCode(500, exception.StackTrace);
-            }
-            return BadRequest("Model is not valid");
+            if (e is UserNotFoundException) return BadRequest("User not found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review not found");
+            else if (e is AlreadyLikedException) return BadRequest("Already liked");
+            else return StatusCode(500, e.StackTrace);
         }
 
-        [HttpDelete("Delete/{userId}/{reviewId}")]
-        public async Task<IActionResult> DeleteReviewByIdAsync(int userId, int reviewId) {
-            (bool deleted, Exception? exception) = await _service.DeleteUserReviewByIdAsync(userId, reviewId);
+        [HttpPut("Dislike/{reviewId}/{userId}")]
+        public async Task<IActionResult> DislikeReviewAsync(int reviewId, int userId)
+        {
+            (bool disliked, Exception? e) = await _service.DislikeReviewAsync(reviewId, userId);
 
-            if (deleted && exception == null) {
-                return Ok();
-            }
+            if (disliked && e is null) return Ok();
+
+            if (e is UserNotFoundException) return BadRequest("User not found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review not found");
+            else if (e is AlreadyDislikedException) return BadRequest("Already disliked");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpDelete("{reviewId}")]
+        public async Task<IActionResult> DeleteReviewByIdAsync(int reviewId) {
+            (bool deleted, Exception? exception) = await _service.DeleteReviewAsync(reviewId);
+
+            if (deleted && exception == null) return Ok();
 
             if (exception is ReviewNotFoundException) return BadRequest("Review not found");
-            if (exception is UserNotFoundException) return BadRequest("User not found");
             else return StatusCode(500, exception.StackTrace);
         }
     }

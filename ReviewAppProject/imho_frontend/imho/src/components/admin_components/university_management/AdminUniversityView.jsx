@@ -3,40 +3,28 @@ import pen from '../../../assets/pen.svg';
 
 import { useState, useEffect } from "react";
 import { api_getUniversityById } from '../../../api/UniversityApi';
+import { api_getFacultiesInUniversity } from '../../../api/FacultyApi';
 
-export default function UniversityView({setSelectedUniversity, setViewUniversity, setEditUniversity, uniId}) {
+export default function UniversityView({uni, setViewUniversity, setEditUniversity}) {
     const [university, setUniversity] = useState();
+    const [faculties, setFaculties] = useState([]);
   
     useEffect(() => {
-      loadUniversity(uniId);
+      setUniversity(uni);
+      loadFaculties(uni.id);
     }, [])
   
-    async function loadUniversity(uniId) {
-      await api_getUniversityById(uniId)
+    async function loadFaculties(uniId) {
+      await api_getFacultiesInUniversity(uniId)
       .then(data => {
-        console.log(data);
-        setUniversity(data);
+        setFaculties(data);
       })
+      .catch(err => console.log(err));
     }
   
     return (
       university && 
       <>
-      {/* BACK BUTTON */}
-      <div className='flex flex-row items-center my-4'>
-        <div className='flex w-8 h-8 gap-1 relative'
-          onClick={() => {
-            setSelectedUniversity(false);
-            setViewUniversity(false);
-          }}>
-          <div className='w-full h-full flex items-end justify-center absolute cursor-pointer 
-          hover:-translate-x-2 transition-transform'>
-            <img className='w-6' src={backIcon} alt='back'/>
-          </div>
-        </div>
-        <p className='md:text-[35px]'>{university.name}</p>
-      </div>
-  
       <div className='mb-2 flex gap-2 items-center cursor-pointer hover:underline'
         onClick={() => {
           setViewUniversity(false);
@@ -66,10 +54,10 @@ export default function UniversityView({setSelectedUniversity, setViewUniversity
         
       {/* FACULTIES */}
       <>
-      {university.faculties && university.faculties.length > 0 &&
+      {faculties.length > 0 &&
       <div className='my-4'>
         <p className='text-lg font-semibold'>Faculties</p>
-        {university.faculties.map((faculty, index) => {
+        {faculties.map((faculty, index) => {
           return (
             <div key={index}>
               <p>{index+1} {faculty.facultyName}</p>

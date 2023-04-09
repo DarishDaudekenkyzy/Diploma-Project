@@ -29,13 +29,20 @@ namespace ReviewAppProject.Controllers
             }
         }
 
+        [HttpGet("Search/{searchInput}")]
+        public async IAsyncEnumerable<UserViewModel> GetUsersWithPatternAsync(string searchInput) {
+            var users = _service.GetUsersWithPatternAsync(searchInput);
+
+            await foreach (var user in users) {
+                yield return new UserViewModel(user);
+            }
+        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateUserAsync(UserCreateModel postModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid model object");
-            }
+            if (!ModelState.IsValid) return BadRequest("Invalid model object");
+
             (User? user, Exception? exception) = await _service.CreateUserAsync(postModel);
 
             if (user != null && exception is null) return Ok(user);
@@ -67,6 +74,16 @@ namespace ReviewAppProject.Controllers
                 return BadRequest("Wrong password.");
             else
                 return StatusCode(500, "Internal server error");
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserAsync(int userId) {
+            (bool deleted, Exception? e) = await _service.DeleteUserAsync(userId);
+
+            if (deleted && e is null) return Ok();
+
+            if (e is UserNotFoundException) return NotFound();
+            else return StatusCode(500, e.StackTrace);
         }
     }
 }

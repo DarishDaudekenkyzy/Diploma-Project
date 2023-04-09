@@ -53,7 +53,7 @@ import { ErrorMessage } from '@hookform/error-message';
     }
   
   return (
-    <div className='w-full h-screen top-0 absolute bg-[rgb(60,60,60,0.4)]'>
+    <div className='z-50 w-full h-screen top-0 absolute bg-[rgb(60,60,60,0.4)]'>
         <div className="flex flex-col items-center mt-[10px] m-auto p-[10px] max-w-[500px] bg-white" ref={loginRef}>
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>
         <p className="text-black text-[20px] sm:text-[30px] font-bold mb-[10px]">Login to your account</p>

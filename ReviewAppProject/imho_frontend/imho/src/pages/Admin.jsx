@@ -1,13 +1,12 @@
 import { useState, useContext } from 'react';
 
-import { Header, 
-    Footer, 
-    ReviewManagement,
-    UserManagement,
-    ProfessorManagement,
-    CourseManagement } from '../components';
-  import UniversityManagement from '../components/admin_components/university_management/UniversityManagement';
-  import FacultyManagement from '../components/admin_components/faculty_management/FacultyManagement';
+import { Header, Footer} from '../components';
+import UniversityManagement from '../components/admin_components/university_management/UniversityManagement';
+import FacultyManagement from '../components/admin_components/faculty_management/FacultyManagement';
+import CourseManagement from '../components/admin_components/course_management/CourseManagement';
+import ProfessorManagement from '../components/admin_components/professor_management/ProfessorManagement';
+import UserManagement from '../components/admin_components/user_management/UserManagement';
+import ReviewManagement from '../components/admin_components/review_management/ReviewManagement';
 
 import styles from '../style';
 import { UserContext } from '../App';

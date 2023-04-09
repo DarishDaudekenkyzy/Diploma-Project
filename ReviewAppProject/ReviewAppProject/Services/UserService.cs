@@ -24,14 +24,25 @@ namespace ReviewAppProject.Services
             }
         }
 
+        public async IAsyncEnumerable<User> GetUsersWithPatternAsync(string pattern) {
+            var users = _userRepository.GetUsersWithPatternAsync(pattern);
+
+            await foreach (var user in users) {
+                yield return user;
+            }
+        }
+
         public async Task<(User?, Exception?)> CreateUserAsync(UserCreateModel userModel)
         {
             try
             {
-                bool result = await _userRepository.CreateUserAsync(userModel);
+                if (!await _userRepository.IsUserWithEmailExists(userModel.Email))
+                {
+                    var user = await _userRepository.CreateUserAsync(userModel);
 
-                var user = await _userRepository.GetUserByEmailAsync(userModel.Email);
-                return (user, null);
+                    return (user, null);
+                }
+                else throw new UserWithEmailExistsException();
             }
             catch (ArgumentException e)             { return (null, e); }
             catch (UserWithEmailExistsException e)  { return (null, e); }
@@ -45,12 +56,22 @@ namespace ReviewAppProject.Services
                 var user = await _userRepository.GetUserByEmailAsync(userSignInModel.Email);
                 if (!user.Password.Equals(userSignInModel.Password)) {
                     return (user, new WrongPasswordException());
-                }
-                return (user, null);
+                } else return (user, null);
             }
             catch (ArgumentException e) { return (null, e); }
             catch (UserNotFoundException e) { return (null, e); }
             catch (Exception e) { return (null, e); }
+        }
+
+        public async Task<(bool, Exception?)> DeleteUserAsync(int userId) {
+            try
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                await _userRepository.DeleteUserAsync(user);
+                return (true, null);
+            }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
         }
     }
 }

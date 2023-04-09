@@ -55,7 +55,7 @@ namespace ReviewAppProject.Data.Repository
                 ?? throw new UniversityNotFoundException();
         }
 
-        public async Task<University> CreateUniversityAsync(UniversityCreateModel model) {
+        public async Task CreateUniversityAsync(UniversityCreateModel model) {
             var university = new University
             {
                 Name = model.Name,
@@ -64,31 +64,26 @@ namespace ReviewAppProject.Data.Repository
             };
             await _context.Universities.AddAsync(university);
             await _context.SaveChangesAsync();
-
-            return await GetUniversityByNameAsync(model.Name);
         }
 
-        public async Task<bool> UpdateUniversityAsync(int id, UniversityUpdateModel model) {
-            var university = await GetUniversityByIdAsync(id);
+        public async Task UpdateUniversityAsync(University uni, UniversityUpdateModel model) {
 
-            if(model.Name != null)
-                university.Name = model.Name;
-            if(model.Description != null)
-                university.Description = model.Description;
-            if (model.Acronym != null)
-                university.Acronym = model.Acronym;
+            if(model.Name != null && !uni.Name.Equals(model.Name))
+                uni.Name = model.Name;
+            if(model.Description != null && !uni.Description.Equals(model.Description))
+                uni.Description = model.Description;
+            if (model.Acronym != null && !uni.Acronym.Equals(model.Acronym))
+                uni.Acronym = model.Acronym;
 
+            _context.Entry(uni).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> DeleteUniversityAsync(int id) {
-            var university = await GetUniversityByIdAsync(id);
+        public async Task DeleteUniversityAsync(University uni) {
 
-            _context.Universities.Remove(university);
+            _context.Universities.Remove(uni);
+            _context.Entry(uni).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }

@@ -5,12 +5,14 @@ import check from '../../../assets/check.svg';
 import eye from '../../../assets/eye.svg';
 import pen from '../../../assets/pen.svg';
 import trash from '../../../assets/trash.svg';
-import plusIcon from '../../../assets/plusIcon.svg';
-import deleteIcon from '../../../assets/deleteIcon.svg';
+import BackArrow from '../BackArrow';
+import AddNewButton from '../AddNewButton';
+
 import UniversityView from './AdminUniversityView';
 import UniversityEdit from './AdminUniversityEdit';
 import AdminUniversityAdd from './AdminUniversityAdd';
 import { api_deleteUniversity, api_getAllUniversities } from '../../../api/UniversityApi';
+import Loading from '../../Loading';
 
 const UniversityManagement = () => {
   const [universities, setUniversities] = useState([]);
@@ -47,74 +49,77 @@ const UniversityManagement = () => {
 
   return (
     <div className="flex flex-col px-8">
-      {selectedUniversity ?
-        <>
-        {viewUniversity && <UniversityView 
-          setSelectedUniversity={setSelectedUniversity}
-          setViewUniversity={setViewUniversity}
-          setEditUniversity={setEditUniversity}
-          uniId={selectedUniversity.id}/>}
-
-        {editUniversity && <UniversityEdit 
-          setSelectedUniversity={setSelectedUniversity}
-          loadUniversities={loadUniversities}
-          setEditUniversity={setEditUniversity}
-          university={selectedUniversity}/>}
-        </>
-      :
-      addUniversity ?
-      <AdminUniversityAdd setAddUniversity={setAddUniversity} loadUniversities={loadUniversities}/>
-      :
-      <>
       <p className={`md:text-[35px] mb-6`}>University Management</p>
-      <div className='flex h-6 gap-2 mb-6 items-center cursor-pointer
-      hover:h-8 hover:text-lg transition-all'
-      onClick={() => setAddUniversity(true)}>
-          <img className='h-full' src={plusIcon} alt='plusIcon'/>
-          <p className='font-semibold'>Add new University</p>
-      </div>
+      
+      {viewUniversity && selectedUniversity && <>
+        <BackArrow onBack={() => {setSelectedUniversity(false);setViewUniversity(false);}} text={selectedUniversity.name}/>
+        <UniversityView 
+          uni={selectedUniversity}
+          setViewUniversity={setViewUniversity}
+          setEditUniversity={setEditUniversity}/>
+      </>}
 
-      <div className="w-[800px]">
-          <div className="flex justify-around border-black border-b-2 pb-[20px]">
-              <p className="text-[25px] w-[25%]">Name</p>
-              <p className="text-[25px] w-[25%]">Acronym</p>
-              <p className="text-[25px] w-[25%] text-center">Actions</p>
-          </div>
-          {loading && 
-            <div>
-            <p>Loading...</p> 
-            </div>
-          }
-          {universities.length > 0 &&
-            universities.map((uni) => {
-              return (
-              <div key={uni.id} className="flex justify-around items-center border-black border-b-2 py-[10px]">
-                  <p className="w-[25%]">{uni.name}</p>
-                  <p className="w-[25%]">{uni.acronym}</p>
-                  <div className="flex items-center w-[25%] justify-center">
-                      <img onClick={() => {
-                        setSelectedUniversity(uni);
-                        setViewUniversity(true);
-                      }
-                      }
-                      className="h-[35px] cursor-pointer" src={eye} alt="eye" />
+      {editUniversity && selectedUniversity &&<>
+      <BackArrow onBack={() => {setSelectedUniversity(false);setEditUniversity(false);}} 
+      text={`Editing ${selectedUniversity.name}`}/>
+      <UniversityEdit 
+        setSelectedUniversity={setSelectedUniversity}
+        loadUniversities={loadUniversities}
+        setEditUniversity={setEditUniversity}
+        university={selectedUniversity}/>
+      </>}
+        
+      
+      {addUniversity &&
+      <AdminUniversityAdd setAddUniversity={setAddUniversity} loadUniversities={loadUniversities}/>
+      }
+      
+      {!addUniversity && !viewUniversity && !editUniversity && !selectedUniversity &&
+      <div className="w-[800px] mt-4 mb-8">
+        {loading && <Loading/>}
 
-                      <img onClick={() => {
-                        setSelectedUniversity(uni);
-                        setEditUniversity(true);
-                      }}
-                      className="h-[25px] cursor-pointer" src={pen} alt="pen" />
-                      <img onClick={() => {
-                        deleteUniversity(uni.id);}}
-                      className="h-[25px] cursor-pointer" src={trash} alt="trash" />
-                      <img className="h-[25px]" src={check} alt="check" />
-                  </div>
-              </div>
-              );
-            })
-          }
+        <AddNewButton handleAdd={() => setAddUniversity(true)} text={'Add New University'} />
+        <table className='w-full my-4'>
+          <thead>
+            <tr className='font-semibold border-b-2 border-black text-xl'>
+              <td className='py-4 w-1/3'>Name</td>
+              <td className='py-4 text-center w-1/3'>Acronym</td>
+              <td className='py-4 text-center w-1/3'>Actions</td>
+            </tr>
+          </thead>
+          <tbody>
+            {universities.length > 0 &&
+              universities.map((uni, index) => {
+                return (
+                <tr key={index} className={`${index !== 0 && 'border-t-2 border-black'} `}>
+                    <td className="py-3">{uni.name}</td>
+                    <td className="py-3 text-center">{uni.acronym}</td>
+                    <td className="py-3 flex gap-2 items-center justify-center">
+                        <img onClick={() => {
+                          setSelectedUniversity(uni);
+                          setViewUniversity(true);
+                        }}
+                        className="h-8 cursor-pointer 
+                        hover:-translate-y-1 transition-transform" src={eye} alt="eye" />
+
+                        <img onClick={() => {
+                          setSelectedUniversity(uni);
+                          setEditUniversity(true);
+                        }}
+                        className="h-6 cursor-pointer
+                        hover:-translate-y-1 transition-transform" src={pen} alt="pen" />
+                        <img onClick={() => {
+                          deleteUniversity(uni.id);}}
+                        className="h-6 cursor-pointer
+                        hover:-translate-y-1 transition-transform" src={trash} alt="trash" />
+                    </td>
+                </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
       </div>
-      </>
       }
     </div>
   )

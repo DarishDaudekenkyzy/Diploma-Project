@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Data.Repository.Interfaces;
 using ReviewAppProject.Exceptions;
 

@@ -1,8 +1,5 @@
 ﻿using ReviewAppProject.Data.Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using ReviewAppProject.ViewModels;
-using ReviewAppProject.Data.Models.Review;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ReviewAppProject.ViewModels

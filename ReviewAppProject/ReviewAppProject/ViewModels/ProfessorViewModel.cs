@@ -22,23 +22,21 @@ namespace ReviewAppProject.ViewModels
         }
 
         public ProfessorViewModel(Professor professor) {
-            ProfessorId = professor.ProfessorId;
+            ProfessorId = professor.Id;
             FirstName = professor.FirstName;
             LastName = professor.LastName;
             Email = professor.Email;
             DifficultyPercentage = professor.DifficultyPercentage;
             WouldTakeAgainPercentage = professor.WouldTakeAgainPercentage;
-            Rating = professor.Rating;
+            Rating = professor.AverageRating;
             ReviewsCount = professor.ReviewsCount;
 
-            if (professor.University != null)
-                University = new UniversityViewModel(new University { 
-                    Id = professor.University.Id,
-                    Name = professor.University.Name,
-                    Acronym = professor.University.Acronym
-                });
-            if (professor.Faculty != null)
+            if (professor.Faculty != null) { 
                 Faculty = new FacultyViewModel { FacultyId = professor.FacultyId, FacultyName = professor.Faculty.FacultyName };
+                if (professor.Faculty.University != null) { 
+                    University = new UniversityViewModel(professor.Faculty.University);
+                }
+            }
             if (!professor.Courses.IsNullOrEmpty()) {
                 foreach (var course in professor.Courses) {
                     Courses.Add(new CourseViewModel(course.Course));

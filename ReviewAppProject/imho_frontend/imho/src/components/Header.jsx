@@ -62,7 +62,7 @@ const Header = () => {
 
   return (
     <div className='relative'>
-      <header className="w-full flex justify-between 
+      <header className="w-full flex justify-between
       items-center border-black border-2 h-[48px] md:h-[100px] relative">
         <Link to="/">
           <img className="h-[40px] md:h-[80px] my-[10px] ml-[32px] md:ml-[150px]" src={logo} alt="logo"/>

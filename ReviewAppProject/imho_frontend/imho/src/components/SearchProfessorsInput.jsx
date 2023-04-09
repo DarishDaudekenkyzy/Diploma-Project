@@ -13,7 +13,7 @@ export default function SearchProfessorsInput({onSearch}) {
             console.log('empty search');
             return;
         }
-         onSearch(searchInput)
+        onSearch(searchInput)
     }
 
     return (

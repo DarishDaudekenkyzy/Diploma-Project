@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
-import plusIcon from '../../../assets/plusIcon.svg';
+
 import eye from '../../../assets/eye.svg';
 import pen from '../../../assets/pen.svg';
 import trash from '../../../assets/trash.svg';
-import SearchUniversitiesInput from '../../SearchUniversitiesInput';
+import school from '../../../assets/school_icon.svg';
 import { api_deleteFaculty, api_getFacultiesInUniversity } from '../../../api/FacultyApi';
+import { api_searchUniversities } from '../../../api/UniversityApi';
+import AdminSearchInput from '../AdminSearchInput';
 import AdminFacultyAdd from './AdminFacultyAdd';
 import AdminFacultyView from './AdminFacultyView';
 import AdminFacultyEdit from './AdminFacultyEdit';
+import AddNewButton from '../AddNewButton';
+import BackArrow from '../BackArrow';
 
 export default function FacultyManagement() {
     const [loading, setLoading] = useState(false);
+    const [searchUniverstiesResults, setSearchUniverstiesResults] = useState([]);
     const [university, setUniversity] = useState();
     const [faculties, setFaculties] = useState();
 
@@ -37,41 +42,67 @@ export default function FacultyManagement() {
         setLoading(false);
     }
 
-    function onUniversitySelect(uni) {
-        console.log(uni);
-        setUniversity(uni);
-    }
-
     async function deleteFaculty(id) {
         await api_deleteFaculty(id)
         .then(loadFaculties)
         .catch(err => console.log(err))
     }
 
+    async function onSearchUniversities(searchInput) {
+        if(searchInput === '') {
+            setSearchUniverstiesResults([])
+            return
+        }
+        await api_searchUniversities(searchInput)
+        .then(setSearchUniverstiesResults)
+        .catch(err => console.log(err));
+    }
+
+
     return (
         <div className="flex flex-col px-8">
-        {selectedFaculty ?
+        <p className={`md:text-[35px] mb-6`}>Faculty Management</p>
+
+        {viewFaculty && selectedFaculty && <>
+        <BackArrow onBack={() => {setViewFaculty(false);setSelectedFaculty(null)}} text={selectedFaculty.facultyName}/>
+        <AdminFacultyView setViewFaculty={setViewFaculty} setEditFaculty={setEditFaculty} fac={selectedFaculty}/>
+        </>}
+
+        {editFaculty && selectedFaculty && <>
+        <BackArrow onBack={() => {setEditFaculty(false);setSelectedFaculty(null)}} 
+        text={`Editing ${selectedFaculty.facultyName}`}/>
+        <AdminFacultyEdit
+        setEditFaculty={setEditFaculty} setSelectedFaculty={setSelectedFaculty}
+        faculty={selectedFaculty} uniId={university.id} loadFaculties={loadFaculties}/>
+        </>}
+        
+        {addFaculty && university &&
         <>
-            {viewFaculty && <AdminFacultyView 
-            setViewFaculty={setViewFaculty} setSelectedFaculty={setSelectedFaculty}
-            setEditFaculty={setEditFaculty}
-            facultyId={selectedFaculty.facultyId}/>}
-            {editFaculty && <AdminFacultyEdit
-            setEditFaculty={setEditFaculty} setSelectedFaculty={setSelectedFaculty}
-            faculty={selectedFaculty} uniId={university.id}/>}
-        </>
-        :
-        addFaculty ? 
-        <>
+        <BackArrow onBack={() => {setAddFaculty(false);}} 
+        text={`Add New Faculty in ${university.name}`}/>
         <AdminFacultyAdd loadFaculties={loadFaculties}
         setAddFaculty={setAddFaculty} university={university}/>
-        </>
-        :
+        </>}
+
+        {!addFaculty && !viewFaculty && !editFaculty && !selectedFaculty &&
         <>
-        <p className={`md:text-[35px] mb-6`}>Faculty Management</p>
         <div className='my-2'>
-            <SearchUniversitiesInput
-            onSelect={onUniversitySelect}/>
+                <AdminSearchInput
+                onChange={onSearchUniversities} placeholder={'Search Universities'}/>
+                {searchUniverstiesResults.length > 0 &&
+                <div className="border border-black my-4">
+                    {searchUniverstiesResults.map((uni, index) => {
+                        return(
+                            <div key={index} className={`py-2 px-4 ${index !== 0 && 'border-t'} border-black
+                            flex gap-2 items-center hover:bg-gray-200 cursor-pointer`}
+                            onClick={() => {setUniversity(uni); setSearchUniverstiesResults([])}}>
+                                <img className="h-6" src={school}/>
+                                {uni.name}
+                            </div>
+                        );
+                    })}
+                </div>
+                }
         </div>
 
         {university &&
@@ -79,14 +110,7 @@ export default function FacultyManagement() {
             <p className='text-xl mb-4'>Faculties in 
                 <span className='font-semibold'> {university.name}</span>
             </p>
-            <div>
-                <div className='w-fit flex h-4 gap-2 items-center cursor-pointer
-                hover:h-6 hover:text-lg transition-all'
-                onClick={() => setAddFaculty(true)}>
-                    <img className='h-full' src={plusIcon} alt='plusIcon'/>
-                    <p className='font-semibold'>Add new Faculty</p>
-                </div>
-            </div>
+            <AddNewButton handleAdd={() => setAddFaculty(true)} text='Add new Faculty'/>
         </div>
         }
 
@@ -125,8 +149,7 @@ export default function FacultyManagement() {
               
           </div>
         }
-        </>
-        }
+        </>}
         </div>
       )
 }

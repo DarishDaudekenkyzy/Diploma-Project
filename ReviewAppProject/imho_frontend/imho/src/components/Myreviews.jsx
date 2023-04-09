@@ -8,6 +8,7 @@ import axios from 'axios';
 import thumb_up from '../assets/thumb_up.svg'
 import thumb_down from '../assets/thumb_down.svg'
 import trashIcon from '../assets/trash.svg'
+import { api_DeleteReview, api_getReviewsOfUser } from '../api/ReviewApi';
 
 const Myreviews = () => {
   const {user, setUser} = useContext(UserContext);
@@ -17,44 +18,16 @@ const Myreviews = () => {
     loadMyReviews();
   }, [])
   
-  function loadMyReviews() {
-    axios.get(`https://localhost:7040/Reviews/User/${user.userId}`)
-    .then((response) => {
-      console.log(response.data);
-      setMyReviews(response.data);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+  async function loadMyReviews() {
+    await api_getReviewsOfUser(user.id)
+    .then(setMyReviews)
+    .catch(err => console.log(err));
   }
 
-  function handleDeleteReview(reviewId) {
-    axios.delete(`https://localhost:7040/Reviews/Delete/${user.userId}/${reviewId}`)
-    .then((response) => {
-      console.log(response)
-      loadMyReviews();
-    })
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-      console.log(error.config);
-    });
+  async function handleDeleteReview(reviewId) {
+    await api_DeleteReview(reviewId)
+    .then(loadMyReviews)
+    .catch(err => console.log(err))
   }
 
   return (

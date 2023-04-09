@@ -38,6 +38,21 @@ namespace ReviewAppProject.Controllers
             }
         }
 
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUniversityByIdAsync(int id)
+        {
+            (University? uni, Exception? e) = await _service.GetUniversityByIdAsync(id);
+
+            if (uni != null && e == null)
+            {
+                return Ok(new UniversityViewModel(uni));
+            }
+
+            if (e is UniversityNotFoundException) return BadRequest("University Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateUniversityAsync(UniversityCreateModel model) {
 
@@ -55,17 +70,6 @@ namespace ReviewAppProject.Controllers
             else return StatusCode(500, e.StackTrace);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUniversityByIdAsync(int id) {
-            (University? uni, Exception? e) = await _service.GetUniversityByIdAsync(id);
-
-            if (uni != null && e == null) { 
-                return Ok( new UniversityViewModel(uni));
-            }
-
-            if (e is UniversityNotFoundException) return BadRequest("University Not Found");
-            else return StatusCode(500, e.StackTrace);
-        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUniversityAsync(int id, UniversityUpdateModel model) {

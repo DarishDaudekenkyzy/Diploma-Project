@@ -49,9 +49,17 @@ namespace ReviewAppProject.Services
                 //check if university exists
                 _ = await _uniRepository.GetUniversityByIdAsync(model.UniversityId);
 
-                bool result = await _facultyRepository.CreateFacultyAsync(model);
+                //check if university already has faculty with provided name
+                try
+                {
+                    _ = await _facultyRepository.GetFacultyByUniversityIdAndNameAsync(model.UniversityId, model.FacultyName);
+                    throw new FacultyWithNameExistsException();
+                }
+                catch (FacultyNotFoundException) { }
 
-                return (result, null);
+                await _facultyRepository.CreateFacultyAsync(model);
+
+                return (true, null);
             }
             catch (UniversityNotFoundException e) { return (false, e); }
             catch (ArgumentException e) { return (false, e); }
@@ -62,7 +70,8 @@ namespace ReviewAppProject.Services
         public async Task<(bool, Exception?)> UpdateFacultyAsync(int id, FacultyCreateModel model) {
             try
             {
-                await _facultyRepository.UpdateFacultyAsync(id, model);
+                var faculty = await _facultyRepository.GetFacultyByIdAsync(id);
+                await _facultyRepository.UpdateFacultyAsync(faculty, model);
                 return (true, null);
             }
             catch (FacultyNotFoundException e) { return (false, e); }
@@ -71,7 +80,8 @@ namespace ReviewAppProject.Services
 
         public async Task<(bool, Exception?)> DeleteFacultyAsync(int id) {
             try {
-                await _facultyRepository.DeleteFacultyAsync(id);
+                var faculty = await _facultyRepository.GetFacultyByIdAsync(id);
+                await _facultyRepository.DeleteFacultyAsync(faculty);
                 return (true, null);
             }
             catch (FacultyNotFoundException e) { return (false, e); }

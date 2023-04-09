@@ -104,7 +104,7 @@ const Signup = ({openSignup, setOpenSignup}) => {
   }
 
   return (
-    <div className='w-full top-0 h-screen absolute bg-[rgb(60,60,60,0.4)]'>
+    <div className='z-50 w-full top-0 h-screen absolute bg-[rgb(60,60,60,0.4)]'>
         <div className="flex flex-col items-center mt-[10px]
          m-auto max-w-[500px] bg-white p-[10px]" ref={signupRef}>
         <img className="h-[80px] my-[10px]" src={logo} alt="logo"/>

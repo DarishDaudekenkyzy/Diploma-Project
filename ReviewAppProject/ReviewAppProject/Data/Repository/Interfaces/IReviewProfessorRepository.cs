@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration.UserSecrets;
-using ReviewAppProject.Data.Models.Review;
 using ReviewAppProject.Models;
+using ReviewAppProject.Data.Models;
 
 namespace ReviewAppProject.Data.Repository.Interfaces
 {
@@ -9,18 +9,19 @@ namespace ReviewAppProject.Data.Repository.Interfaces
         public IAsyncEnumerable<ReviewProfessor> GetAllReviewsAsync();
         public IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfProfessorAsync(int professorId);
         public IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfUserAsync(int userId);
-
+        public IAsyncEnumerable<ReviewProfessor> GetAllReviewsOfCourseAsync(int courseId);
         public Task<ReviewProfessor> GetReviewByIdAsync(int? id);
-        public Task<ReviewProfessor> GetReviewByTitleAsync(string title);
-        public Task<ReviewProfessor> GetReviewByUserAndProfessorAndCourseAsync(int userId, int professorId, int courseId);
+        public Task CreateReviewAsync(ReviewProfessorCreateModel model);
+        public Task DeleteAllReviewsWithProfessorId(int professorId);
+        public Task LikeReviewAsync(ReviewProfessor review, User user);
+        public Task DislikeReviewAsync(ReviewProfessor review, User user);
 
-        public Task<bool> CreateReviewProfessorAsync(ReviewProfessorCreateModel model);
-        public Task<bool> DeleteUserReviewByIdAsync(int userId, int reviewId);
+        public Task RemoveLikeAsync(ReviewProfessor review, User user);
+        public Task RemoveDisikeAsync(ReviewProfessor review, User user);
+        public Task DeleteReviewAsync(ReviewProfessor reivew);
 
-        public Task LikeReview(int reviewId, int userId);
-        public Task DislikeReview(int reviewId, int userId);
-
-        public Task<int> GetLikesAsync(int reviewId);
-        public Task<int> GetDislikesAsync(int reviewId);
+        public Task<bool> IsReviewByUserExists(int userId, int courseId, int professorId);
+        public Task<bool> DidUserLikedReview(int reviewId, int userId);
+        public Task<bool> DidUserDislikedReview(int reviewId, int userId);
     }
 }

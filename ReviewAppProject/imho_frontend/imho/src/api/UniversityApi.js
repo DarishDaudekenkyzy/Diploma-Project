@@ -33,8 +33,8 @@ export async function api_addUniversity(data) {
     return data.promise;
 }
 
-export async function api_updateUniversity(data) {
-    const promise = axios.put(`https://localhost:7040/University/${university.id}`, data);
+export async function api_updateUniversity(uniId, data) {
+    const promise = axios.put(`https://localhost:7040/University/${uniId}`, data);
     const dataPromise = await promise
     .then((response) => response.data)
     return dataPromise

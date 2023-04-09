@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace ReviewAppProject.Data.Models.Review
+﻿namespace ReviewAppProject.Data.Models
 {
     public class ReviewTag
     {

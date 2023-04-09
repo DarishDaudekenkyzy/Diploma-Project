@@ -1,7 +1,7 @@
-﻿using ReviewAppProject.Data.Models.Review;
+﻿using ReviewAppProject.Data.Models;
 
 namespace ReviewAppProject.ViewModels
-{
+{   
     public class ReviewTagViewModel
     {
         public int TagId { get; set; }

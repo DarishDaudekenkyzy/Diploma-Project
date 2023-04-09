@@ -10,12 +10,12 @@ namespace ReviewAppProject.ViewModels
         public string LastName { get; set; }
         public string Email { get; set; }
         public int Year { get; set; }
-        public int FacultyId { get; set; }
+        public int? FacultyId { get; set; }
 
         public UserViewModel() { }
 
         public UserViewModel(User user) {
-            UserId = user.UserId;
+            UserId = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;

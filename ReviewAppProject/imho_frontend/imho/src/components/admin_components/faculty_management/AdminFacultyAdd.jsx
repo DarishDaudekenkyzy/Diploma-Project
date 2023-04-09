@@ -23,16 +23,6 @@ export default function AdminFacultyAdd({setAddFaculty, loadFaculties, universit
 
     return (
         <>
-        <div className='flex flex-row items-center mb-6'>
-            <div className='flex w-8 h-8 gap-1 relative' onClick={() => setAddFaculty(false)}>
-            <div className='w-full h-full flex items-end justify-center absolute cursor-pointer 
-            hover:-translate-x-2 transition-transform'>
-                <img className='w-6' src={backIcon} alt='back'/>
-            </div>
-            </div>
-            <p className='md:text-[35px]'>Add Faculty for {university.name}</p>
-        </div>
-
         <form onSubmit={handleSubmit(handleAddNewFaculty)}>
         {/* NAME */}
         <div className='my-4 flex flex-col'>

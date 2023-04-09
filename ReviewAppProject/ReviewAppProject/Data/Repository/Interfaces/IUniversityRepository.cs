@@ -13,12 +13,12 @@ namespace ReviewAppProject.Data.Repository.Interfaces
         public Task<University> GetUniversityByIdAsync(int id);
 
         /*CREATE*/
-        public Task<University> CreateUniversityAsync(UniversityCreateModel model);
+        public Task CreateUniversityAsync(UniversityCreateModel model);
 
         /*UPDATE|*/
-        public Task<bool> UpdateUniversityAsync(int id, UniversityUpdateModel model);
+        public Task UpdateUniversityAsync(University uni, UniversityUpdateModel model);
 
         /*DELETE*/
-        public Task<bool> DeleteUniversityAsync(int id);
+        public Task DeleteUniversityAsync(University uni);
     }
 }

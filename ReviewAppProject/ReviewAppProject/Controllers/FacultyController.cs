@@ -28,10 +28,7 @@ namespace ReviewAppProject.Controllers
 
             await foreach (var faculty in faculties)
             {
-                yield return new FacultyViewModel {
-                    FacultyId = faculty.FacultyId,
-                    FacultyName = faculty.FacultyName
-                };
+                yield return new FacultyViewModel(faculty);
             }
         }
 
@@ -69,7 +66,6 @@ namespace ReviewAppProject.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid model object");
 
-
             (bool created, Exception? exception) = await _service.CreateFacultyAsync(model);
 
             if (created && exception is null) return Ok();
@@ -79,7 +75,7 @@ namespace ReviewAppProject.Controllers
             else if (exception is UniversityNotFoundException)
                 return BadRequest("University not found.");
             else if (exception is FacultyWithNameExistsException)
-                return BadRequest("Faculty with provided email exists.");
+                return BadRequest("Faculty with provided name exists.");
             else
                 return StatusCode(500, "Internal server error");
         }

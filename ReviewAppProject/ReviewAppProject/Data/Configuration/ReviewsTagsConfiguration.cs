@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ReviewAppProject.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ReviewAppProject.Data.Models;
-using ReviewAppProject.Data.Models.Review;
 
 namespace ReviewAppProject.Data.Configuration
 {
-    public class ReviewProfessorReviewTagEntityTypeConfiguration : IEntityTypeConfiguration<ReviewProfessorReviewTag>
+    public class ReviewsTagsConfiguration : IEntityTypeConfiguration<ReviewProfessorReviewTag>
     {
         public void Configure(EntityTypeBuilder<ReviewProfessorReviewTag> builder) {
             builder.HasKey(rt => new { rt.ReviewId, rt.TagId });

@@ -1,4 +1,4 @@
-﻿using ReviewAppProject.Data.Models.Review;
+﻿using ReviewAppProject.Data.Models;
 
 namespace ReviewAppProject.Data.Repository.Interfaces
 {

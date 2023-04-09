@@ -4,10 +4,10 @@ using ReviewAppProject.Data.Models;
 
 namespace ReviewAppProject.Data.Configuration
 {
-    public class CourseEntityTypeConfiguration : IEntityTypeConfiguration<Course>
+    internal class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         public void Configure(EntityTypeBuilder<Course> builder) { 
-            builder.HasKey(e => e.CourseId);
+            builder.HasKey(x => x.Id);
             builder.HasOne(c => c.Faculty)
                 .WithMany(f => f.Courses)
                 .HasForeignKey(c => c.FacultyId)
