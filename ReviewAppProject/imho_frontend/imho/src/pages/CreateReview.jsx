@@ -14,14 +14,30 @@ import { api_getAllTags } from '../api/TagApi'
 import BackArrow from '../components/admin_components/BackArrow'
 import { api_CreateReview } from '../api/ReviewApi'
 
+// SAMPLES
+// const initProf = {firstName: "Larisa", lastName: "Bazarbayeva"}
+// const initCourses = [{courseId: 1, courseCode: "CSS101", courseName: "Course 101", facultyId: 2}, {courseId: 2, courseCode: "CSS102", courseName: "Course 102", facultyId: 2}];
+// const initTags= [
+//         {tagId: 1, tag: "Tough grader"},
+//         {tagId: 2, tag: "Funny"},
+//         {tagId: 3, tag: "Great explanations"},
+//         {tagId: 4, tag: "Get Ready to Read"},
+//         {tagId: 5, tag: "Participation Matters"},
+//         {tagId: 6, tag: "Group Projects"},
+//         {tagId: 7, tag: "Clear Grading Criteria"},
+//       ];
 const CreateReview = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [professor, setProfessor] = useState(null);
+  // const [professor, setProfessor] = useState(initProf);
   const [courses, setCourses] = useState([]);
+  // const [courses, setCourses] = useState(initCourses);
   const {user, setUser} = useContext(UserContext);
+  // const user = {id: 1, firstName: 'Name'};
   const [tags, setTags] = useState([]);
+  // const [tags, setTags] = useState(initTags);
   
   const { register, setError, clearErrors, getValues, setValue, watch, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {rating: 5, difficulty: 1, wouldTakeAgain: true, wasAttendanceMandatory: true, tags: [], courseId: -1}
@@ -49,8 +65,8 @@ const CreateReview = () => {
 
   useEffect(() => {
     if(professor !== null) {
-      loadCourses(professor.professorId);
-      loadTags();
+      // loadCourses(professor.professorId);
+      // loadTags();
     }
   }, [professor])
 
@@ -110,7 +126,7 @@ const CreateReview = () => {
     <>
     <Header/>
     <section className="flex justify-center pt-8 pb-32">
-      <div className="flex flex-col items-center relative w-[550px]">
+      <div className="flex flex-col items-center relative px-[24px] w-full sm:w-[550px]">
         {professor &&
         <>
         <div className='self-start'>
@@ -121,11 +137,11 @@ const CreateReview = () => {
         </div>
         {courses.length ?
           <form onSubmit={handleSubmit(handleSubmitReview)}
-            className='relative my-6' autoComplete='off'>
+            className='w-full relative my-6' autoComplete='off'>
             <img className="-z-50 h-[150px] absolute top-20 right-0" src={yellow_pen} />
             
             {/* COURSE CODE */}
-            <div className='flex justify-between w-full gap-x-10 items center'>
+            <div className='flex flex-col sm:flex-row gap-y-[8px] justify-between w-full gap-x-10 items-center'>
               <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
               <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer"
               value={watchCourse} onChange={(e) => {
@@ -143,7 +159,7 @@ const CreateReview = () => {
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
 
             {/* RATE PROFESSOR */}
-            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
+            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Rate Your Professor:</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
@@ -169,7 +185,7 @@ const CreateReview = () => {
             </div>
 
             {/* DIFFICULITY */}
-            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
+            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">How difficult was the professor?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
@@ -193,7 +209,7 @@ const CreateReview = () => {
             </div>
 
             {/* WOULD YOU TAKE AGAIN */}
-            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
+            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Would you take this professor again?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
@@ -212,7 +228,7 @@ const CreateReview = () => {
             </div>
 
             {/* MANDATORY ATTENDANCE */}
-            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
+            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Was attendance mandatory?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
@@ -231,7 +247,7 @@ const CreateReview = () => {
             </div>
 
             {/* GRADE RECEIVED */}
-            <div className="flex justify-between my-5 w-full gap-x-10 items-center">
+            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
               <p className="w-max text-[20px] font-semibold">Select grade recieved:</p>
                 <select className="max-h-[60px]
                 border-black border-[1px] px-[20px] py-[7px] cursor-pointer">

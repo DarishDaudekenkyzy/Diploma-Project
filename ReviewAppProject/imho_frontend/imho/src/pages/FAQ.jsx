@@ -49,25 +49,25 @@ const FAQ = () => {
   return (
     <>
         <Header />
-        <section id="faq" className={`flex flex-col items-center md:h-[1000px] py-[80px]  md:mt-[80px] 
+        <section id="faq" className={`flex flex-col items-center md:h-[1000px] px-[24px] py-[80px]  md:mt-[80px] 
         bg-[url('../assets/back_main.jpg')] bg-cover border-black border-b-2`}>
             <p className={`text-[24px] md:text-[48px] font-[KumarOne] mb-[30px] font-bold`}>Frequently asked questions(FAQ)</p>
-            <form className="flex">
-            <input className="w-[312px] md:w-[600px] border-[2px] border-primary 
-            py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" 
-            type="search" placeholder="What can we help you with?"
-            onChange={(e) => setSearchInput(e.target.value)} />
-            <button className="ml-[-40px] mt-[-30px]" type="button" onClick={() => {navigate(`/search/${searchInput}`)}}>
-                <img className="w-[30px]" src={search} alt=""/>
-            </button>
+            <form className="flex ">
+                <input className="w-[312px] md:w-[600px] border-[2px] border-primary 
+                py-[10px] px-[20px] rounded-[30px] mb-[30px] outline-0 appearance-none" 
+                type="search" placeholder="What can we help you with?"
+                onChange={(e) => setSearchInput(e.target.value)} />
+                <button className="ml-[-40px] mt-[-30px]" type="button" onClick={() => {navigate(`/search/${searchInput}`)}}>
+                    <img className="w-[30px]" src={search} alt=""/>
+                </button>
             </form>
-            <div className="w-[600px] mt-[20px]">
+            <div className="w-100 md:w-[600px] mt-[20px]">
                 <div className="flex flex-col gap-y-[20px]">
                     {data.map((item, i) => (
                         <div key={i} className="flex flex-col gap-y-2">
                             <div className="flex items-start gap-x-2 cursor-pointer" onClick={() => toggle(i)}>
-                                <span className="text-[20px] font-bold">{selected === i ? '-' : '+'}</span>
-                                <p className="text-[20px] font-bold">{item.question}</p>
+                                <span className="text-[20px] font-semibold md:font-bold">{selected === i ? '-' : '+'}</span>
+                                <p className="text-[20px] font-semibold md:font-bold">{item.question}</p>
                             </div>
                             <div className={`text-[20px] ${selected === i ? `flex` : 'hidden'}`}>
                                 <p>{item.answer}</p>

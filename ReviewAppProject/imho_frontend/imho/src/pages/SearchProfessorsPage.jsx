@@ -11,11 +11,24 @@ import SearchProfessorsInput from '../components/SearchProfessorsInput';
 import { api_searchProfessors, api_searchProfessorsInUniversity } from '../api/ProfessorsApi';
 import Loading from '../components/Loading';
 
+// SAMPLE
+// const initSearchResult = [
+//     {professorId: 1, firstName: "Alikhan", lastName: "Nurlanuly", email: "an@gmail.com", facultyId: 2, reviewsCount: 0, rating: 0.0, wouldTakeAgainPercentage: 0.0, difficultyPercentage: 0.0,
+//         courses: [{courseCode: "CSS101", courseName: "Course 101", facultyId: 2}, {courseCode: "CSS102", courseName: "Course 102", facultyId: 2},]
+// },
+//     {professorId: 2, firstName: "Abylay", lastName: "Omarov", email: "alikhanOmarov@gmail.com", facultyId: 2, reviewsCount: 0, rating: 0.0, wouldTakeAgainPercentage: 0.0, difficultyPercentage: 0.0,
+//     courses: [{courseCode: "CSS101", courseName: "Course 101", facultyId: 2}, {courseCode: "CSS102", courseName: "Course 102", facultyId: 2},]
+// },
+//     {professorId: 3, firstName: "Larissa", lastName: "Bazarbayeva", email: "l_bazarbayeva@gmail.com", facultyId: 2, reviewsCount: 0, rating: 0.0, wouldTakeAgainPercentage: 0.0, difficultyPercentage: 0.0,
+//     courses: [{courseCode: "CSS101", courseName: "Course 101", facultyId: 2}, {courseCode: "CSS102", courseName: "Course 102", facultyId: 2},]
+// },
+// ];
 
 const SearchProfessorsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // const [searchResults, setSearchResults] = useState(initSearchResult);
     const [searchResults, setSearchResults] = useState([]);
     const [university, setUniversity] = useState(null);
     const [notFound, setNotFound] = useState(false);
@@ -78,7 +91,7 @@ const SearchProfessorsPage = () => {
         <>
             <Header/>
             <section className="min-h-[700px] flex flex-col items-center mb-6">
-                <div className='w-[312px] md:w-[700px]'>
+                <div className='w-[100%] px-[24px] md:px-[0] md:w-[700px]'>
                     <p className='text-2xl mt-8 font-semibold text-center'> 
                         {university ? 
                         `Search professors in ${university.name}`
