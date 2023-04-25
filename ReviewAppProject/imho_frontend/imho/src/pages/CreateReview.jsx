@@ -65,8 +65,8 @@ const CreateReview = () => {
 
   useEffect(() => {
     if(professor !== null) {
-      // loadCourses(professor.professorId);
-      // loadTags();
+      loadCourses(professor.professorId);
+      loadTags();
     }
   }, [professor])
 
