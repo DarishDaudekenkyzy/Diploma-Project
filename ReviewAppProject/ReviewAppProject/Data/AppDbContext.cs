@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using ReviewAppProject.Data.Configuration;
 using ReviewAppProject.Data.Models;
 
@@ -14,10 +13,13 @@ namespace ReviewAppProject.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseProfessor> CoursesProfessors { get; set; }
         public DbSet<ReviewProfessor> ReviewProfessors { get; set; }
-        public DbSet<UserReviewLike> UserReviewLikes { get; set; }
-        public DbSet<UserReviewDislike> UserReviewDislikes { get; set; }
-        public DbSet<ReviewTag> Tags { get; set; }
-        public DbSet<ReviewProfessorReviewTag> ReviewsTags { get; set; }
+        public DbSet<ReviewUniversity> ReviewUniversities { get; set; }
+        public DbSet<UserReviewProfessorLike> UserReviewProfessorLikes { get; set; }
+        public DbSet<UserReviewProfessorDislike> UserReviewProfessorDislikes { get; set; }
+        public DbSet<UserReviewUniversityLike> UserReviewUniversityLikes { get; set; }
+        public DbSet<UserReviewUniversityDislike> UserReviewUniversityDislikes { get; set; }
+        public DbSet<ReviewProfessorTag> ReviewProfessorTags { get; set; }
+        public DbSet<ReviewProfessorReviewTag> ReviewsProfessorTags { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) 
             : base(options) { }
@@ -29,10 +31,17 @@ namespace ReviewAppProject.Data
             new FacultyConfiguration().Configure(modelBuilder.Entity<Faculty>());
             new CourseProfessorConfiguration().Configure(modelBuilder.Entity<CourseProfessor>());
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
+
             new ReviewProfessorConfiguration().Configure(modelBuilder.Entity<ReviewProfessor>());
+            new ReviewUniversityConfiguration().Configure(modelBuilder.Entity<ReviewUniversity>());
+
             new ReviewsTagsConfiguration().Configure(modelBuilder.Entity<ReviewProfessorReviewTag>());
-            new UserReviewLikeConfiguration().Configure(modelBuilder.Entity<UserReviewLike>());
-            new UserReviewDislikeConfiguration().Configure(modelBuilder.Entity<UserReviewDislike>());
+
+            new UserReviewProfessorLikeConfiguration().Configure(modelBuilder.Entity<UserReviewProfessorLike>());
+            new UserReviewProfessorDislikeConfiguration().Configure(modelBuilder.Entity<UserReviewProfessorDislike>());
+
+            new UserReviewUniversityLikeConfiguration().Configure(modelBuilder.Entity<UserReviewUniversityLike>());
+            new UserReviewUniversityDislikeConfiguration().Configure(modelBuilder.Entity<UserReviewUniversityDislike>());
         }
     }
 }

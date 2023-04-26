@@ -30,7 +30,7 @@ namespace ReviewAppProject.Data.Configuration
                 .HasForeignKey(r => r.ProfessorId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
             builder.HasOne(r => r.User)
-                .WithMany(u => u.Reviews)
+                .WithMany(u => u.ReviewsProfessors)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

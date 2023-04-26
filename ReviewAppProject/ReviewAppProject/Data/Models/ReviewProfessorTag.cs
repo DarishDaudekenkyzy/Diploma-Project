@@ -1,6 +1,6 @@
 ﻿namespace ReviewAppProject.Data.Models
 {
-    public class ReviewTag
+    public class ReviewProfessorTag
     {
         public int Id { get; set; }
         public string Tag { get; set; }

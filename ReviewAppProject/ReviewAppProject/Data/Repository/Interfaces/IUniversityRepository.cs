@@ -17,6 +17,8 @@ namespace ReviewAppProject.Data.Repository.Interfaces
 
         /*UPDATE|*/
         public Task UpdateUniversityAsync(University uni, UniversityUpdateModel model);
+        public Task UpdateReviewAddedAsync(University uni);
+        public Task UpdateReviewDeletedAsync(University uni);
 
         /*DELETE*/
         public Task DeleteUniversityAsync(University uni);

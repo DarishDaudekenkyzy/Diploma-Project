@@ -8,7 +8,7 @@ namespace ReviewAppProject.ViewModels
         public string Tag { get; set; }
 
         public ReviewTagViewModel() { }
-        public ReviewTagViewModel(ReviewTag tag) { 
+        public ReviewTagViewModel(ReviewProfessorTag tag) { 
             TagId= tag.Id;
             Tag = tag.Tag;
         }

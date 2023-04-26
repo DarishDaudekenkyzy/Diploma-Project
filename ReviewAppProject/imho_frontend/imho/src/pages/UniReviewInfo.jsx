@@ -19,9 +19,8 @@ import ClubsIcon from '../assets/uni_rating/clubs_icon.png';
 import FacilitiesIcon from '../assets/uni_rating/facilities_icon.png';
 import SocialIcon from '../assets/uni_rating/social_icon.png';
 import FoodIcon from '../assets/uni_rating/food_icon.png';
+import { api_DislikeUniversityReview, api_LikeUniversityReview, api_getReviewsOfUniversity } from "../api/UniversityReviewsApi";
 
-
-// SAMPLE
 // const initUni = {
 //     id: 1,
 //     name: "Suleymen Demirel University",
@@ -119,6 +118,10 @@ const UniReviewInfo = () => {
     // IMPORTANT
     // LOAD UNIVERSITY REVIEWS
     async function loadReviews() {
+        await api_getReviewsOfUniversity(uni.id)
+        .then(setReviews)
+        .catch(err => console.log(err))
+
     }
 
     return(
@@ -146,35 +149,35 @@ const UniReviewInfo = () => {
                                         <img className="" src={ReputationIcon} alt="" />
                                     </div>
                                     <p className="grow">Reputation</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.reputation]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.reputation]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={OpportunitiesIcon} alt="" />
                                     </div>
                                     <p className="grow">Opportunities</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.opportunities]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.opportunities]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={InternetIcon} alt="" />
                                     </div>
                                     <p className="grow">Internet</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.internet]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.internet]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={SafetyIcon} alt="" />
                                     </div>
                                     <p className="grow">Safety</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.safety]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.safety]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={LocationIcon} alt="" />
                                     </div>
                                     <p className="grow">Location</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.location]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.location]}]`}/>                                        
                                 </div>
                             </div>
                             <div className="flex flex-col gap-y-[8px] items-center gap-y-[8px] sm:w-[240px]">
@@ -183,35 +186,35 @@ const UniReviewInfo = () => {
                                         <img className="" src={HappinessIcon} alt="" />
                                     </div>
                                     <p className="grow">Happiness</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.happiness]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.happiness]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={ClubsIcon} alt="" />
                                     </div>
                                     <p className="grow">Clubs</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.clubs]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.clubs]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={FacilitiesIcon} alt="" />
                                     </div>
                                     <p className="grow">Facilities</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.facilities]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.facilities]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={SocialIcon} alt="" />
                                     </div>
                                     <p className="grow">Social</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.social]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.social]}]`}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={FoodIcon} alt="" />
                                     </div>
                                     <p className="grow">Food</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.overalRate.food]}]`}/>                                        
+                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.food]}]`}/>                                        
                                 </div>
                             </div>
                         </div>
@@ -252,10 +255,14 @@ export default UniReviewInfo;
 
 function ReviewListItem({review, index, loadReviews}) {
     const {user, setUser} = useContext(UserContext);
+
+    useEffect(() => {
+        console.log(review)
+    }, [])
   
     async function handleDislike() {
         if(user !== null) {
-            await api_DislikeReview(review.id, user.id)
+            await api_DislikeUniversityReview(review.id, user.id)
                 .then((data) => {
                     loadReviews();
                 })
@@ -265,7 +272,7 @@ function ReviewListItem({review, index, loadReviews}) {
   
     async function handleLike() {
         if(user !== null) {
-            await api_LikeReview(review.id, user.id)
+            await api_LikeUniversityReview(review.id, user.id)
                 .then((data) => {
                     console.log(data);
                     loadReviews();
@@ -286,12 +293,13 @@ function ReviewListItem({review, index, loadReviews}) {
                 </div>
             </div>
             <div className="flex flex-col w-full min-h-max ml-[20px] gap-y-[5px]">
-                <div className="flex flex-row justify-end">
+                <div className="flex flex-row justify-between">
+                    <p className="font-semibold">{review.user.firstName} {review.user.lastName}</p>
                     <p className="text-[13px]">{review.createdOn}</p>
                 </div>
   
                 <div className="my-[10px] grow">
-                    <p className="text-[13px]">{review.content}</p>
+                    <p className="text-[13px]">{review.review}</p>
                 </div>
                 <div className="flex flex-col md:flex-row gap-y-[16px] gap-x-[32px]">
                     <div className="flex flex-col w-[240px] gap-y-[16px]">            

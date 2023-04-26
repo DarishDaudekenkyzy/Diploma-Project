@@ -12,7 +12,7 @@ import { api_getProfessorById } from '../api/ProfessorsApi'
 import { api_getCoursesOfProfessor } from '../api/CourseApi'
 import { api_getAllTags } from '../api/TagApi'
 import BackArrow from '../components/admin_components/BackArrow'
-import { api_CreateReview } from '../api/ReviewApi'
+import { api_CreateProfessorReview } from '../api/ProfessorReviewsApi'
 
 // SAMPLES
 // const initProf = {firstName: "Larisa", lastName: "Bazarbayeva"}
@@ -98,7 +98,7 @@ const CreateReview = () => {
       setError('courseId',  { type: 'custom', message: 'Course is required' })
       return;
     }
-    await api_CreateReview(data)
+    await api_CreateProfessorReview(data)
     .then(() => {
       navigate(-1);
     })

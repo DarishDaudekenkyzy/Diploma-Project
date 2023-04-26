@@ -13,9 +13,9 @@ namespace ReviewAppProject.Data.Repository
         {
             _context = context;
         }
-        public async IAsyncEnumerable<ReviewTag> GetAllReviewTags()
+        public async IAsyncEnumerable<ReviewProfessorTag> GetAllReviewTags()
         {
-            var tags = _context.Tags.AsAsyncEnumerable();
+            var tags = _context.ReviewProfessorTags.AsAsyncEnumerable();
 
             await foreach (var tag in tags)
             {
@@ -23,8 +23,8 @@ namespace ReviewAppProject.Data.Repository
             }
         }
 
-        public async Task<ReviewTag> GetTagByIdAsync(int tagId) { 
-            return await _context.Tags
+        public async Task<ReviewProfessorTag> GetTagByIdAsync(int tagId) { 
+            return await _context.ReviewProfessorTags
                 .Where(t=> t.Id == tagId)
                 .FirstOrDefaultAsync() ?? throw new ReviewTagNotFound();
         }

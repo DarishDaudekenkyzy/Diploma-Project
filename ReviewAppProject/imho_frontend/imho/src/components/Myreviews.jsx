@@ -8,7 +8,7 @@ import axios from 'axios';
 import thumb_up from '../assets/thumb_up.svg'
 import thumb_down from '../assets/thumb_down.svg'
 import trashIcon from '../assets/trash.svg'
-import { api_DeleteReview, api_getReviewsOfUser } from '../api/ReviewApi';
+import { api_DeleteProfessorReview, api_getProfessorReviewsOfUser } from '../api/ProfessorReviewsApi';
 
 const Myreviews = () => {
   const {user, setUser} = useContext(UserContext);
@@ -19,13 +19,13 @@ const Myreviews = () => {
   }, [])
   
   async function loadMyReviews() {
-    await api_getReviewsOfUser(user.id)
+    await api_getProfessorReviewsOfUser(user.id)
     .then(setMyReviews)
     .catch(err => console.log(err));
   }
 
   async function handleDeleteReview(reviewId) {
-    await api_DeleteReview(reviewId)
+    await api_DeleteProfessorReview(reviewId)
     .then(loadMyReviews)
     .catch(err => console.log(err))
   }

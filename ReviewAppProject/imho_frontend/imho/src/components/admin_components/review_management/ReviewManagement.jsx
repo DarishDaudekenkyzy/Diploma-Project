@@ -5,11 +5,12 @@ import trash from '../../../assets/trash.svg';
 import AdminSearchInput from "../AdminSearchInput";
 import { api_searchProfessors } from "../../../api/ProfessorsApi";
 import { api_searchUser } from "../../../api/UserApi";
-import { api_DeleteReview, api_getReviewsOfCourse, api_getReviewsOfProfessor, api_getReviewsOfUser } from "../../../api/ReviewApi";
+
 import Loading from "../../Loading";
 import { api_SearchCourses } from "../../../api/CourseApi";
 import BackArrow from "../BackArrow";
 import AdminReviewView from "./AdminReviewView";
+import { api_DeleteProfessorReview, api_getProfessorReviewsOfCourse, api_getProfessorReviewsOfUser, api_getReviewsOfProfessor } from "../../../api/ProfessorReviewsApi";
 
 export default function ReviewManagement() {
     
@@ -41,7 +42,7 @@ export default function ReviewManagement() {
     }, [course])
 
     async function loadReviewsByUser(userId) {
-        await api_getReviewsOfUser(userId)
+        await api_getProfessorReviewsOfUser(userId)
         .then(setReviews)
         .catch(err => console.log(err));
     }
@@ -56,13 +57,13 @@ export default function ReviewManagement() {
     }
 
     async function loadReviewsOfCourse(courseId) {
-        await api_getReviewsOfCourse(courseId)
+        await api_getProfessorReviewsOfCourse(courseId)
         .then(setReviews)
         .catch(err => console.log(err));
     }
 
     async function deleteReview(reviewId) {
-        await api_DeleteReview(reviewId)
+        await api_DeleteProfessorReview(reviewId)
         .then(() => {
             if(user !== null) loadReviewsByUser(user.userId)
             else if(professor !== null) loadReviewsOfProfessor(professor.professorId)

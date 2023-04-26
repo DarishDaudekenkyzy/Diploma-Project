@@ -115,15 +115,15 @@ namespace ReviewAppProject.Data.Repository
             await _context.SaveChangesAsync();
                 
             foreach (var tag in rpModel.tags)
-                _context.ReviewsTags.Add(new ReviewProfessorReviewTag { ReviewId = review.Id, TagId = tag.TagId });
+                _context.ReviewsProfessorTags.Add(new ReviewProfessorReviewTag { ReviewId = review.Id, TagId = tag.TagId });
             
             await _context.SaveChangesAsync();
         }
 
         public async Task LikeReviewAsync(ReviewProfessor review, User user)
         {
-            var like = new UserReviewLike { ReviewId = review.Id, UserId = user.Id };
-            await _context.UserReviewLikes.AddAsync(like);
+            var like = new UserReviewProfessorLike { ReviewId = review.Id, UserId = user.Id };
+            await _context.UserReviewProfessorLikes.AddAsync(like);
             review.Likes++;
             _context.Entry(like).State = EntityState.Added;
             _context.Entry(review).State = EntityState.Modified;
@@ -132,8 +132,8 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task DislikeReviewAsync(ReviewProfessor review, User user)
         {
-            var dislike = new UserReviewDislike { ReviewId = review.Id, UserId = user.Id };
-            await _context.UserReviewDislikes.AddAsync(dislike);
+            var dislike = new UserReviewProfessorDislike { ReviewId = review.Id, UserId = user.Id };
+            await _context.UserReviewProfessorDislikes.AddAsync(dislike);
             review.Dislikes++;
             _context.Entry(dislike).State = EntityState.Added;
             _context.Entry(review).State = EntityState.Modified;
@@ -141,8 +141,8 @@ namespace ReviewAppProject.Data.Repository
         }
 
         public async Task RemoveLikeAsync(ReviewProfessor review, User user) {
-            var like = await _context.UserReviewLikes.Where(l => l.UserId == user.Id && l.ReviewId == review.Id).FirstAsync();
-            _context.UserReviewLikes.Remove(like);
+            var like = await _context.UserReviewProfessorLikes.Where(l => l.UserId == user.Id && l.ReviewId == review.Id).FirstAsync();
+            _context.UserReviewProfessorLikes.Remove(like);
             review.Likes--;
             _context.Entry(like).State = EntityState.Deleted;
             _context.Entry(review).State = EntityState.Modified;
@@ -151,8 +151,8 @@ namespace ReviewAppProject.Data.Repository
 
         public async Task RemoveDisikeAsync(ReviewProfessor review, User user)
         {
-            var dislike = await _context.UserReviewDislikes.Where(d => d.UserId == user.Id && d.ReviewId == review.Id).FirstAsync();
-            _context.UserReviewDislikes.Remove(dislike);
+            var dislike = await _context.UserReviewProfessorDislikes.Where(d => d.UserId == user.Id && d.ReviewId == review.Id).FirstAsync();
+            _context.UserReviewProfessorDislikes.Remove(dislike);
             review.Dislikes--;
             _context.Entry(dislike).State = EntityState.Deleted;
             _context.Entry(review).State = EntityState.Modified;
@@ -160,11 +160,11 @@ namespace ReviewAppProject.Data.Repository
         }
 
         public async Task<bool> DidUserLikedReview(int reviewId, int userId) {
-            return await _context.UserReviewLikes.Where(l => l.UserId == userId && l.ReviewId == reviewId).AnyAsync();
+            return await _context.UserReviewProfessorLikes.Where(l => l.UserId == userId && l.ReviewId == reviewId).AnyAsync();
         }
         public async Task<bool> DidUserDislikedReview(int reviewId, int userId)
         {
-            return await _context.UserReviewDislikes.Where(d => d.UserId == userId && d.ReviewId == reviewId).AnyAsync();
+            return await _context.UserReviewProfessorDislikes.Where(d => d.UserId == userId && d.ReviewId == reviewId).AnyAsync();
         }
 
         public async Task DeleteReviewAsync(ReviewProfessor review)

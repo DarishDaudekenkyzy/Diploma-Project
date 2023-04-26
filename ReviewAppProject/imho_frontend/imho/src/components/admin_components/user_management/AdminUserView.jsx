@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api_getReviewsOfUser } from "../../../api/ReviewApi";
+import { api_getProfessorReviewsOfUser } from "../../../api/ProfessorReviewsApi";
 
 export default function AdminUserView({user}) {
     const [reviews, setReviews] = useState([]);
@@ -9,7 +9,7 @@ export default function AdminUserView({user}) {
     }, [])
 
     async function loadUserReviews(userId) {
-        await api_getReviewsOfUser(userId)
+        await api_getProfessorReviewsOfUser(userId)
         .then((data) => {
             console.log(data)
             setReviews(data)

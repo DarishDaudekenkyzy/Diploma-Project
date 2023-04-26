@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { api_getUniversityById } from "../api/UniversityApi";
 import BackArrow from "../components/admin_components/BackArrow";
+import { api_CreateUniversityReview } from "../api/UniversityReviewsApi";
 
 // const initUniversity = {
 //     id: 1,
@@ -24,7 +25,7 @@ const CreateUniReview = () => {
     const { register, setError, clearErrors, getValues, setValue, watch, handleSubmit, formState: { errors } } = useForm(
         {defaultValues: 
             {
-                content: '',
+                review: '',
                 reputation: 1,
                 opportunities: 1,
                 internet: 1,
@@ -51,9 +52,10 @@ const CreateUniReview = () => {
     const watchFood = watch('food');
     useEffect(() => {
         if(user === null){
-            navigate('/');
+            navigate('/uni-review-info', {state:location.state});
             return;
         }
+
         setValue('userId', user.id);
         if(location.state !== null){
             loadUniversity(location.state);
@@ -71,7 +73,11 @@ const CreateUniReview = () => {
     }
 
     async function handleSubmitReview(data) {
-        // DONT HAVE API FOR CREATING UNIVERSITY REVIEW
+        await api_CreateUniversityReview(data)
+        .then((data) => {
+            navigate('/uni-review-info', {state:location.state});
+        })
+        .catch(err => console.log(err));
     }
 
 
@@ -110,7 +116,7 @@ const CreateUniReview = () => {
                                     <div>
                                         <textarea  className="border-[1px] border-black h-[150px] p-4 w-full"
                                             placeholder='What you want other students to know about the teacher?' 
-                                            {...register('content', {required: 'This field is required'})}>
+                                            {...register('review', {required: 'This field is required'})}>
                                         </textarea>
                                         <ErrorMessage errors={errors} name='content' render={({ message }) => <p className="text-red-500">{message}</p>}/>
                                     </div>

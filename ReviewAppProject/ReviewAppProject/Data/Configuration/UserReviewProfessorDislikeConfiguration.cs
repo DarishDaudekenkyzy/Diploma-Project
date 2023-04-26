@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ReviewAppProject.Data.Configuration
 {
-    public class UserReviewDislikeConfiguration : IEntityTypeConfiguration<UserReviewDislike>
+    public class UserReviewProfessorDislikeConfiguration : IEntityTypeConfiguration<UserReviewProfessorDislike>
     {
-        public void Configure(EntityTypeBuilder<UserReviewDislike> builder) {
+        public void Configure(EntityTypeBuilder<UserReviewProfessorDislike> builder) {
             builder.HasKey(d => new { d.UserId, d.ReviewId });
 
             builder.HasOne(d => d.User)
-                .WithMany(d => d.DislikedReviews)
+                .WithMany(d => d.DislikedReviewsProfessors)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 

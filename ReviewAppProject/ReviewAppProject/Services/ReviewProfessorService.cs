@@ -12,16 +12,13 @@ namespace ReviewAppProject.Services
         private readonly IReviewProfessorRepository _repository;
         private readonly IProfessorRepository _professorRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IReviewTagRepository _tagRepo;
 
         public ReviewProfessorService(
             IReviewProfessorRepository repository, 
-            IReviewTagRepository tagRepo, 
             IUserRepository userRepository,
             IProfessorRepository professorRepository)
         {
             _repository = repository;
-            _tagRepo = tagRepo;
             _userRepository = userRepository;
             _professorRepository= professorRepository;
         }

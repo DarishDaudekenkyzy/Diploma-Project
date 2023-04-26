@@ -20,7 +20,7 @@
         public User User { get; set; }
         
         public ICollection<ReviewProfessorReviewTag> Tags { get; set; }
-        public ICollection<UserReviewLike> LikedUsers { get; set; }
-        public ICollection<UserReviewDislike> DislikedUsers { get; set; }
+        public ICollection<UserReviewProfessorLike> LikedUsers { get; set; }
+        public ICollection<UserReviewProfessorDislike> DislikedUsers { get; set; }
     }
 }

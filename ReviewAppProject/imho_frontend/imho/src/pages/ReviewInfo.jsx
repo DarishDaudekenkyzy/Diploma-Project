@@ -11,34 +11,11 @@ import thumb_down from '../assets/thumb_down.svg'
 import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { api_getProfessorById } from '../api/ProfessorsApi';
-import { api_DislikeReview, api_LikeReview, api_getReviewsOfProfessor } from '../api/ReviewApi';
-import BackArrow from '../components/admin_components/BackArrow';
 
-// SAMPLE
-// const initProf = {
-//   professorId: 1, firstName: "Alikhan", lastName: "Nurlanuly", email: "an@gmail.com", facultyId: 2, reviewsCount: 0, rating: 0.0, wouldTakeAgainPercentage: 0.0, difficultyPercentage: 0.0,
-//   courses: [{courseCode: "CSS101", courseName: "Course 101", facultyId: 2}, {courseCode: "CSS102", courseName: "Course 102", facultyId: 2},],
-//   university: {name: "SDU"},
-//   faculty: {facultyId: 2, facultyName: "Engineering and Natural Sciences"}
-// };
-// const initReviews = [
-//   {id: 1, rating: 9.0, difficulty: 5.5, title: "Great", createdOn: "28th September, 2022", 
-//     wouldTakeAgain: true, wasAttendanceMandatory: true,
-//     content: "The only grades in the grade book are 4 exams. 1 out of the first three are dropped. Went to every class, watched every lecture a second time to review and completed all the extra worksheets and still got the same grade on exam 2 that I got on exam one when I didnt go to any classes and joined the class a day before the exam I didnt go to any classes and joined the class a day before the exam",
-//     likes: 5,
-//     dislikes: 3,
-//     course: {courseCode: "CSS107"},
-//     tags: [
-//       {id: 1, tag: "Tough grader"},
-//       {id: 2, tag: "Funny"},
-//       {id: 3, tag: "Great explanations"},
-//       {id: 4, tag: "Get Ready to Read"},
-//       {id: 5, tag: "Participation Matters"},
-//       {id: 6, tag: "Group Projects"},
-//       {id: 7, tag: "Clear Grading Criteria"},
-//     ]
-//   }
-// ];
+import BackArrow from '../components/admin_components/BackArrow';
+import { api_DislikeProfessorReview, api_LikeProfessorReview, api_getReviewsOfProfessor } from '../api/ProfessorReviewsApi';
+
+
 const ReviewInfo = () => {
   const {user, setUser} = useContext(UserContext);
   const location = useLocation();
@@ -195,7 +172,7 @@ function ReviewListItem({review, index, loadReviews}) {
 
   async function handleDislike() {
     if(user !== null) {
-      await api_DislikeReview(review.id, user.id)
+      await api_DislikeProfessorReview(review.id, user.id)
       .then((data) => {
         loadReviews();
       })
@@ -205,7 +182,7 @@ function ReviewListItem({review, index, loadReviews}) {
 
   async function handleLike() {
     if(user !== null) {
-      await api_LikeReview(review.id, user.id)
+      await api_LikeProfessorReview(review.id, user.id)
       .then((data) => {
         console.log(data);
         loadReviews();

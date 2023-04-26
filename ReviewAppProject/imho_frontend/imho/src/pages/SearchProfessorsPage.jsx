@@ -28,9 +28,7 @@ const SearchProfessorsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // const [searchResults, setSearchResults] = useState(initSearchResult);
     const [searchResults, setSearchResults] = useState([]);
-    const [university, setUniversity] = useState(null);
     const [notFound, setNotFound] = useState(false);
     const [loading, setLoading] = useState(true);
     const [searchInput, setSearchInput] = useState('');
@@ -38,21 +36,14 @@ const SearchProfessorsPage = () => {
     useEffect(() => {
         if(location.state !== null) {
             if(location.state.searchInput.trim() !== '') {
-                if(location.state.uni !== null) {
-                    setUniversity(location.state.uni);
-                }
                 setSearchInput(location.state.searchInput);
             }
         }
     }, [])
 
     useEffect(() => {
-        if(searchInput.trim() !== '') {
-            if(university)
-                searchProfessorsInUniversity()
-            else
-                searchProfessors();
-        }
+        if(searchInput.trim() !== '')
+            searchProfessors();
     }, [searchInput])
     
     async function handleSearch(searchInput) {
@@ -73,29 +64,13 @@ const SearchProfessorsPage = () => {
         setLoading(false);
     }
 
-    async function searchProfessorsInUniversity() {
-        setLoading(true);
-        await api_searchProfessorsInUniversity(university.id, searchInput)
-        .then((data) => {
-            if(data.length > 0) {
-                setSearchResults(data);
-                setNotFound(false);
-            }
-            else setNotFound(true);
-        })
-        .catch(err => console.log(err));
-        setLoading(false);
-    }
-
     return (
         <>
             <Header/>
             <section className="min-h-[700px] flex flex-col items-center mb-6">
                 <div className='w-[100%] px-[24px] md:px-[0] md:w-[700px]'>
                     <p className='text-2xl mt-8 font-semibold text-center'> 
-                        {university ? 
-                        `Search professors in ${university.name}`
-                        : `Search professors`}
+                        Search Professors
                     </p>
                     <div className='my-6'>
                         <SearchProfessorsInput onSearch={handleSearch}/>
@@ -110,9 +85,7 @@ const SearchProfessorsPage = () => {
                     <>
                     
                         <p className="text-xl px-[20px]">
-                            Found {searchResults.length} professors 
-                            {university && ` in ${university.acronym} `}
-                            {' '}with “{searchInput}” in their name</p>
+                            Found {searchResults.length} professors with “{searchInput}” in their name</p>
                         <div className="mt-[30px] flex flex-col gap-y-[20px] px-[20px] w-full sm:w-auto">
                         {searchResults.map((p, index) => {
                             return (

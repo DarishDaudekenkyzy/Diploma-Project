@@ -8,7 +8,7 @@ using ReviewAppProject.ViewModels;
 namespace ReviewAppProject.Controllers
 {
     [ApiController]
-    [Route("Reviews")]
+    [Route("ProfessorReviews")]
     public class ReviewProfessorController : Controller
     {
         private readonly ReviewProfessorService _service;
