@@ -4,7 +4,6 @@ import star from '../assets/star.svg';
 import myreviews from '../assets/myreviews.png';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../App';
-import axios from 'axios';
 import thumb_up from '../assets/thumb_up.svg'
 import thumb_down from '../assets/thumb_down.svg'
 import trashIcon from '../assets/trash.svg'
@@ -31,15 +30,18 @@ const Myreviews = () => {
   }
 
   return (
-      <div className="mt-[10px] m-auto">
+      <div className="py-8 m-auto">
         {myReviews.length > 0 ?
-        <div>
+        <>
+        <p className='mb-8 text-xl font-semibold'>Reviews of {user.firstName} {user.lastName}</p>
+        <div className='flex flex-col gap-4'>
           {myReviews.map((review, index) => {
             return (
               <ReviewListItem key={review.id} review={review} index={index} handleDeleteReview={handleDeleteReview}/>
             );
           })}
         </div>
+        </>
         :
         <div className="w-full flex flex-col items-center mt-[50px] gap-y-10">
             <img className="max-h-[150px]" src={myreviews} />

@@ -63,6 +63,16 @@ namespace ReviewAppProject.Services
             }
         }
 
+        public async IAsyncEnumerable<ReviewProfessor> GetSavedReviewsOfUser(int userId)
+        {
+            var reviews = _repository.GetSavedReviewsOfUser(userId);
+
+            await foreach (var r in reviews)
+            {
+                yield return r;
+            }
+        }
+
         public async Task<(ReviewProfessor?, Exception?)> GetReviewByIdAsync(int id)
         {
             try
@@ -151,6 +161,81 @@ namespace ReviewAppProject.Services
                 await _professorRepository.UpdateReviewDeleted(professor);
                 return (true, null);
             }
+            catch (ReviewNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> IsReviewLikedByUser(int userId, int reviewId) {
+            try
+            {
+                _ = await _userRepository.GetUserByIdAsync(userId);
+                _ = await _repository.GetReviewByIdAsync(reviewId);
+
+                var liked = await _repository.DidUserLikedReview(userId, reviewId);
+                return (liked, null);
+
+            }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch (ReviewNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> IsReviewDislikedByUser(int userId, int reviewId)
+        {
+            try
+            {
+                _ = await _userRepository.GetUserByIdAsync(userId);
+                _ = await _repository.GetReviewByIdAsync(reviewId);
+
+                var disliked = await _repository.DidUserDislikedReview(userId, reviewId);
+                return (disliked, null);
+
+            }
+            catch (UserNotFoundException e) { return (false, e); }
+            catch (ReviewNotFoundException e) { return (false, e); }
+            catch (Exception e) { return (false, e); }
+        }
+
+        public async Task<(bool, Exception?)> IsReviewSavedByUserAsync(int userId, int reviewId) {
+            try { 
+                _ = await _userRepository.GetUserByIdAsync(userId);
+                _ = await _repository.GetReviewByIdAsync(reviewId);
+
+                var saved = await _repository.IsReviewSavedByUserAsync(userId, reviewId);
+                return (saved, null);
+
+            }
+            catch(UserNotFoundException e) { return (false, e); }
+            catch(ReviewNotFoundException e) { return (false, e); }
+            catch(Exception e) { return (false, e);}
+        }
+
+        public async Task<(bool, Exception?)> SaveReviewAsync(int userId, int reviewId) {
+            try {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                var review = await _repository.GetReviewByIdAsync(reviewId);
+
+                await _repository.SaveReviewAsync(review, user);
+
+                return (true, null);
+            }
+            catch(UserNotFoundException e) { return (false, e); }
+            catch(ReviewNotFoundException e) { return (false, e); }
+            catch(Exception e) { return (false, e);}
+        }
+
+        public async Task<(bool, Exception?)> UnsaveReviewAsync(int userId, int reviewId)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                var review = await _repository.GetReviewByIdAsync(reviewId);
+
+                await _repository.UnsaveReviewAsync(review, user);
+
+                return (true, null);
+            }
+            catch (UserNotFoundException e) { return (false, e); }
             catch (ReviewNotFoundException e) { return (false, e); }
             catch (Exception e) { return (false, e); }
         }

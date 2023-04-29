@@ -1,15 +1,16 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 import { Header, Footer, Account, 
   Myreviews, Savedreviews, Settings } from '../components';
 
 import styles from '../style';
 import { UserContext } from '../App';
+import { useLocation } from 'react-router-dom';
 
 const TabItem = ({text, isActive, setActive}) => {
   const ifActive = 'font-bold border-black border-b-2 pb-[20px]';
   return (
-    <button onClick={setActive}>
+    <button onClick={setActive} className='w-1/4'>
       <p className={`text-[16px] md:text-[20px] ${isActive ? `${ifActive}` : ""}`}>{text}</p>
     </button> 
   )
@@ -17,6 +18,7 @@ const TabItem = ({text, isActive, setActive}) => {
 
 const Myaccount = () => {
   const {user, setUser} = useContext(UserContext);
+  const location = useLocation();
 
   const [activeTab, setActiveTab] = useState(1);
 
@@ -24,16 +26,22 @@ const Myaccount = () => {
     setActiveTab(index);
   }
 
+  useEffect(() => {
+    if(location.state) {
+      setActiveTab(location.state)
+    }
+  }, [location.state])
+
   console.log(activeTab);
   return (
     <>
       <Header/>
       {user &&
-      <section id="myaccount" className={`border-black pt-[50px] h-[750px]
+      <section id="myaccount" className={`border-black pt-[50px] 
       border-b-2`}>
       <p className={`text-[24px] md:text-[48px] text-center mb-[50px]`}>{user.firstName} {user.lastName}</p>
-      <div className="form mx-[20px] sm:m-auto max-w-[800px] min-h-[500px] bg-white px-[16px] sm:px-[50px] py-[20px]">
-        <div className="m-auto max-w-[600px] h-[50px] border-b-2 pb-[20px] md:pb-[53px] flex justify-between">
+      <div className="form mx-auto my-16 max-w-[800px] bg-white px-[16px] sm:px-[50px] py-[20px]">
+        <div className="m-auto h-[50px] border-b-2 pb-[20px] md:pb-[53px] flex justify-between">
           <TabItem text="Account" isActive={activeTab === 1} setActive={() => activeIndex(1)}/>
           <TabItem text="My reviews" isActive={activeTab === 2} setActive={() => activeIndex(2)}/>
           <TabItem text="Saved reviews" isActive={activeTab === 3} setActive={() => activeIndex(3)}/>

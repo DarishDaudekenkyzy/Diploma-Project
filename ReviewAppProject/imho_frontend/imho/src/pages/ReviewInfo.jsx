@@ -13,7 +13,9 @@ import axios from 'axios';
 import { api_getProfessorById } from '../api/ProfessorsApi';
 
 import BackArrow from '../components/admin_components/BackArrow';
-import { api_DislikeProfessorReview, api_LikeProfessorReview, api_getReviewsOfProfessor } from '../api/ProfessorReviewsApi';
+import { BookmarkIcon as BookmarkOutline, HandThumbUpIcon as LikeOutline, HandThumbDownIcon as DislikeOutline } from '@heroicons/react/24/outline'
+import { BookmarkIcon as BookmarkSolid, HandThumbUpIcon as LikeSolid, HandThumbDownIcon as DislikeSolid } from '@heroicons/react/24/solid'
+import { api_DidUserDislikedReview, api_DidUserLikedReview, api_DidUserSavedReview, api_DislikeProfessorReview, api_LikeProfessorReview, api_SaveReview, api_UnsaveReview, api_getReviewsOfProfessor } from '../api/ProfessorReviewsApi';
 
 
 const ReviewInfo = () => {
@@ -137,7 +139,7 @@ const ReviewInfo = () => {
           </section>
           }
 
-          <section id="review_info2" className="w-full sm:w-[700px] sm:m-auto flex flex-col items-center gap-y-5 px-[24px] md:px-0 py-[50px] border-b-2 border-black">
+          <section id="review_info2" className="w-full md:w-[850px] sm:m-auto flex flex-col items-center gap-y-5 px-[24px] md:px-0 py-[50px] border-b-2 border-black">
             <div className="w-full flex justify-start border-b-2 border-black">
               <p className="border-b-2 border-black pb-[10px]">{reviews.length} students ratings</p>
             </div>
@@ -167,16 +169,61 @@ const ReviewInfo = () => {
 
 export default ReviewInfo;
 
+const ratingName = ['Awful', 'Bad', 'Mid', 'Good', 'Great'];
+const ratingColors = ['#F2DF47', '#F2CF7B', '#F2BD9C', '#F1A6AF', '#F08CB9'];
+
 function ReviewListItem({review, index, loadReviews}) {
   const {user, setUser} = useContext(UserContext);
+  const [saved, setSaved] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+
+  useEffect(() => {
+    if(user) {
+      api_DidUserSavedReview(user.id, review.id)
+      .then((data) => {setSaved(data)})
+      .catch(err => console.log(err))
+
+      api_DidUserLikedReview(user.id, review.id)
+      .then((data) => {setLiked(data)})
+      .catch(err => console.log(err))
+
+      api_DidUserDislikedReview(user.id, review.id)
+      .then((data) => {setDisliked(data)})
+      .catch(err => console.log(err))
+    }
+  }, [user])
 
   async function handleDislike() {
     if(user !== null) {
       await api_DislikeProfessorReview(review.id, user.id)
       .then((data) => {
+        setDisliked(!disliked)
         loadReviews();
       })
       .catch(err => console.log(err))
+    }
+  }
+
+  async function handleSave() {
+    if(user) {
+      await api_SaveReview(user.id, review.id)
+      .then(() => {
+        setSaved(true)
+        loadReviews();
+      })
+      .catch(err => console.log(err));
+    }
+  }
+
+  async function handleUnsave() {
+    if(user) {
+      await api_UnsaveReview(user.id, review.id)
+      .then(() => {
+        setSaved(false)
+        loadReviews()
+      })
+      .catch(err => console.log(err));
     }
   }
 
@@ -185,6 +232,7 @@ function ReviewListItem({review, index, loadReviews}) {
       await api_LikeProfessorReview(review.id, user.id)
       .then((data) => {
         console.log(data);
+        setLiked(!liked)
         loadReviews();
       })
       .catch(err => {
@@ -193,13 +241,14 @@ function ReviewListItem({review, index, loadReviews}) {
       })
     }
   }
+  
 
   return (
-    <div className={`flex w-full ${index%2===0 ? 'bg-[#F9F9F9]' : 'bg-[#23A094]'} border-black border-[1px] p-[20px]`}>
+    <div className={`flex w-full ${index%2===0 ? 'bg-[#F9F9F9]' : 'bg-[#F9F9F9]'} border-black border-[1px] p-[20px]`}>
       <div className="flex flex-col gap-y-2 items-center">
           <p className="text-[12px] sm:text-[15px] font-semibold">RATING</p>
-          <div className="flex justify-center items-center
-          font-bold text-[23px] rounded-md h-[60px] w-[60px] bg-[#FF90E8]">
+          <div className={`flex justify-center items-center
+          font-bold text-[23px] rounded-md h-[60px] w-[60px] bg-[${ratingColors[2]}]`}>
               {review.rating}
           </div>
           <p className="text-[12px] sm:text-[15px] font-semibold">DIFFICULTY</p>
@@ -212,10 +261,23 @@ function ReviewListItem({review, index, loadReviews}) {
         <div className="flex flex-col gap-y-[8px]">
           <div className="w-full flex flex-col-reverse xs:flex-row items-end  justify-between">
             <div className="flex justify-start gap-x-[20px]">
-              <p className="text-[13px] font-semibold">{review.course.courseCode}</p>
-              <div className="text-[13px] border-black border-[1px] bg-[#F5E049] rounded-[5px] px-[15px]">{review.title}</div>
+              <p className=" font-semibold">{review.course.courseCode}</p>
+              <div className={`text-sm font-semibold border-black border rounded-sm px-[15px]
+              bg-[${ratingColors[0]}]`}>{ratingName[review.rating-1]}</div>
             </div>
-            <p className="text-[13px]">{review.createdOn}</p>
+            <div className='flex gap-2'>
+              <p className="text-[13px]">{review.createdOn}</p>
+              {saved ?
+              <BookmarkSolid onClick={handleUnsave}
+              title='Unsave' className='w-6 h-6 cursor-pointer text-yellow-500'/>
+              : 
+              <BookmarkOutline onClick={handleSave}
+                title='Save' className='w-6 h-6 cursor-pointer'/>
+              }
+              {review.saves > 0 &&
+              <p>{review.saves}</p>
+              }
+            </div>
           </div>
           <div>
             <div className="flex flex-col xs:flex-row justify-start gap-x-[20px]">
@@ -242,14 +304,19 @@ function ReviewListItem({review, index, loadReviews}) {
               );
             })}
           </div>
-          <div className="flex justify-start w-[100px] gap-[16px]">
-            <div className='cursor-pointer flex items-center' onClick={handleLike}>
+          <div className="flex justify-end w-[100px] gap-2">
+            <div className='cursor-pointer flex items-start' onClick={handleLike}>
               <p className="text">{review.likes}</p>
-              <img className="mr-[5px] h-[20px]" src={thumb_up} />
+              {liked 
+              ?<LikeSolid className='w-6 h-6'/>
+              : <LikeOutline className='w-6 h-6'/>}
             </div>
-            <div className='cursor-pointer flex items-center' onClick={handleDislike}>
+            <div className='cursor-pointer flex items-start' onClick={handleDislike}>
               <p className="text">{review.dislikes}</p>
-              <img className="mr-[5px] h-[20px]" src={thumb_down} />
+              {disliked
+              ? <DislikeSolid className='w-6 h-6'/>
+              : <DislikeOutline className='w-6 h-6'/>
+              }
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ namespace ReviewAppProject.ViewModels
         public bool WasAttendanceMandatory { get; set; }
         public int Likes { get; set; }
         public int Dislikes { get; set; }
+        public int Saves { get; set; }
         public string CreatedOn { get; set; }
 
         public CourseViewModel? Course { get; set; }
@@ -33,6 +34,7 @@ namespace ReviewAppProject.ViewModels
             WasAttendanceMandatory= rp.WasAttendanceMandatory;
             Likes= rp.Likes;
             Dislikes= rp.Dislikes;
+            Saves= rp.Saves;
             CreatedOn = rp.CreatedOn.ToString("MMMM dd, yyyy");
 
             if (rp.Professor != null)

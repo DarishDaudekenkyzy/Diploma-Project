@@ -57,7 +57,7 @@ export default function AdminReviewView({review}) {
                 <tr className="">
                     <td className="w-64 py-2 px-4 border border-slate-400">Tags</td>
                     <td className="py-2 px-4 border border-slate-400">
-                    {review.tags.map((tag, index) => {
+                    {review.tags && review.tags.map((tag, index) => {
                         return(
                             <span key={index}>{index !== 0 && ', '}{tag.tag}</span>
                         );

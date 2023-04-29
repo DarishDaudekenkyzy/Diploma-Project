@@ -29,18 +29,27 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
 builder.Services.AddScoped<UniversityService>();
+
 builder.Services.AddScoped<IFacultyRepository, FacultyRepository>();
 builder.Services.AddScoped<FacultyService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ProfessorService>();
+
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<CourseService>();
+
 builder.Services.AddScoped<ICoursesProfessorsRepository, CoursesProfessorsRepository>();
+
 builder.Services.AddScoped<IReviewTagRepository, ReviewTagRepository>();
+
 builder.Services.AddScoped<IReviewProfessorRepository, ReviewProfessorRepository>();
 builder.Services.AddScoped<ReviewProfessorService>();
+builder.Services.AddScoped<IReviewUniversityRepository, ReviewUniversityRepository>();
+builder.Services.AddScoped<ReviewUniversityService>();
 
 builder.Services.AddCors(options =>
 {

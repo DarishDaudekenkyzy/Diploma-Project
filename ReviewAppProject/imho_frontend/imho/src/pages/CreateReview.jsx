@@ -126,7 +126,7 @@ const CreateReview = () => {
     <>
     <Header/>
     <section className="flex justify-center pt-8 pb-32">
-      <div className="flex flex-col items-center relative px-[24px] w-full sm:w-[550px]">
+      <div className="flex flex-col items-center relative px-[24px] max-w-4xl">
         {professor &&
         <>
         <div className='self-start'>
@@ -138,11 +138,14 @@ const CreateReview = () => {
         {courses.length ?
           <form onSubmit={handleSubmit(handleSubmitReview)}
             className='w-full relative my-6' autoComplete='off'>
-            <img className="-z-50 h-[150px] absolute top-20 right-0" src={yellow_pen} />
+            <img className="-z-50 h-40 w-40 absolute top-20 right-0" src={yellow_pen} />
+            
             
             {/* COURSE CODE */}
-            <div className='flex flex-col sm:flex-row gap-y-[8px] justify-between w-full gap-x-10 items-center'>
-              <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
+            <div className='flex flex-col sm:flex-row gap-y-[8px] w-full gap-x-10 items-center'>
+              <div className='w-80'>
+                <p className="w-max text-[20px] font-semibold">Select Course Code:</p>
+              </div>
               <select className="border-black border-[1px] px-[20px] py-[7px] cursor-pointer"
               value={watchCourse} onChange={(e) => {
                 setValue('courseId', parseInt(e.target.value))
@@ -159,8 +162,8 @@ const CreateReview = () => {
                 render={({ message }) => <p className="text-red-500">{message}</p>}/>
 
             {/* RATE PROFESSOR */}
-            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
-              <p className="w-max text-[20px] font-semibold">Rate Your Professor:</p>
+            <div className="flex flex-col sm:flex-row gap-y-[8px] my-8 w-full gap-x-10 items-start">
+              <p className="w-80 text-[20px] font-semibold">Rate Your Professor:</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
@@ -185,8 +188,8 @@ const CreateReview = () => {
             </div>
 
             {/* DIFFICULITY */}
-            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
-              <p className="w-max text-[20px] font-semibold">How difficult was the professor?</p>
+            <div className="flex flex-col sm:flex-row gap-y-[8px] my-8 w-full gap-x-10 items-start">
+              <p className="w-80 text-[20px] font-semibold">How difficult was the professor?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center cursor-pointer">
                     <div className={`w-[30px] h-[30px] rounded-[50%] border-[1px] border-black
@@ -209,8 +212,8 @@ const CreateReview = () => {
             </div>
 
             {/* WOULD YOU TAKE AGAIN */}
-            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
-              <p className="w-max text-[20px] font-semibold">Would you take this professor again?</p>
+            <div className="flex flex-col sm:flex-row gap-y-[8px] my-8 w-full gap-x-10 items-start">
+              <p className="w-80 text-[20px] font-semibold">Would you take this professor again?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
                     <p className="text-center">Yes</p>
@@ -228,8 +231,8 @@ const CreateReview = () => {
             </div>
 
             {/* MANDATORY ATTENDANCE */}
-            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
-              <p className="w-max text-[20px] font-semibold">Was attendance mandatory?</p>
+            <div className="flex flex-col sm:flex-row gap-y-[8px] my-8 w-full gap-x-10 items-start">
+              <p className="w-80 text-[20px] font-semibold">Was attendance mandatory?</p>
                 <div>
                   <div className="flex justify-start gap-x-2 items-center">
                     <p className="text-center">Yes</p>
@@ -247,8 +250,8 @@ const CreateReview = () => {
             </div>
 
             {/* GRADE RECEIVED */}
-            <div className="flex flex-col sm:flex-row gap-y-[8px] justify-between my-5 w-full gap-x-10 items-center">
-              <p className="w-max text-[20px] font-semibold">Select grade recieved:</p>
+            <div className="flex flex-col sm:flex-row gap-y-[8px] my-8 w-full gap-x-10 items-center">
+              <p className="w-80 text-[20px] font-semibold">Select grade recieved:</p>
                 <select className="max-h-[60px]
                 border-black border-[1px] px-[20px] py-[7px] cursor-pointer">
                   <option value="none">Select grade </option>

@@ -13,6 +13,7 @@
         public int Likes { get; set; }
         public int Dislikes { get; set; }
         public int CourseId { get; set; }
+        public int Saves { get; set; }
         public int ProfessorId { get; set; }
         public int UserId { get; set; }
         public Course Course { get; set; }
@@ -22,5 +23,6 @@
         public ICollection<ReviewProfessorReviewTag> Tags { get; set; }
         public ICollection<UserReviewProfessorLike> LikedUsers { get; set; }
         public ICollection<UserReviewProfessorDislike> DislikedUsers { get; set; }
+        public ICollection<UserSavedReviewProfessor> SavedUsers { get; set; }
     }
 }

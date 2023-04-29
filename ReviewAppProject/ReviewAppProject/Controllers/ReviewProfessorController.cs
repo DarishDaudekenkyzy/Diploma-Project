@@ -132,5 +132,74 @@ namespace ReviewAppProject.Controllers
             if (exception is ReviewNotFoundException) return BadRequest("Review not found");
             else return StatusCode(500, exception.StackTrace);
         }
+
+        [HttpGet("IsLiked/{userId}/{reviewId}")]
+        public async Task<IActionResult> IsReviewLikedByUser(int userId, int reviewId)
+        {
+            (bool liked, Exception? e) = await _service.IsReviewLikedByUser(userId, reviewId);
+
+            if (e is null) return Ok(liked);
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet("IsDisliked/{userId}/{reviewId}")]
+        public async Task<IActionResult> IsReviewDislikedByUser(int userId, int reviewId)
+        {
+            (bool liked, Exception? e) = await _service.IsReviewDislikedByUser(userId, reviewId);
+
+            if (e is null) return Ok(liked);
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet("IsSaved/{userId}/{reviewId}")]
+        public async Task<IActionResult> IsReviewSavedByUserAsync(int userId, int reviewId) {
+            (bool saved, Exception? e) = await _service.IsReviewSavedByUserAsync(userId, reviewId);
+
+            if (e is null) return Ok(saved);
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpPut("Save/{userId}/{reviewId}")]
+        public async Task<IActionResult> SaveReviewAsync(int userId, int reviewId) {
+            (bool saved, Exception? e) = await _service.SaveReviewAsync(userId, reviewId);
+
+            if (saved && e is null) return Ok(saved);
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpPut("Unsave/{userId}/{reviewId}")]
+        public async Task<IActionResult> UnsaveReviewAsync(int userId, int reviewId)
+        {
+            (bool unsaved, Exception? e) = await _service.UnsaveReviewAsync(userId, reviewId);
+
+            if (unsaved && e is null) return Ok(unsaved);
+
+            if (e is UserNotFoundException) return BadRequest("User Not Found");
+            else if (e is ReviewNotFoundException) return BadRequest("Review Not Found");
+            else return StatusCode(500, e.StackTrace);
+        }
+
+        [HttpGet("{userId}/Saved")]
+        public async IAsyncEnumerable<ReviewProfessorViewModel> GetSavedReviewsOfUser(int userId) {
+            var reviews = _service.GetSavedReviewsOfUser(userId);
+
+            await foreach(var review in reviews)
+            {
+                yield return new ReviewProfessorViewModel(review);
+            }
+        }
+
     }
 }

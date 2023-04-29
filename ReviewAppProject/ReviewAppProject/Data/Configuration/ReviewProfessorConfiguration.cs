@@ -8,18 +8,13 @@ namespace ReviewAppProject.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ReviewProfessor> builder) { 
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Difficulty)
-                .HasDefaultValue(0);
-            builder.Property(x => x.Rating)
-                .HasDefaultValue(0);
-            builder.Property(x => x.Likes)
-                .HasDefaultValue(0);
-            builder.Property(x => x.Dislikes)
-                .HasDefaultValue(0);
-            builder.Property(x => x.WouldTakeAgain)
-                .HasDefaultValue(false);
-            builder.Property(x => x.WasAttendanceMandatory)
-                .HasDefaultValue(false);
+            builder.Property(x => x.Difficulty).HasDefaultValue(0);
+            builder.Property(x => x.Rating).HasDefaultValue(0);
+            builder.Property(x => x.Likes).HasDefaultValue(0);
+            builder.Property(x => x.Dislikes).HasDefaultValue(0);
+            builder.Property(x => x.Saves).HasDefaultValue(0);
+            builder.Property(x => x.WouldTakeAgain).HasDefaultValue(false);
+            builder.Property(x => x.WasAttendanceMandatory).HasDefaultValue(false);
 
             builder.HasOne(r => r.Course)
                 .WithMany(c => c.Reviews)

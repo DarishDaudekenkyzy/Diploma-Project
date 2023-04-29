@@ -83,6 +83,25 @@ namespace ReviewAppProject.Data.Repository
             }
         }
 
+        public async IAsyncEnumerable<ReviewProfessor> GetSavedReviewsOfUser(int userId)
+        {
+            var reviews = _context.ReviewProfessors
+                .Where(rp => _context.UserSavedReviewProfessors.Any(s => s.UserId == userId && s.ReviewId == rp.Id))
+                .Include(rp => rp.Professor)
+                .ThenInclude(p => p.Faculty)
+                .ThenInclude(f => f.University)
+                .Include(rp => rp.Course)
+                .Include(rp => rp.User)
+                .Include(rp => rp.Tags)
+                .ThenInclude(t => t.Tag)
+                .AsAsyncEnumerable();
+
+            await foreach (var review in reviews)
+            {
+                yield return review;
+            }
+        }
+
         public async Task<ReviewProfessor> GetReviewByIdAsync(int? id)
         {
             return await _context.ReviewProfessors
@@ -185,6 +204,38 @@ namespace ReviewAppProject.Data.Repository
                 .Where(r => r.UserId == userId &&
                 r.ProfessorId == professorId &&
                 r.CourseId == courseId).AnyAsync();
+        }
+
+        public async Task<bool> IsReviewSavedByUserAsync(int userId, int reviewId) {
+            return await _context.UserSavedReviewProfessors
+                .Where(s => s.UserId == userId &&
+                s.ReviewId == reviewId)
+                .AnyAsync();
+        }
+
+        public async Task SaveReviewAsync(ReviewProfessor review, User user) {
+            var savedReview = new UserSavedReviewProfessor
+            {
+                UserId = user.Id,
+                ReviewId = review.Id,
+            };
+            await _context.UserSavedReviewProfessors.AddAsync(savedReview);
+            review.Saves++;
+            _context.Entry(savedReview).State = EntityState.Added;
+            _context.Entry(review).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UnsaveReviewAsync(ReviewProfessor review, User user)
+        {
+            var savedReview = await _context.UserSavedReviewProfessors
+                .Where(s => s.UserId == user.Id && s.ReviewId == review.Id).FirstAsync();
+
+            _context.UserSavedReviewProfessors.Remove(savedReview);
+            review.Saves--;
+            _context.Entry(savedReview).State = EntityState.Deleted;
+            _context.Entry(review) .State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

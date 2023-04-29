@@ -18,6 +18,8 @@ namespace ReviewAppProject.Data
         public DbSet<UserReviewProfessorDislike> UserReviewProfessorDislikes { get; set; }
         public DbSet<UserReviewUniversityLike> UserReviewUniversityLikes { get; set; }
         public DbSet<UserReviewUniversityDislike> UserReviewUniversityDislikes { get; set; }
+
+        public DbSet<UserSavedReviewProfessor> UserSavedReviewProfessors { get; set; }
         public DbSet<ReviewProfessorTag> ReviewProfessorTags { get; set; }
         public DbSet<ReviewProfessorReviewTag> ReviewsProfessorTags { get; set; }
 
@@ -42,6 +44,8 @@ namespace ReviewAppProject.Data
 
             new UserReviewUniversityLikeConfiguration().Configure(modelBuilder.Entity<UserReviewUniversityLike>());
             new UserReviewUniversityDislikeConfiguration().Configure(modelBuilder.Entity<UserReviewUniversityDislike>());
+
+            new UserSavedReviewProfessorConfiguration().Configure(modelBuilder.Entity<UserSavedReviewProfessor>());
         }
     }
 }

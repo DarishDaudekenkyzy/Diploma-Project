@@ -1,8 +1,9 @@
 import { useState, useContext, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/imho_logo.png';
 import { UserContext } from '../App';
 import { Login, Signup, SignupGoogle } from '../pages';
+import { ChevronDownIcon } from '@heroicons/react/24/solid'
 
 export function onOutsideClick(ref, handleOutsideClick) {
   useEffect(() => {
@@ -19,39 +20,75 @@ export function onOutsideClick(ref, handleOutsideClick) {
 }
 
 function AuthSection({setOpenLogin, setOpenSignup}) {
-  const userItem = localStorage.getItem('user');
+  const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null)
   
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    navigate('/');
   }
+
+  onOutsideClick(dropdownRef, () => {
+    setUserDropdownOpen(false);
+  })
   
-  if(user !== null) {
-    return (
-      <>
-      <Link to="/account">
-            <button className="mx-1 px-[30px] py-[5px] text-[16px] sm:text-[20px]">Hello! {user.firstName}</button>
-      </Link>
-      <button onClick={handleLogout} className=" mx-1 px-[30px] py-[5px] text-[16px] sm:text-[20px]">Log Out</button>
-    </>);
-  }
-  else {
-    return (
-      <div className="flex h-full">
-        <div className="flex items-center justify-center 
-        border-black border-l-2 h-full px-[8px] md:px-[48px]">
-          <button className="text-[16px] sm:text-[20px]" onClick={() => setOpenLogin(true)}>Log In</button>
+  return (
+    <>
+    {user ?
+        <div ref={dropdownRef} className='h-full'>
+          <div onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+          className='group px-8 text-white gap-1 bg-black h-full flex items-center cursor-pointer'>
+                <p className="text-xl">Hey, {user.firstName}!</p>
+                <ChevronDownIcon className='w-6 h-6'/>
+          </div>
+          <div className='relative'>
+            {userDropdownOpen &&
+            <div className='absolute top-0 bg-white w-full border-black border font-semibold cursor-pointer'>
+              <div onClick={() => {navigate('/account', {state:1}); setUserDropdownOpen(false)}}
+              className='py-2 px-2 hover:bg-gray-200'>
+                <p>Profile</p>
+              </div>
+              <div onClick={() => {navigate('/account', {state:4}); setUserDropdownOpen(false)}}
+              className='py-2 px-2 hover:bg-gray-200'>
+                <p>Account Settings</p>
+              </div>
+              <div onClick={() => {navigate('/account', {state:2}); setUserDropdownOpen(false)}}
+              className='py-2 px-2 hover:bg-gray-200'>
+                <p>Your Ratings</p>
+              </div>
+              <div onClick={() => {navigate('/account', {state:3}); setUserDropdownOpen(false)}}
+              className='py-2 px-2 hover:bg-gray-200'>
+                <p>Saved</p>
+              </div>
+              <div onClick={() => {handleLogout(); setUserDropdownOpen(false)}}
+              className='py-2 px-2 hover:bg-gray-200'>
+                <p>Log Out</p>
+              </div>
+            </div>
+            }
+          </div>
         </div>
-        <div className="flex items-center justify-center 
-        h-full px-[8px] md:px-[48px] bg-black">
-          <button  className="text-white text-[16px] sm:text-[20px]" onClick={() => setOpenSignup(true)}>
-            Sign Up
-          </button>
+        :
+        <div className="flex h-full cursor-pointer">
+          <div onClick={() => setOpenLogin(true)}
+          className="flex items-center justify-center hover:bg-gray-200 hover:underline
+          border-black border-l-2 h-full px-[8px] md:px-[48px]">
+            <button className="text-2xl">Log In</button>
+          </div>
+          <div onClick={() => setOpenSignup(true)}
+          className="flex items-center justify-center hover:underline decoration-white
+          h-full px-[8px] md:px-[48px] bg-black">
+            <button  className="text-white text-2xl">
+              Sign Up
+            </button>
+          </div>
         </div>
-      </div>
-      );
     }
+    </>
+  );
 }
 
 const MobileMenu = ({show=false, setShow, setOpenLogin, setOpenSignup}) => {
@@ -106,11 +143,13 @@ const MobileMenu = ({show=false, setShow, setOpenLogin, setOpenSignup}) => {
               FAQ
             </p>
           </Link>
-          <Link to="/about">
-            <p className='text-[16px]'>
-              About us
-            </p>
-          </Link>
+          <div className='group h-full cursor-pointer'>
+            <Link to="/about">
+              <p className='group-hover:underline text-[16px]'>
+                About us
+              </p>
+            </Link>
+          </div>
           {user !== null && (
             <button onClick={handleLogout} className="text-[16px] underline">Log Out</button>
           )}
@@ -126,29 +165,29 @@ const Header = () => {
   const [openSignup, setOpenSignup] = useState(false);
   const [openSignupGoogle, setOpenSignupGoogle] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const navigate = useNavigate()
+  const location = useLocation();
   return (
     <div className='relative'>
-      <header className="w-full flex justify-between
+      <header className="w-full flex justify-between text-2xl
       items-center border-0  border-black sm:border-2 h-[48px] md:h-[100px] relative">
         <Link to="/">
           <img className="h-[40px] md:h-[80px] my-[10px] ml-[32px] md:ml-[150px]" src={logo} alt="logo"/>
         </Link>
-        <div className="hidden sm:flex justify-center items-center gap-x-3 md:gap-x-10 h-full">
-          <Link>
-            <p className="text-[16px] sm:text-[20px]">
-              Reviews
-            </p>
-          </Link>
-          <Link to="/faq">
-            <p className="text-[16px] sm:text-[20px]">
-              FAQ
-            </p>
-          </Link>
-          <Link>
-            <p className="text-[16px] sm:text-[20px]">
-              About us
-            </p>
-          </Link>
+        <div className="hidden sm:flex justify-center items-center h-full gap-4">
+          <div className='group px-4 h-full cursor-pointer flex items-center justify-center '>
+            <Link to="/faq">
+              <p className='group-hover:underline font-semibold'>
+                FAQ
+              </p>
+            </Link>
+          </div>
+          <div onClick={() => navigate('/', {state: 'about'})}
+          className='group px-4 h-full cursor-pointer flex items-center justify-center '>
+              <p className='group-hover:underline font-semibold'>
+                About us
+              </p>
+          </div>
           <AuthSection 
             setOpenLogin={setOpenLogin}
             setOpenSignup={setOpenSignup}

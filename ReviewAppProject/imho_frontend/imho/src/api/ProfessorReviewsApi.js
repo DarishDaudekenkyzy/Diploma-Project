@@ -41,3 +41,39 @@ export async function api_DeleteProfessorReview(reviewId) {
     const dataPromise = await promise.then((response) => response.data);
     return dataPromise;
 }
+
+export async function api_DidUserSavedReview(userId, reviewId) {
+    const promise = axios.get(`https://localhost:7040/ProfessorReviews/IsSaved/${userId}/${reviewId}`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}
+
+export async function api_DidUserLikedReview(userId, reviewId) {
+    const promise = axios.get(`https://localhost:7040/ProfessorReviews/IsLiked/${userId}/${reviewId}`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}
+
+export async function api_DidUserDislikedReview(userId, reviewId) {
+    const promise = axios.get(`https://localhost:7040/ProfessorReviews/IsDisliked/${userId}/${reviewId}`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}
+
+export async function api_GetSavedReviewsOfUser(userId) {
+    const promise = axios.get(`https://localhost:7040/ProfessorReviews/${userId}/Saved`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}
+
+export async function api_SaveReview(userId, reviewId) {
+    const promise = axios.put(`https://localhost:7040/ProfessorReviews/Save/${userId}/${reviewId}`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}
+
+export async function api_UnsaveReview(userId, reviewId) {
+    const promise = axios.put(`https://localhost:7040/ProfessorReviews/Unsave/${userId}/${reviewId}`);
+    const dataPromise = await promise.then((response) => response.data);
+    return dataPromise;
+}

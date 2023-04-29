@@ -19,6 +19,8 @@
         public ICollection<ReviewProfessor> ReviewsProfessors { get; set; }
         public ICollection<ReviewUniversity> ReviewsUniversities { get; set; }
 
+        public ICollection<UserSavedReviewProfessor> SavedReviewProfessors { get; set; }
+
         public ICollection<UserReviewProfessorLike> LikedReviewsProfessors { get; set; }
         public ICollection<UserReviewProfessorDislike> DislikedReviewsProfessors { get; set; }
         public ICollection<UserReviewUniversityLike> LikedReviewsUniversities { get; set; }

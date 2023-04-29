@@ -4,7 +4,7 @@ import styles from '../style';
 
 const Account = () => {
   return (
-      <div className="mt-[10px] m-auto max-w-[600px]">
+      <div className="mt-[10px] m-auto max-w-[600px] py-8">
           <form className="flex flex-col mt-[20px]">
             <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="name" placeholder="First name"/>
             <input className="w-full border-black border-b-2 mb-[10px] px-[20px] py-[7px]" type="name" placeholder="Last name"/>

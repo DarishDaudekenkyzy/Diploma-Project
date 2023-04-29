@@ -98,8 +98,10 @@ const UniReviewInfo = () => {
             loadUni(location.state);
     }, []);
     useEffect(()=>{
-        if(uni !== null)
+        if(uni !== null) {
             loadReviews();
+            console.log(uni)
+        }
     }, [uni]);
 
     function handleRateClick() {
@@ -149,35 +151,35 @@ const UniReviewInfo = () => {
                                         <img className="" src={ReputationIcon} alt="" />
                                     </div>
                                     <p className="grow">Reputation</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.reputation]}]`}/>                                        
+                                    <RatingCell value={uni.reputation}/>                                
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={OpportunitiesIcon} alt="" />
                                     </div>
                                     <p className="grow">Opportunities</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.opportunities]}]`}/>                                        
+                                    <RatingCell value={uni.opportunities}/>                                      
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={InternetIcon} alt="" />
                                     </div>
                                     <p className="grow">Internet</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.internet]}]`}/>                                        
+                                    <RatingCell value={uni.internet}/>                                        
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={SafetyIcon} alt="" />
                                     </div>
                                     <p className="grow">Safety</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.safety]}]`}/>                                        
+                                    <RatingCell value={uni.safety}/>                                      
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={LocationIcon} alt="" />
                                     </div>
                                     <p className="grow">Location</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.location]}]`}/>                                        
+                                    <RatingCell value={uni.location}/>                                       
                                 </div>
                             </div>
                             <div className="flex flex-col gap-y-[8px] items-center gap-y-[8px] sm:w-[240px]">
@@ -186,35 +188,35 @@ const UniReviewInfo = () => {
                                         <img className="" src={HappinessIcon} alt="" />
                                     </div>
                                     <p className="grow">Happiness</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.happiness]}]`}/>                                        
+                                    <RatingCell value={uni.happiness}/>                                 
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={ClubsIcon} alt="" />
                                     </div>
                                     <p className="grow">Clubs</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.clubs]}]`}/>                                        
+                                    <RatingCell value={uni.clubs}/>                                       
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={FacilitiesIcon} alt="" />
                                     </div>
                                     <p className="grow">Facilities</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.facilities]}]`}/>                                        
+                                    <RatingCell value={uni.facilities}/>                                       
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={SocialIcon} alt="" />
                                     </div>
                                     <p className="grow">Social</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.social]}]`}/>                                        
+                                    <RatingCell value={uni.social}/>
                                 </div>
                                 <div className="flex flex-row gap-x-[16px] w-full">
                                     <div className="flex w-[36px] h-[36px] items-center justify-center">
                                         <img className="" src={FoodIcon} alt="" />
                                     </div>
                                     <p className="grow">Food</p>
-                                    <div className={`w-[40px] h-[40px] bg-[${rateColor[uni.food]}]`}/>                                        
+                                    <RatingCell value={uni.food}/>                                       
                                 </div>
                             </div>
                         </div>
@@ -345,6 +347,14 @@ function RatingValue({name='',value=0}) {
                     <div key={item} className={`w-[24px] h-[24px] rounded-[50%] bg-[${item<=value ? rateColor[value] : rateColor[0]}]`}/>
                 )}
             </div>
+        </div>
+    );
+}
+
+function RatingCell({value}) {
+    return (
+        <div className={`flex font-semibold text-sm items-center justify-center w-[40px] h-[40px] bg-[${rateColor[Math.round(value)]}]`}>
+            <p>{value}</p>
         </div>
     );
 }

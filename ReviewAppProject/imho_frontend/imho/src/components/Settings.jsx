@@ -6,7 +6,7 @@ import { UserContext } from '../App';
 const Settings = () => {
   const {user, setUser} = useContext(UserContext);
   return (
-      <div className="mt-[10px] m-auto max-w-[600px]">
+      <div className="mt-[10px] m-auto max-w-[600px] py-8">
           <form className="flex flex-col sm:flex-row">
             <div className='flex flex-col w-full sm:w-[60%]'>
               <label className="mb-[2px]">Email</label>
